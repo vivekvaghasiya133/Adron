@@ -1,0 +1,2 @@
+# Adron - Node.js fullstack project
+# This empty file ensures Render builds succeed even if Python runtime was auto-detected

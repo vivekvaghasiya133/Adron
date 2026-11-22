@@ -604,13 +604,22 @@ app.post('/api/newsletter', (req, res) => {
 });
 
 // Serve Frontend in Production
-const clientDistPath = path.join(__dirname, '..', 'client', 'dist');
-if (fs.existsSync(clientDistPath)) {
+const candidatePaths = [
+  path.join(__dirname, 'public'),
+  path.join(__dirname, '..', 'client', 'dist'),
+  path.join(__dirname, 'dist')
+];
+const clientDistPath = candidatePaths.find(p => fs.existsSync(p) && fs.existsSync(path.join(p, 'index.html')));
+
+if (clientDistPath) {
+  console.log(`[Adron] Serving frontend from: ${clientDistPath}`);
   app.use(express.static(clientDistPath));
   app.get('*', (req, res, next) => {
     if (req.path.startsWith('/api')) return next();
     res.sendFile(path.join(clientDistPath, 'index.html'));
   });
+} else {
+  console.warn('[Adron] No static frontend folder found in candidates:', candidatePaths);
 }
 
 app.listen(PORT, () => {
