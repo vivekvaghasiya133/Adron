@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Search, Heart, ShoppingBag, User, Menu, X, ArrowRight } from 'lucide-react';
 import { useShop } from '../context/ShopContext';
+import AdronLogo from './AdronLogo';
 
 export default function Navbar() {
   const { cartCount, wishlist, setIsCartOpen, user, logoutUser } = useShop();
@@ -21,9 +22,9 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-40 w-full bg-[#FAF8F5]/95 backdrop-blur-md border-b border-[#E8E4DA] transition-all">
-      {/* Top Announcement Bar */}
-      <div className="bg-[#153323] text-[#EAF1E8] text-xs py-2 px-4 text-center tracking-wide font-medium flex items-center justify-center gap-2">
-        <span>✨ 100% Cold-Pressed Organic Okra Formulation — Free Shipping on Orders Over $50! Use code <strong className="text-white underline">ADRON15</strong> for 15% off</span>
+      {/* Top Thin Green Announcement Bar matching Figma */}
+      <div className="bg-[#5B7E52] text-[#FAF8F5] text-xs py-1.5 px-4 text-center tracking-wide font-medium flex items-center justify-center gap-2">
+        <span>🌿 100% Cold-Pressed Organic Okra Formulation — Free Shipping on Orders Over $50! Use Code <strong className="text-white underline font-bold">ADRON15</strong> for 15% Off</span>
       </div>
 
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
@@ -31,55 +32,39 @@ export default function Navbar() {
         <div className="flex items-center lg:hidden">
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 text-[#153323] hover:text-[#799A70] transition"
+            className="p-2 text-[#153323] hover:text-[#5B7E52] transition"
             aria-label="Toggle Menu"
           >
             {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
 
-        {/* Brand Logo */}
-        <div className="flex items-center gap-3">
-          <Link to="/" className="flex items-center gap-2 group">
-            {/* Botanical Okra/Leaf SVG emblem matching Figma */}
-            <div className="w-9 h-9 rounded-full bg-[#153323] flex items-center justify-center text-white shadow-sm transition-transform group-hover:scale-105">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 2L9 7c-2 3.5-1 8 2 11 3-3 4-7.5 2-11L12 2z" fill="#799A70" stroke="#FAF8F5" />
-                <path d="M12 22V11" />
-                <path d="M12 11l-3-3" />
-                <path d="M12 15l3-3" />
-              </svg>
-            </div>
-            <div className="flex flex-col">
-              <span className="font-serif text-2xl tracking-wider text-[#153323] font-bold uppercase">
-                Adron
-              </span>
-              <span className="text-[9px] tracking-widest text-[#799A70] uppercase font-semibold -mt-1">
-                Okra Botanical Science
-              </span>
-            </div>
+        {/* Brand Logo with Botanical Sprout */}
+        <div className="flex items-center">
+          <Link to="/" className="flex items-center group">
+            <AdronLogo showTagline={true} />
           </Link>
         </div>
 
         {/* Desktop Navigation Links */}
         <div className="hidden lg:flex items-center space-x-8 text-sm font-medium text-[#2C3E33]">
-          <Link to="/" className="hover:text-[#153323] transition pb-1 border-b-2 border-transparent hover:border-[#153323]">
+          <Link to="/" className="hover:text-[#5B7E52] transition pb-1 border-b-2 border-transparent hover:border-[#5B7E52]">
             Home
           </Link>
-          <Link to="/shop" className="hover:text-[#153323] transition pb-1 border-b-2 border-transparent hover:border-[#153323]">
+          <Link to="/shop" className="hover:text-[#5B7E52] transition pb-1 border-b-2 border-transparent hover:border-[#5B7E52]">
             Shop All
           </Link>
-          <Link to="/shop?category=Hair Care" className="hover:text-[#153323] transition pb-1 border-b-2 border-transparent hover:border-[#153323]">
+          <Link to="/product/okra-shampoo" className="hover:text-[#5B7E52] transition pb-1 border-b-2 border-transparent hover:border-[#5B7E52]">
             Hair Care
           </Link>
-          <Link to="/shop?category=Skin Care" className="hover:text-[#153323] transition pb-1 border-b-2 border-transparent hover:border-[#153323]">
+          <Link to="/product/okra-facewash" className="hover:text-[#5B7E52] transition pb-1 border-b-2 border-transparent hover:border-[#5B7E52]">
             Skin Care
           </Link>
-          <Link to="/ingredients" className="hover:text-[#153323] transition pb-1 border-b-2 border-transparent hover:border-[#153323]">
-            Ingredients
+          <Link to="/product/okra-serum" className="hover:text-[#5B7E52] transition pb-1 border-b-2 border-transparent hover:border-[#5B7E52]">
+            Serums
           </Link>
-          <Link to="/about" className="hover:text-[#153323] transition pb-1 border-b-2 border-transparent hover:border-[#153323]">
-            About Us
+          <Link to="/ingredients" className="hover:text-[#5B7E52] transition pb-1 border-b-2 border-transparent hover:border-[#5B7E52]">
+            Ingredients
           </Link>
         </div>
 
@@ -116,7 +101,7 @@ export default function Navbar() {
           >
             <ShoppingBag size={20} />
             {cartCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-[#799A70] text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold animate-bounce">
+              <span className="absolute -top-1 -right-1 bg-[#5B7E52] text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold animate-bounce">
                 {cartCount}
               </span>
             )}
@@ -173,7 +158,7 @@ export default function Navbar() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search for Okra Shampoo, Face Wash, Glow Serum, Hair Mask..."
+              placeholder="Search for Okra Shampoo, Face Wash, Glow Serum..."
               className="w-full text-sm outline-none bg-transparent py-1 text-gray-800"
               autoFocus
             />
@@ -197,74 +182,39 @@ export default function Navbar() {
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
         <div className="lg:hidden bg-[#FAF8F5] border-b border-[#E8E4DA] px-6 py-6 space-y-4 animate-fade-in text-base font-medium">
-          <Link
-            to="/"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block text-[#153323] hover:text-[#799A70]"
-          >
+          <Link to="/" onClick={() => setMobileMenuOpen(false)} className="block text-[#153323] hover:text-[#5B7E52]">
             Home
           </Link>
-          <Link
-            to="/shop"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block text-[#153323] hover:text-[#799A70]"
-          >
+          <Link to="/shop" onClick={() => setMobileMenuOpen(false)} className="block text-[#153323] hover:text-[#5B7E52]">
             Shop All
           </Link>
-          <Link
-            to="/shop?category=Hair Care"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block text-[#153323] hover:text-[#799A70]"
-          >
+          <Link to="/product/okra-shampoo" onClick={() => setMobileMenuOpen(false)} className="block text-[#153323] hover:text-[#5B7E52]">
             Hair Care
           </Link>
-          <Link
-            to="/shop?category=Skin Care"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block text-[#153323] hover:text-[#799A70]"
-          >
+          <Link to="/product/okra-facewash" onClick={() => setMobileMenuOpen(false)} className="block text-[#153323] hover:text-[#5B7E52]">
             Skin Care
           </Link>
-          <Link
-            to="/ingredients"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block text-[#153323] hover:text-[#799A70]"
-          >
+          <Link to="/product/okra-serum" onClick={() => setMobileMenuOpen(false)} className="block text-[#153323] hover:text-[#5B7E52]">
+            Serums
+          </Link>
+          <Link to="/ingredients" onClick={() => setMobileMenuOpen(false)} className="block text-[#153323] hover:text-[#5B7E52]">
             Ingredients Science
           </Link>
-          <Link
-            to="/favorites"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block text-[#153323] hover:text-[#799A70]"
-          >
+          <Link to="/favorites" onClick={() => setMobileMenuOpen(false)} className="block text-[#153323] hover:text-[#5B7E52]">
             My Favorites ({wishlist.length})
           </Link>
           {!user ? (
             <div className="pt-4 border-t border-gray-200 flex gap-4">
-              <Link
-                to="/login"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex-1 bg-[#153323] text-white text-center py-2.5 rounded-lg text-sm"
-              >
+              <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="flex-1 bg-[#153323] text-white text-center py-2.5 rounded-lg text-sm">
                 Sign In
               </Link>
-              <Link
-                to="/register"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex-1 bg-white border border-[#153323] text-[#153323] text-center py-2.5 rounded-lg text-sm"
-              >
-                Create Account
+              <Link to="/register" onClick={() => setMobileMenuOpen(false)} className="flex-1 bg-white border border-[#153323] text-[#153323] text-center py-2.5 rounded-lg text-sm">
+                Register
               </Link>
             </div>
           ) : (
             <div className="pt-4 border-t border-gray-200">
-              <button
-                onClick={() => {
-                  logoutUser();
-                  setMobileMenuOpen(false);
-                }}
-                className="text-red-600 text-sm font-semibold"
-              >
+              <button onClick={() => { logoutUser(); setMobileMenuOpen(false); }} className="w-full text-left py-2 text-sm text-red-600">
                 Sign Out ({user.name})
               </button>
             </div>

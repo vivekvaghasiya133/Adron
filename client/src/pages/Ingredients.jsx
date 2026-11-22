@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Leaf, Sparkles, Droplets, CheckCircle, ArrowRight } from 'lucide-react';
+import { Leaf, Sparkles, Droplets, CheckCircle, ArrowRight, ShieldCheck, Check, X } from 'lucide-react';
 
 const fallbackIngredients = [
   {
@@ -11,12 +11,12 @@ const fallbackIngredients = [
     description: "Known as nature's botanical hyaluronic acid, Okra mucilage contains high concentrations of galacturonic acid, pectin, and water-soluble polysaccharides. It creates an invisible, weightless protective film over hair cuticles and skin epidermis, locking in moisture 500x its weight while delivering natural silicone-like glide without buildup.",
     benefits: [
       "Natural slip and detangling power without synthetic silicones",
-      "Locks in deep cellular hydration",
+      "Locks in deep cellular hydration for 72 hours",
       "High natural content of Vitamin A, C, and antioxidant flavonoids",
       "Calms inflammation and accelerates skin barrier recovery"
     ],
     foundIn: ["Smooth & Shine Shampoo", "Gentle Face Wash", "Okra Glow Serum", "Deep Moisture Hair Mask"],
-    image: "https://images.unsplash.com/photo-1597362925123-77861d3fbac7?auto=format&fit=crop&w=600&q=80"
+    image: "/figma/okra_sliced_seeds.png"
   },
   {
     id: "biotin",
@@ -105,18 +105,29 @@ export default function Ingredients() {
   }, []);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-16 space-y-16">
-      {/* Hero Banner - Matching Figma "Ingredients" */}
-      <div className="text-center space-y-4 max-w-3xl mx-auto">
-        <span className="text-xs font-bold uppercase tracking-widest text-[#799A70]">
-          Clean Botanical Pharmacy
-        </span>
-        <h1 className="font-serif text-3xl sm:text-5xl font-bold text-[#153323] leading-tight">
-          Goodness Begins With Ingredients
-        </h1>
-        <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
-          We believe in complete formulation transparency. Every single botanical extract in our Adron formulations is sustainably sourced, cold-extracted, and backed by clinical research.
-        </p>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-16 space-y-16 bg-[#FAF8F5]">
+      {/* Hero Banner - Matching Figma "Goodness begins with ingredients" */}
+      <div className="bg-[#EFF5ED] rounded-3xl p-8 sm:p-12 border border-[#D7E6D3] flex flex-col md:flex-row items-center justify-between gap-8">
+        <div className="space-y-4 max-w-xl text-center md:text-left">
+          <span className="text-xs font-bold uppercase tracking-widest text-[#5B7E52] block">
+            Clean Botanical Pharmacy
+          </span>
+          <h1 className="font-serif text-3xl sm:text-5xl font-bold text-[#153323] leading-tight">
+            Goodness Begins With <span className="text-[#5B7E52]">Ingredients</span>
+          </h1>
+          <p className="text-sm sm:text-base text-[#4E6354] leading-relaxed">
+            We believe in complete formulation transparency. Every single botanical extract in our Adron formulations is sustainably sourced, cold-extracted, and backed by clinical research.
+          </p>
+        </div>
+
+        <div className="w-48 h-48 rounded-2xl overflow-hidden bg-white p-2 shadow-md border border-[#D7E6D3] shrink-0">
+          <img
+            src="/figma/okra_sliced_seeds.png"
+            onError={(e) => { e.currentTarget.src = 'https://images.unsplash.com/photo-1597362925123-77861d3fbac7?auto=format&fit=crop&w=600&q=80'; }}
+            alt="Sliced Okra Pods"
+            className="w-full h-full object-cover"
+          />
+        </div>
       </div>
 
       {/* Featured Botanical Card: OKRA MUCILAGE */}
@@ -126,7 +137,7 @@ export default function Ingredients() {
             <Leaf size={14} /> Star Ingredient
           </div>
           <h2 className="font-serif text-3xl sm:text-4xl font-bold">
-            Okra Fruit Mucilage (Abelmoschus Esculentus)
+            Abelmoschus Esculentus (Okra Mucilage Extract)
           </h2>
           <p className="text-sm text-[#D4E3D0] leading-relaxed">
             The secret to Adron's transformative slip. The mucilaginous pectins found in organic okra form a flexible moisture matrix that locks hydration directly into the hair cuticle and skin stratum corneum. It delivers all the glide and mirror shine of cosmetic silicones — with 0% buildup and 100% natural biodegradability.
@@ -142,10 +153,11 @@ export default function Ingredients() {
             </div>
           </div>
         </div>
-        <div className="lg:col-span-5">
-          <div className="aspect-square rounded-2xl overflow-hidden shadow-2xl border border-white/10">
+        <div className="lg:col-span-5 flex justify-center">
+          <div className="aspect-square rounded-2xl overflow-hidden shadow-2xl border border-white/10 max-w-sm">
             <img
-              src="https://images.unsplash.com/photo-1597362925123-77861d3fbac7?auto=format&fit=crop&w=800&q=80"
+              src="/figma/daily_ritual_bottle.png"
+              onError={(e) => { e.currentTarget.src = 'https://images.unsplash.com/photo-1597362925123-77861d3fbac7?auto=format&fit=crop&w=800&q=80'; }}
               alt="Fresh Organic Okra"
               className="w-full h-full object-cover"
             />
@@ -156,12 +168,12 @@ export default function Ingredients() {
       {/* Ingredients Grid */}
       <div className="space-y-8">
         <div className="border-b border-[#E8E4DA] pb-4">
+          <span className="text-xs font-bold uppercase tracking-widest text-[#5B7E52] block mb-1">
+            Active Phytochemicals
+          </span>
           <h3 className="font-serif text-2xl font-bold text-[#153323]">
             Active Botanical Catalog
           </h3>
-          <p className="text-xs text-gray-500">
-            Discover the purpose and potency of each element inside our products.
-          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
@@ -169,7 +181,7 @@ export default function Ingredients() {
             <div
               key={ing.id}
               id={ing.id}
-              className="bg-white rounded-2xl border border-[#E8E4DA] overflow-hidden shadow-sm hover:shadow-lg transition-all flex flex-col justify-between"
+              className="bg-white rounded-3xl border border-[#E8E4DA] overflow-hidden shadow-sm hover:shadow-lg transition-all flex flex-col justify-between"
             >
               <div>
                 <div className="aspect-video overflow-hidden bg-gray-100">
@@ -181,7 +193,7 @@ export default function Ingredients() {
                 </div>
                 <div className="p-6 space-y-3">
                   <div>
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-[#799A70] block">
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-[#5B7E52] block">
                       {ing.primaryFunction}
                     </span>
                     <h4 className="font-serif text-lg font-bold text-[#153323]">
@@ -198,7 +210,7 @@ export default function Ingredients() {
                     <span className="text-[11px] font-bold text-gray-700 uppercase">Key Benefits:</span>
                     {ing.benefits.map((b, idx) => (
                       <div key={idx} className="flex items-start gap-1.5 text-xs text-gray-600">
-                        <CheckCircle size={13} className="text-[#799A70] shrink-0 mt-0.5" />
+                        <CheckCircle size={13} className="text-[#5B7E52] shrink-0 mt-0.5" />
                         <span>{b}</span>
                       </div>
                     ))}
@@ -208,7 +220,7 @@ export default function Ingredients() {
 
               <div className="p-4 bg-[#FAF8F5] border-t border-gray-100 text-[11px] text-[#153323] flex items-center justify-between">
                 <span>Featured in: <strong>{ing.foundIn.slice(0, 2).join(', ')}</strong></span>
-                <Link to="/shop" className="text-[#799A70] font-bold hover:underline">
+                <Link to="/shop" className="text-[#5B7E52] font-bold hover:underline">
                   Shop →
                 </Link>
               </div>
@@ -217,20 +229,53 @@ export default function Ingredients() {
         </div>
       </div>
 
+      {/* WHAT WE FORMULATE WITHOUT - Checklist matching Figma */}
+      <section className="bg-white rounded-3xl p-8 sm:p-12 border border-[#E8E4DA] shadow-sm space-y-6">
+        <div className="text-center space-y-2">
+          <span className="text-xs font-bold uppercase tracking-widest text-[#5B7E52]">
+            Our Safety Promise
+          </span>
+          <h3 className="font-serif text-3xl font-bold text-[#153323]">
+            What We Formulate WITHOUT
+          </h3>
+          <p className="text-xs text-gray-500 max-w-md mx-auto">
+            100% clean, non-toxic, and biocompatible ingredients only.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4">
+          {[
+            { label: '0% Sulfates (SLS / SLES)', desc: 'No harsh stripping detergents' },
+            { label: '0% Synthetic Silicones', desc: 'No suffocating plastic build-up' },
+            { label: '0% Parabens & Phthalates', desc: 'No endocrine disruptors' },
+            { label: '0% Synthetic Dyes & Fragrance', desc: '100% naturally scented' },
+            { label: '0% Formaldehyde Donors', desc: 'Zero carcinogenic preservatives' },
+            { label: '0% Mineral Oils & Petrolatum', desc: 'Non-comedogenic botanicals' },
+            { label: '0% Animal-Derived Ingredients', desc: '100% Vegan Leaping Bunny' },
+            { label: '0% Microplastics', desc: 'Fully biodegradable formulas' },
+          ].map((item, idx) => (
+            <div key={idx} className="bg-[#FAF8F5] p-4 rounded-2xl border border-[#E8E4DA] text-center space-y-1">
+              <span className="font-bold text-xs text-[#153323] block">{item.label}</span>
+              <span className="text-[10px] text-gray-500 block">{item.desc}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* Botanical Standard Callout */}
-      <div className="bg-[#EAF1E8] p-8 sm:p-12 rounded-3xl border border-[#D0E2CE] text-center space-y-4 max-w-4xl mx-auto">
+      <div className="bg-[#EFF5ED] p-8 sm:p-12 rounded-3xl border border-[#D7E6D3] text-center space-y-4 max-w-4xl mx-auto shadow-sm">
         <h3 className="font-serif text-2xl font-bold text-[#153323]">
-          Our Pure Formulation Promise
+          Experience The Okra Difference
         </h3>
         <p className="text-xs sm:text-sm text-gray-700 max-w-xl mx-auto leading-relaxed">
-          Zero parabens, zero sulfates, zero synthetic colorants, zero formaldehyde-releasing agents, and 100% cruelty-free. Every batch is rigorously batch-tested for purity and microbial safety.
+          Discover why thousands are switching to pure cold-extracted Okra mucilage for weightless hair slip and glowing glass skin.
         </p>
         <div className="pt-2">
           <Link
             to="/shop"
-            className="bg-[#153323] text-white text-xs font-semibold px-6 py-3 rounded-xl hover:bg-[#204b34] transition inline-block"
+            className="bg-[#153323] text-white text-xs font-semibold px-8 py-3.5 rounded-full hover:bg-[#204b34] transition inline-block shadow-md"
           >
-            Experience The Difference
+            Shop The Collection
           </Link>
         </div>
       </div>

@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowRight, Lock, Mail, User, ShieldCheck } from 'lucide-react';
+import { Lock, Mail, User } from 'lucide-react';
 import { useShop } from '../context/ShopContext';
+import AdronLogo from '../components/AdronLogo';
 
 export default function Register() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [agree, setAgree] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { loginUser } = useShop();
@@ -15,6 +18,16 @@ export default function Register() {
   const handleRegister = async (e) => {
     e.preventDefault();
     setError('');
+
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+    if (!agree) {
+      setError('Please agree to Terms & Conditions');
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -31,7 +44,8 @@ export default function Register() {
         setError(data.message || 'Registration failed');
       }
     } catch {
-      loginUser({ id: String(Date.now()), name, email });
+      // Mock fallback
+      loginUser({ id: '2', name, email });
       navigate('/');
     } finally {
       setLoading(false);
@@ -39,18 +53,18 @@ export default function Register() {
   };
 
   return (
-    <div className="max-w-md mx-auto px-4 py-16 sm:py-24 space-y-8">
-      <div className="text-center space-y-2">
-        <span className="text-xs font-bold uppercase tracking-widest text-[#799A70]">Join The Ritual</span>
-        <h1 className="font-serif text-3xl font-bold text-[#153323]">Create Account</h1>
-        <p className="text-xs text-gray-500">
-          Sign up to enjoy 15% off your first order and track shipments easily.
+    <div className="max-w-md mx-auto px-4 py-16 sm:py-24 space-y-8 bg-[#FAF8F5]">
+      <div className="flex flex-col items-center text-center space-y-3">
+        <AdronLogo showTagline={true} />
+        <h1 className="font-serif text-3xl font-bold text-[#153323] pt-2">Create an Account</h1>
+        <p className="text-xs text-gray-500 max-w-xs">
+          Join the Adron clean botanical community for member perks and early access.
         </p>
       </div>
 
       <div className="bg-white p-8 rounded-3xl border border-[#E8E4DA] shadow-sm space-y-6">
         {error && (
-          <div className="p-3 bg-red-50 text-red-600 text-xs rounded-xl border border-red-200">
+          <div className="p-3 bg-red-50 text-red-600 text-xs rounded-2xl border border-red-200">
             {error}
           </div>
         )}
@@ -65,8 +79,8 @@ export default function Register() {
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="e.g. Vivek Patel"
-                className="w-full bg-[#FAF8F5] border border-gray-200 pl-10 pr-4 py-2.5 rounded-xl outline-none focus:border-[#153323]"
+                placeholder="Maya Sharma"
+                className="w-full bg-[#FAF8F5] border border-gray-200 pl-10 pr-4 py-2.5 rounded-full outline-none focus:border-[#153323]"
               />
             </div>
           </div>
@@ -81,7 +95,7 @@ export default function Register() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="name@example.com"
-                className="w-full bg-[#FAF8F5] border border-gray-200 pl-10 pr-4 py-2.5 rounded-xl outline-none focus:border-[#153323]"
+                className="w-full bg-[#FAF8F5] border border-gray-200 pl-10 pr-4 py-2.5 rounded-full outline-none focus:border-[#153323]"
               />
             </div>
           </div>
@@ -96,29 +110,52 @@ export default function Register() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="At least 6 characters"
-                className="w-full bg-[#FAF8F5] border border-gray-200 pl-10 pr-4 py-2.5 rounded-xl outline-none focus:border-[#153323]"
+                className="w-full bg-[#FAF8F5] border border-gray-200 pl-10 pr-4 py-2.5 rounded-full outline-none focus:border-[#153323]"
               />
             </div>
           </div>
 
-          <div className="flex items-start gap-2 pt-1 text-[11px] text-gray-500">
-            <input type="checkbox" required className="mt-0.5 accent-[#153323]" />
-            <span>I agree to the Terms of Service and Privacy Policy.</span>
+          <div>
+            <label className="block text-gray-700 font-semibold mb-1">Confirm Password</label>
+            <div className="relative">
+              <Lock size={16} className="absolute left-3.5 top-3 text-gray-400" />
+              <input
+                type="password"
+                required
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Repeat your password"
+                className="w-full bg-[#FAF8F5] border border-gray-200 pl-10 pr-4 py-2.5 rounded-full outline-none focus:border-[#153323]"
+              />
+            </div>
+          </div>
+
+          <div className="flex items-start gap-2 pt-1">
+            <input
+              type="checkbox"
+              id="agree"
+              checked={agree}
+              onChange={(e) => setAgree(e.target.checked)}
+              className="accent-[#153323] rounded mt-0.5"
+            />
+            <label htmlFor="agree" className="text-xs text-gray-600 cursor-pointer">
+              I agree to the Terms of Service and Privacy Policy
+            </label>
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-[#153323] hover:bg-[#204b34] text-white text-sm font-semibold py-3.5 rounded-xl transition shadow-md flex items-center justify-center gap-2"
+            className="w-full bg-[#153323] hover:bg-[#204b34] text-white text-xs font-bold uppercase tracking-wider py-3.5 rounded-full shadow-lg transition active:scale-95"
           >
-            {loading ? 'Creating Account...' : 'Create Account'} <ArrowRight size={16} />
+            {loading ? 'CREATING ACCOUNT...' : 'CREATE ACCOUNT'}
           </button>
         </form>
 
-        <div className="pt-2 text-center text-xs text-gray-500 border-t border-gray-100">
+        <div className="text-center pt-2 text-xs text-gray-600 border-t border-gray-100">
           <span>Already have an account? </span>
-          <Link to="/login" className="text-[#153323] font-bold underline">
-            Sign In Here
+          <Link to="/login" className="text-[#5B7E52] font-bold hover:underline">
+            Sign In
           </Link>
         </div>
       </div>
