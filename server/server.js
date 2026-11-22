@@ -3,9 +3,17 @@ import cors from 'cors';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import dotenv from 'dotenv';
+import { connectDB, getDbStatus } from './config/db.js';
+import { Product } from './models/Product.js';
+import { Order } from './models/Order.js';
+import { Review } from './models/Review.js';
+import { User } from './models/User.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+dotenv.config({ path: path.join(__dirname, '.env') });
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -13,17 +21,19 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-// Load data
+// Connect to MongoDB Atlas (if URI provided in .env)
+connectDB();
+
+// Local JSON File Fallbacks
 const productsFilePath = path.join(__dirname, 'data', 'products.json');
 const ingredientsFilePath = path.join(__dirname, 'data', 'ingredients.json');
 
-const getProducts = () => JSON.parse(fs.readFileSync(productsFilePath, 'utf8'));
-const saveProducts = (list) => fs.writeFileSync(productsFilePath, JSON.stringify(list, null, 2), 'utf8');
-
+const getLocalProducts = () => JSON.parse(fs.readFileSync(productsFilePath, 'utf8'));
+const saveLocalProducts = (list) => fs.writeFileSync(productsFilePath, JSON.stringify(list, null, 2), 'utf8');
 const getIngredients = () => JSON.parse(fs.readFileSync(ingredientsFilePath, 'utf8'));
 
-// Initial seed orders
-let orders = [
+// Initial seed in-memory store
+let localOrders = [
   {
     orderId: 'ADR-849201',
     date: '2026-11-21T10:14:00.000Z',
@@ -35,27 +45,14 @@ let orders = [
       { productId: 'okra-shampoo', name: 'Smooth & Shine Okra Shampoo', price: 28, quantity: 2, size: '250ml' }
     ],
     totals: { subtotal: 56, shipping: 0, tax: 4.48, total: 60.48 }
-  },
-  {
-    orderId: 'ADR-718293',
-    date: '2026-11-22T08:30:00.000Z',
-    status: 'Processing',
-    customer: { name: 'Rahul Mehta', email: 'rahul.m@example.com', phone: '+91 99090 33445' },
-    shippingAddress: { address: '404 Titanium City Center', city: 'Surat', state: 'Gujarat', pincode: '395007' },
-    paymentMethod: 'Card',
-    items: [
-      { productId: 'okra-serum', name: 'Okra Glow Serum (Niacinamide + Vit C)', price: 36, quantity: 1, size: '30ml' },
-      { productId: 'okra-facewash', name: 'Gentle Foaming Okra Face Wash', price: 22, quantity: 1, size: '150ml' }
-    ],
-    totals: { subtotal: 58, shipping: 0, tax: 4.64, total: 62.64 }
   }
 ];
 
-let users = [
+let localUsers = [
   { id: '1', name: 'Vivek Patel', email: 'demo@adron.com', password: 'password123', role: 'admin' }
 ];
 
-let reviews = [
+let localReviews = [
   {
     id: 'rev-1',
     productId: 'okra-shampoo',
@@ -89,14 +86,43 @@ let reviews = [
 ];
 
 // Product endpoints
-app.get('/api/products', (req, res) => {
-  let list = getProducts();
+app.get('/api/products', async (req, res) => {
   const { category, search, sort, bestseller } = req.query;
 
+  if (getDbStatus()) {
+    try {
+      let filter = {};
+      if (category && category !== 'All') {
+        filter.category = new RegExp(`^${category}$`, 'i');
+      }
+      if (bestseller === 'true') {
+        filter.isBestseller = true;
+      }
+      if (search) {
+        filter.$or = [
+          { name: { $regex: search, $options: 'i' } },
+          { category: { $regex: search, $options: 'i' } },
+          { description: { $regex: search, $options: 'i' } }
+        ];
+      }
+
+      let sortOption = { createdAt: -1 };
+      if (sort === 'price-asc') sortOption = { price: 1 };
+      else if (sort === 'price-desc') sortOption = { price: -1 };
+      else if (sort === 'rating') sortOption = { rating: -1 };
+
+      const products = await Product.find(filter).sort(sortOption);
+      return res.json({ success: true, count: products.length, source: 'MongoDB Atlas', products });
+    } catch (err) {
+      console.error('Mongo query error, falling back to local:', err.message);
+    }
+  }
+
+  // Local JSON Fallback
+  let list = getLocalProducts();
   if (category && category !== 'All') {
     list = list.filter(p => p.category.toLowerCase() === category.toLowerCase());
   }
-
   if (search) {
     const q = search.toLowerCase();
     list = list.filter(p =>
@@ -105,11 +131,9 @@ app.get('/api/products', (req, res) => {
       p.description.toLowerCase().includes(q)
     );
   }
-
   if (bestseller === 'true') {
     list = list.filter(p => p.isBestseller);
   }
-
   if (sort === 'price-asc') {
     list.sort((a, b) => a.price - b.price);
   } else if (sort === 'price-desc') {
@@ -118,21 +142,33 @@ app.get('/api/products', (req, res) => {
     list.sort((a, b) => b.rating - a.rating);
   }
 
-  res.json({ success: true, count: list.length, products: list });
+  res.json({ success: true, count: list.length, source: 'Local JSON', products: list });
 });
 
-app.get('/api/products/:id', (req, res) => {
-  const list = getProducts();
+app.get('/api/products/:id', async (req, res) => {
+  if (getDbStatus()) {
+    try {
+      const product = await Product.findOne({ id: req.params.id });
+      if (product) {
+        const prodReviews = await Review.find({ productId: product.id });
+        return res.json({ success: true, product: { ...product.toObject(), reviews: prodReviews } });
+      }
+    } catch (err) {
+      console.error('Mongo findOne error:', err.message);
+    }
+  }
+
+  const list = getLocalProducts();
   const product = list.find(p => p.id === req.params.id);
   if (!product) {
     return res.status(404).json({ success: false, message: 'Product not found' });
   }
-  const productReviews = reviews.filter(r => r.productId === product.id);
+  const productReviews = localReviews.filter(r => r.productId === product.id);
   res.json({ success: true, product: { ...product, reviews: productReviews } });
 });
 
 // ADMIN: Add New Product
-app.post('/api/products', (req, res) => {
+app.post('/api/products', async (req, res) => {
   const {
     name,
     category,
@@ -153,7 +189,6 @@ app.post('/api/products', (req, res) => {
     return res.status(400).json({ success: false, message: 'Name, price, and category are required' });
   }
 
-  const list = getProducts();
   const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
   const id = `${slug}-${Date.now().toString().slice(-4)}`;
 
@@ -181,8 +216,19 @@ app.post('/api/products', (req, res) => {
     howToUse: howToUse || 'Apply as directed. For best results, use daily as part of your clean beauty ritual.'
   };
 
+  // Save to MongoDB if connected
+  if (getDbStatus()) {
+    try {
+      await Product.create(newProduct);
+    } catch (err) {
+      console.error('MongoDB product create error:', err.message);
+    }
+  }
+
+  // Also sync to local JSON
+  const list = getLocalProducts();
   list.unshift(newProduct);
-  saveProducts(list);
+  saveLocalProducts(list);
 
   res.status(201).json({
     success: true,
@@ -192,73 +238,132 @@ app.post('/api/products', (req, res) => {
 });
 
 // ADMIN: Update Existing Product
-app.put('/api/products/:id', (req, res) => {
-  const list = getProducts();
-  const index = list.findIndex(p => p.id === req.params.id);
+app.put('/api/products/:id', async (req, res) => {
+  const updateData = {
+    ...req.body,
+    price: req.body.price !== undefined ? Number(req.body.price) : undefined,
+    originalPrice: req.body.originalPrice !== undefined ? Number(req.body.originalPrice) : undefined
+  };
 
+  if (getDbStatus()) {
+    try {
+      const updated = await Product.findOneAndUpdate({ id: req.params.id }, updateData, { new: true });
+      if (updated) {
+        return res.json({ success: true, message: 'Product updated in MongoDB Atlas!', product: updated });
+      }
+    } catch (err) {
+      console.error('MongoDB update error:', err.message);
+    }
+  }
+
+  const list = getLocalProducts();
+  const index = list.findIndex(p => p.id === req.params.id);
   if (index === -1) {
     return res.status(404).json({ success: false, message: 'Product not found' });
   }
 
-  const existing = list[index];
-  const updated = {
-    ...existing,
-    ...req.body,
-    price: req.body.price !== undefined ? Number(req.body.price) : existing.price,
-    originalPrice: req.body.originalPrice !== undefined ? Number(req.body.originalPrice) : existing.originalPrice
-  };
-
+  const updated = { ...list[index], ...updateData };
   list[index] = updated;
-  saveProducts(list);
+  saveLocalProducts(list);
 
-  res.json({
-    success: true,
-    message: 'Product updated successfully!',
-    product: updated
-  });
+  res.json({ success: true, message: 'Product updated successfully!', product: updated });
 });
 
 // ADMIN: Delete Product
-app.delete('/api/products/:id', (req, res) => {
-  let list = getProducts();
+app.delete('/api/products/:id', async (req, res) => {
+  if (getDbStatus()) {
+    try {
+      await Product.findOneAndDelete({ id: req.params.id });
+    } catch (err) {
+      console.error('MongoDB delete error:', err.message);
+    }
+  }
+
+  let list = getLocalProducts();
   const initialLength = list.length;
   list = list.filter(p => p.id !== req.params.id);
-
   if (list.length === initialLength) {
     return res.status(404).json({ success: false, message: 'Product not found' });
   }
+  saveLocalProducts(list);
 
-  saveProducts(list);
   res.json({ success: true, message: 'Product removed from catalog!' });
 });
 
 // ADMIN: Get Dashboard Stats
-app.get('/api/admin/stats', (req, res) => {
-  const products = getProducts();
-  const totalRevenue = orders.reduce((sum, o) => sum + (o.totals?.total || 0), 0);
+app.get('/api/admin/stats', async (req, res) => {
+  if (getDbStatus()) {
+    try {
+      const totalProducts = await Product.countDocuments();
+      const allOrders = await Order.find();
+      const totalRevenue = allOrders.reduce((sum, o) => sum + (o.totals?.total || 0), 0);
+      const categories = await Product.distinct('category');
+      const totalReviews = await Review.countDocuments();
+
+      return res.json({
+        success: true,
+        stats: {
+          totalProducts,
+          totalOrders: allOrders.length,
+          totalRevenue: +totalRevenue.toFixed(2),
+          categoriesCount: categories.length,
+          totalReviews
+        }
+      });
+    } catch (err) {
+      console.error('MongoDB stats error:', err.message);
+    }
+  }
+
+  const products = getLocalProducts();
+  const totalRevenue = localOrders.reduce((sum, o) => sum + (o.totals?.total || 0), 0);
   const categories = [...new Set(products.map(p => p.category))];
 
   res.json({
     success: true,
     stats: {
       totalProducts: products.length,
-      totalOrders: orders.length,
+      totalOrders: localOrders.length,
       totalRevenue: +totalRevenue.toFixed(2),
       categoriesCount: categories.length,
-      totalReviews: reviews.length
+      totalReviews: localReviews.length
     }
   });
 });
 
 // ADMIN: Get All Orders
-app.get('/api/orders', (req, res) => {
-  res.json({ success: true, count: orders.length, orders });
+app.get('/api/orders', async (req, res) => {
+  if (getDbStatus()) {
+    try {
+      const orders = await Order.find().sort({ createdAt: -1 });
+      return res.json({ success: true, count: orders.length, orders });
+    } catch (err) {
+      console.error('Mongo orders find error:', err.message);
+    }
+  }
+  res.json({ success: true, count: localOrders.length, orders: localOrders });
 });
 
 // ADMIN: Update Order Status
-app.patch('/api/orders/:orderId/status', (req, res) => {
+app.patch('/api/orders/:orderId/status', async (req, res) => {
   const { status } = req.body;
-  const order = orders.find(o => o.orderId === req.params.orderId);
+
+  if (getDbStatus()) {
+    try {
+      const order = await Order.findOneAndUpdate(
+        { orderId: req.params.orderId },
+        { status },
+        { new: true }
+      );
+      if (order) {
+        return res.json({ success: true, message: `Order status updated to ${order.status}`, order });
+      }
+    } catch (err) {
+      console.error('Mongo order update error:', err.message);
+    }
+  }
+
+  const order = localOrders.find(o => o.orderId === req.params.orderId);
   if (!order) {
     return res.status(404).json({ success: false, message: 'Order not found' });
   }
@@ -273,12 +378,20 @@ app.get('/api/ingredients', (req, res) => {
 });
 
 // Reviews endpoints
-app.get('/api/reviews/:productId', (req, res) => {
-  const productReviews = reviews.filter(r => r.productId === req.params.productId);
+app.get('/api/reviews/:productId', async (req, res) => {
+  if (getDbStatus()) {
+    try {
+      const reviews = await Review.find({ productId: req.params.productId }).sort({ createdAt: -1 });
+      return res.json({ success: true, reviews });
+    } catch (err) {
+      console.error('Mongo reviews error:', err.message);
+    }
+  }
+  const productReviews = localReviews.filter(r => r.productId === req.params.productId);
   res.json({ success: true, reviews: productReviews });
 });
 
-app.post('/api/reviews', (req, res) => {
+app.post('/api/reviews', async (req, res) => {
   const { productId, author, rating, title, comment } = req.body;
   if (!productId || !author || !rating || !comment) {
     return res.status(400).json({ success: false, message: 'Missing required review fields' });
@@ -295,14 +408,22 @@ app.post('/api/reviews', (req, res) => {
     verified: true
   };
 
-  reviews.unshift(newReview);
+  if (getDbStatus()) {
+    try {
+      await Review.create(newReview);
+    } catch (err) {
+      console.error('Mongo review create error:', err.message);
+    }
+  }
+
+  localReviews.unshift(newReview);
   res.status(201).json({ success: true, review: newReview });
 });
 
 // Cart validation & calculation
 app.post('/api/cart/calculate', (req, res) => {
   const { items, couponCode } = req.body;
-  const products = getProducts();
+  const products = getLocalProducts();
 
   let subtotal = 0;
   const detailedItems = (items || []).map(item => {
@@ -345,7 +466,7 @@ app.post('/api/cart/calculate', (req, res) => {
 });
 
 // Checkout / Place order
-app.post('/api/checkout', (req, res) => {
+app.post('/api/checkout', async (req, res) => {
   const { items, customer, shippingAddress, paymentMethod, totals } = req.body;
 
   if (!items || items.length === 0) {
@@ -364,7 +485,15 @@ app.post('/api/checkout', (req, res) => {
     totals: totals || { total: 0 }
   };
 
-  orders.unshift(newOrder);
+  if (getDbStatus()) {
+    try {
+      await Order.create(newOrder);
+    } catch (err) {
+      console.error('Mongo order save error:', err.message);
+    }
+  }
+
+  localOrders.unshift(newOrder);
 
   res.status(201).json({
     success: true,
@@ -373,8 +502,17 @@ app.post('/api/checkout', (req, res) => {
   });
 });
 
-app.get('/api/orders/:orderId', (req, res) => {
-  const order = orders.find(o => o.orderId === req.params.orderId);
+app.get('/api/orders/:orderId', async (req, res) => {
+  if (getDbStatus()) {
+    try {
+      const order = await Order.findOne({ orderId: req.params.orderId });
+      if (order) return res.json({ success: true, order });
+    } catch (err) {
+      console.error('Mongo order findOne error:', err.message);
+    }
+  }
+
+  const order = localOrders.find(o => o.orderId === req.params.orderId);
   if (!order) {
     return res.status(404).json({ success: false, message: 'Order not found' });
   }
@@ -382,18 +520,36 @@ app.get('/api/orders/:orderId', (req, res) => {
 });
 
 // Auth endpoints
-app.post('/api/auth/register', (req, res) => {
+app.post('/api/auth/register', async (req, res) => {
   const { name, email, password } = req.body;
   if (!name || !email || !password) {
     return res.status(400).json({ success: false, message: 'All fields are required' });
   }
 
-  if (users.find(u => u.email === email)) {
+  if (getDbStatus()) {
+    try {
+      const existing = await User.findOne({ email });
+      if (existing) {
+        return res.status(400).json({ success: false, message: 'User already exists' });
+      }
+      const newUser = await User.create({ name, email, password, role: 'customer' });
+      return res.status(201).json({
+        success: true,
+        message: 'Registration successful',
+        user: { id: newUser._id, name: newUser.name, email: newUser.email, role: 'customer' },
+        token: 'jwt-mock-token-' + newUser._id
+      });
+    } catch (err) {
+      console.error('Mongo register error:', err.message);
+    }
+  }
+
+  if (localUsers.find(u => u.email === email)) {
     return res.status(400).json({ success: false, message: 'User already exists' });
   }
 
   const newUser = { id: String(Date.now()), name, email, password, role: 'customer' };
-  users.push(newUser);
+  localUsers.push(newUser);
 
   res.status(201).json({
     success: true,
@@ -403,10 +559,26 @@ app.post('/api/auth/register', (req, res) => {
   });
 });
 
-app.post('/api/auth/login', (req, res) => {
+app.post('/api/auth/login', async (req, res) => {
   const { email, password } = req.body;
-  const user = users.find(u => u.email === email && u.password === password);
 
+  if (getDbStatus()) {
+    try {
+      const user = await User.findOne({ email, password });
+      if (user) {
+        return res.json({
+          success: true,
+          message: 'Login successful',
+          user: { id: user._id, name: user.name, email: user.email, role: user.role || 'customer' },
+          token: 'jwt-mock-token-' + user._id
+        });
+      }
+    } catch (err) {
+      console.error('Mongo login error:', err.message);
+    }
+  }
+
+  const user = localUsers.find(u => u.email === email && u.password === password);
   if (!user) {
     return res.status(401).json({ success: false, message: 'Invalid email or password' });
   }
