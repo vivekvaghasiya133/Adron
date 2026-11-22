@@ -1,0 +1,161 @@
+[
+  {
+    "id": "okra-shampoo",
+    "name": "Smooth & Shine Okra Shampoo",
+    "category": "Hair Care",
+    "price": 28.00,
+    "originalPrice": 34.00,
+    "rating": 4.9,
+    "reviewsCount": 240,
+    "isBestseller": true,
+    "isNew": false,
+    "badge": "Best Seller",
+    "sizes": ["250ml", "500ml"],
+    "image": "https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?auto=format&fit=crop&w=800&q=80",
+    "gallery": [
+      "https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1608248597359-0091874dc486?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?auto=format&fit=crop&w=800&q=80"
+    ],
+    "description": "An intensively nourishing botanical shampoo infused with pure Okra fruit mucilage extract. Packed with natural amino acids, vitamins A and C, and essential minerals, this gentle sulfate-free cleanser restores hydration to brittle strands, tames stubborn frizz, and leaves hair visibly glossy and full of life.",
+    "benefits": [
+      "Natural mucilage creates a silky slip that detangles without weight",
+      "Controls humidity-induced frizz and seals hair cuticles",
+      "Fortified with Biotin and Pro-Vitamin B5 for scalp resilience",
+      "Color-safe, sulfate-free, silicone-free, and 100% vegan"
+    ],
+    "ingredients": "Aqua (Purified Water), Abelmoschus Esculentus (Okra) Fruit Extract, Sodium Cocoyl Isethionate, Cocamidopropyl Betaine, Aloe Barbadensis (Aloe Vera) Leaf Juice, Biotin, Hydrolyzed Wheat Protein, Argania Spinosa (Argan) Kernel Oil, Panthenol, Rosmarinus Officinalis (Rosemary) Extract, Tocopherol (Vitamin E), Natural Essential Oil Blend, Citric Acid, Potassium Sorbate.",
+    "howToUse": "Apply generously to thoroughly soaked hair. Massage gently onto your scalp using your fingertips, creating a luxurious creamy lather. Glide through lengths to ends. Rinse thoroughly with cool to lukewarm water. Follow with Okra Deep Moisture Conditioner for optimal shine."
+  },
+  {
+    "id": "okra-facewash",
+    "name": "Gentle Foaming Okra Face Wash",
+    "category": "Skin Care",
+    "price": 22.00,
+    "originalPrice": 28.00,
+    "rating": 4.8,
+    "reviewsCount": 185,
+    "isBestseller": true,
+    "isNew": false,
+    "badge": "Popular",
+    "sizes": ["150ml", "300ml"],
+    "image": "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=800&q=80",
+    "gallery": [
+      "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1512290900672-1f4142f10b75?auto=format&fit=crop&w=800&q=80"
+    ],
+    "description": "A cloud-soft daily foaming facial cleanser powered by antioxidant-rich Okra extract and Green Tea. Dissolves pollutants, sunscreen, and excess sebum while protecting your moisture barrier with natural polysaccharides.",
+    "benefits": [
+      "Leaves skin feeling hydrated and plump, never stripped or dry",
+      "Rich in natural Vitamin C and flavonoids to promote clarity",
+      "Calms redness and balances sensitive or combination skin",
+      "Soap-free, fragrance-free, and dermatologically tested"
+    ],
+    "ingredients": "Aqua, Abelmoschus Esculentus (Okra) Fruit Extract, Glycerin, Camellia Sinensis (Green Tea) Leaf Water, Decyl Glucoside, Sodium Hyaluronate, Centella Asiatica Extract, Allantoin, Citric Acid, Phenoxyethanol.",
+    "howToUse": "Pump 1-2 puffs onto damp palms. Gently massage in circular motions across face and neck for 60 seconds. Rinse with lukewarm water and pat dry."
+  },
+  {
+    "id": "okra-serum",
+    "name": "Okra Glow Serum (Niacinamide + Vit C)",
+    "category": "Serums",
+    "price": 36.00,
+    "originalPrice": 44.00,
+    "rating": 4.9,
+    "reviewsCount": 310,
+    "isBestseller": true,
+    "isNew": true,
+    "badge": "Award Winner",
+    "sizes": ["30ml", "50ml"],
+    "image": "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=800&q=80",
+    "gallery": [
+      "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1601049541289-9b1b7bbbfe19?auto=format&fit=crop&w=800&q=80"
+    ],
+    "description": "An ultra-concentrated elixir combining cold-extracted Okra mucilage with 5% Niacinamide and 3-O-Ethyl Ascorbic Acid (Vitamin C). Penetrates deeply to brighten dark spots, tighten enlarged pores, and impart a glass-skin glow.",
+    "benefits": [
+      "Noticeably illuminates dull, tired skin within 14 days",
+      "Okra peptides boost collagen synthesis and elasticity",
+      "Strengthens the lipid barrier against environmental stress",
+      "Fast-absorbing silky texture with zero tacky residue"
+    ],
+    "ingredients": "Abelmoschus Esculentus (Okra) Extract (72%), Niacinamide (5%), 3-O-Ethyl Ascorbic Acid (3%), Sodium Hyaluronate, Polyglutamic Acid, Ferulic Acid, Licorice Root Extract, Ethylhexylglycerin.",
+    "howToUse": "Dispense 3-4 drops directly onto cleansed skin morning and evening. Pat gently with fingertips until fully absorbed. Follow with moisturizer and daytime SPF."
+  },
+  {
+    "id": "okra-hair-mask",
+    "name": "Deep Moisture Okra Hair Mask",
+    "category": "Hair Care",
+    "price": 32.00,
+    "originalPrice": 38.00,
+    "rating": 4.9,
+    "reviewsCount": 192,
+    "isBestseller": true,
+    "isNew": false,
+    "badge": "Intense Care",
+    "sizes": ["200ml", "400ml"],
+    "image": "https://images.unsplash.com/photo-1526947425960-945c6e72858f?auto=format&fit=crop&w=800&q=80",
+    "gallery": [
+      "https://images.unsplash.com/photo-1526947425960-945c6e72858f?auto=format&fit=crop&w=800&q=80"
+    ],
+    "description": "A buttery botanical conditioning mask designed for dry, heat-damaged, or over-processed hair. High-viscosity okra extract wraps each hair fiber in protective hydration.",
+    "benefits": [
+      "Reconstructs broken hair bonds and seals split ends",
+      "Delivers 72-hour humidity protection and mirrors shine",
+      "Restores elasticity to curly, coily, and wavy patterns"
+    ],
+    "ingredients": "Aqua, Abelmoschus Esculentus (Okra) Fruit Extract, Cetearyl Alcohol, Butyrospermum Parkii (Shea) Butter, Persea Gratissima (Avocado) Oil, Hydrolyzed Keratin, Behentrimonium Methosulfate, Citric Acid.",
+    "howToUse": "After shampooing, apply an ample scoop from mid-lengths to ends. Detangle with a wide-tooth comb. Leave in for 10-15 minutes, then rinse with cold water."
+  },
+  {
+    "id": "okra-body-lotion",
+    "name": "Silky Botanical Okra Body Lotion",
+    "category": "Body Care",
+    "price": 26.00,
+    "originalPrice": 30.00,
+    "rating": 4.7,
+    "reviewsCount": 142,
+    "isBestseller": false,
+    "isNew": true,
+    "badge": "New Arrival",
+    "sizes": ["250ml"],
+    "image": "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=800&q=80",
+    "gallery": [
+      "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=800&q=80"
+    ],
+    "description": "Velvety all-over body hydrator formulated with Okra mucilage, Shea Butter, and Squalane. Drenches dry skin with non-greasy 24-hour hydration.",
+    "benefits": [
+      "Instantly relieves rough elbows, knees, and dry patches",
+      "Locks in moisture after shower without greasy film",
+      "Delicate natural botanical aroma of eucalyptus and green fig"
+    ],
+    "ingredients": "Aqua, Abelmoschus Esculentus (Okra) Fruit Extract, Caprylic/Capric Triglyceride, Shea Butter, Olive Squalane, Glyceryl Stearate, Jojoba Seed Oil, Xanthan Gum.",
+    "howToUse": "Smooth generously all over the body, ideally right after showering while skin is slightly damp."
+  },
+  {
+    "id": "okra-scalp-oil",
+    "name": "Revitalizing Okra & Rosemary Scalp Oil",
+    "category": "Hair Care",
+    "price": 30.00,
+    "originalPrice": 36.00,
+    "rating": 4.8,
+    "reviewsCount": 115,
+    "isBestseller": false,
+    "isNew": true,
+    "badge": "Scalp Therapy",
+    "sizes": ["60ml"],
+    "image": "https://images.unsplash.com/photo-1608248597359-0091874dc486?auto=format&fit=crop&w=800&q=80",
+    "gallery": [
+      "https://images.unsplash.com/photo-1608248597359-0091874dc486?auto=format&fit=crop&w=800&q=80"
+    ],
+    "description": "A multi-target scalp treatment combining nutrient-dense cold-pressed Okra seed oil with pure Rosemary leaf oil to stimulate microcirculation and fortify roots.",
+    "benefits": [
+      "Soothes itchy, flaky scalp conditions",
+      "Supports healthy follicle growth and strand thickness",
+      "Lightweight formula washes out cleanly with shampoo"
+    ],
+    "ingredients": "Helianthus Annuus (Sunflower) Seed Oil, Abelmoschus Esculentus (Okra) Seed Oil, Rosmarinus Officinalis (Rosemary) Leaf Oil, Ricinus Communis (Castor) Seed Oil, Tocopherol, Peppermint Oil.",
+    "howToUse": "Part hair into sections. Apply a few drops directly to scalp and massage for 5 minutes. Leave on for 30 minutes or overnight before washing."
+  }
+]

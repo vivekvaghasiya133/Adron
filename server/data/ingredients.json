@@ -1,0 +1,87 @@
+[
+  {
+    "id": "okra-mucilage",
+    "name": "Okra Fruit Mucilage (Pectins & Polysaccharides)",
+    "source": "Organic Abelmoschus Esculentus pods",
+    "primaryFunction": "Hydration Lock & Cuticle Smoothing",
+    "description": "Known as nature's botanical hyaluronic acid, Okra mucilage contains high concentrations of galacturonic acid, pectin, and water-soluble polysaccharides. It creates an invisible, weightless protective film over hair cuticles and skin epidermis, locking in moisture 500x its weight while delivering natural silicone-like glide without buildup.",
+    "benefits": [
+      "Natural slip and detangling power",
+      "Locks in deep cellular hydration",
+      "High natural content of Vitamin A, C, and antioxidant flavonoids",
+      "Calms inflammation and accelerates skin barrier recovery"
+    ],
+    "foundIn": ["Smooth & Shine Shampoo", "Gentle Face Wash", "Okra Glow Serum", "Deep Moisture Hair Mask"],
+    "image": "https://images.unsplash.com/photo-1597362925123-77861d3fbac7?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "id": "biotin",
+    "name": "Pure Biotin (Vitamin B7)",
+    "source": "Fermented Plant Extract",
+    "primaryFunction": "Follicle Strengthening & Elasticity",
+    "description": "A water-soluble B-complex vitamin essential for cellular energy and keratin production. By reinforcing the structural integrity of keratin bonds, Biotin reduces strand breakage and helps maintain voluminous, thicker-looking hair.",
+    "benefits": [
+      "Reduces hair thinning caused by environmental stress",
+      "Improves hair cortex tensile strength",
+      "Protects against split ends and mechanical damage"
+    ],
+    "foundIn": ["Smooth & Shine Shampoo", "Revitalizing Scalp Oil"],
+    "image": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "id": "niacinamide",
+    "name": "Niacinamide (Vitamin B3 5%)",
+    "source": "Bio-Synthesized Active",
+    "primaryFunction": "Pore Refinement & Brightening",
+    "description": "A gold-standard skincare vitamin clinically proven to enhance barrier lipid synthesis, minimize the appearance of enlarged pores, and regulate sebum production while fading post-acne marks.",
+    "benefits": [
+      "Tightens pore walls and balances oil production",
+      "Fades hyperpigmentation and dark spots",
+      "Works synergistically with Okra polysaccharides for glowing clarity"
+    ],
+    "foundIn": ["Okra Glow Serum"],
+    "image": "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "id": "aloe-vera",
+    "name": "Organic Aloe Barbadensis Juice",
+    "source": "Cold-Pressed Inner Leaf Gel",
+    "primaryFunction": "Soothing & Anti-Redness",
+    "description": "Harvested from organically cultivated Aloe leaves, this soothing extract contains over 75 active vitamins, enzymes, and amino acids to calm sensitive skin and itchy, inflamed scalps.",
+    "benefits": [
+      "Provides instant cooling relief to sun-stressed or irritated skin",
+      "Restores scalp pH balance after washing",
+      "Natural humectant that attracts ambient moisture"
+    ],
+    "foundIn": ["Smooth & Shine Shampoo", "Gentle Face Wash", "Silky Body Lotion"],
+    "image": "https://images.unsplash.com/photo-1596547609652-9cf5d8d76921?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "id": "argan-oil",
+    "name": "Cold-Pressed Moroccan Argan Oil",
+    "source": "Hand-Harvested Argania Spinosa Nuts",
+    "primaryFunction": "Nourishing Lipid Replenishment",
+    "description": "Rich in oleic and linoleic essential fatty acids and natural Vitamin E, Moroccan Argan Oil envelopes dry hair strands and rough skin in rich nourishment, preventing moisture loss and leaving a mirror-like shine.",
+    "benefits": [
+      "Seals moisture inside the hair shaft without greasy heaviness",
+      "Protects against daily heat styling and oxidative stress",
+      "Softens brittle ends and restores natural bounce"
+    ],
+    "foundIn": ["Smooth & Shine Shampoo", "Deep Moisture Hair Mask"],
+    "image": "https://images.unsplash.com/photo-1608248597359-0091874dc486?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    "id": "hyaluronic-acid",
+    "name": "Multi-Molecular Hyaluronic Acid",
+    "source": "Biotechnological Fermentation",
+    "primaryFunction": "Multi-Depth Hydration",
+    "description": "Combines high, medium, and low molecular weights of Hyaluronic Acid to hydrate all skin layers—from surface smoothing to deep cellular plumping.",
+    "benefits": [
+      "Instantly plumps fine dry lines",
+      "Creates a moisture reservoir that lasts all day",
+      "Smooths skin texture for effortless makeup application"
+    ],
+    "foundIn": ["Gentle Face Wash", "Okra Glow Serum"],
+    "image": "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=600&q=80"
+  }
+]

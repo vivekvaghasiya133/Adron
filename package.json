@@ -1,0 +1,13 @@
+{
+  "name": "adron-okra-cosmetics",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Adron - Okra + Science Naturally Nourishing Beauty E-Commerce Website",
+  "scripts": {
+    "dev": "node start-dev.js",
+    "client": "cd client && npm run dev",
+    "server": "cd server && npm run dev",
+    "build": "cd client && npm run build"
+  },
+  "keywords": ["adron", "okra", "react", "node", "vite", "ecommerce"]
+}
