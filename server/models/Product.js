@@ -19,7 +19,8 @@ const productSchema = new mongoose.Schema({
   ingredients: { type: String, default: '' },
   howToUse: { type: String, default: '' }
 }, {
-  timestamps: true
+  timestamps: true,
+  suppressReservedKeysWarning: true
 });
 
 export const Product = mongoose.models.Product || mongoose.model('Product', productSchema);
