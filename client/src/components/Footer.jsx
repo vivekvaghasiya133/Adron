@@ -1,171 +1,122 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Leaf, ShieldCheck, HeartHandshake, Sparkles, CheckCircle2 } from 'lucide-react';
+import { ArrowRight, CheckCircle2 } from 'lucide-react';
 import AdronLogo from './AdronLogo';
 
 export default function Footer() {
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
-  const [loading, setLoading] = useState(false);
 
-  const handleSubscribe = async (e) => {
+  const handleSubscribe = (e) => {
     e.preventDefault();
     if (!email || !email.includes('@')) return;
-    setLoading(true);
-    try {
-      await fetch('/api/newsletter', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email })
-      });
-      setSubscribed(true);
-      setEmail('');
-    } catch {
-      setSubscribed(true);
-    } finally {
-      setLoading(false);
-    }
+    setSubscribed(true);
+    setEmail('');
   };
 
   return (
-    <footer className="bg-[#0E1B13] text-[#FAF8F5] pt-16 pb-12 border-t border-[#1C3325]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Top 4 Botanical Guarantees / Badges */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pb-12 border-b border-[#1C3325] text-center sm:text-left">
-          <div className="flex items-center gap-3 justify-center sm:justify-start">
-            <div className="w-10 h-10 rounded-full bg-[#182F22] flex items-center justify-center text-[#9DBA95]">
-              <Leaf size={20} />
-            </div>
-            <div>
-              <h4 className="text-sm font-semibold tracking-wide text-white">Pure Okra Extract</h4>
-              <p className="text-xs text-[#9DBA95]">100% cold-pressed mucilage</p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3 justify-center sm:justify-start">
-            <div className="w-10 h-10 rounded-full bg-[#182F22] flex items-center justify-center text-[#9DBA95]">
-              <ShieldCheck size={20} />
-            </div>
-            <div>
-              <h4 className="text-sm font-semibold tracking-wide text-white">Clean Science</h4>
-              <p className="text-xs text-[#9DBA95]">Dermatologist approved</p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3 justify-center sm:justify-start">
-            <div className="w-10 h-10 rounded-full bg-[#182F22] flex items-center justify-center text-[#9DBA95]">
-              <HeartHandshake size={20} />
-            </div>
-            <div>
-              <h4 className="text-sm font-semibold tracking-wide text-white">Cruelty-Free</h4>
-              <p className="text-xs text-[#9DBA95]">100% Vegan & Leaping Bunny</p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3 justify-center sm:justify-start">
-            <div className="w-10 h-10 rounded-full bg-[#182F22] flex items-center justify-center text-[#9DBA95]">
-              <Sparkles size={20} />
-            </div>
-            <div>
-              <h4 className="text-sm font-semibold tracking-wide text-white">Eco Responsible</h4>
-              <p className="text-xs text-[#9DBA95]">Recyclable glass & bottles</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 py-12">
-          {/* Brand & Newsletter Column */}
-          <div className="md:col-span-5 space-y-5">
+    <footer className="bg-[#0D1912] text-[#FAF8F5] pt-14 pb-10 border-t border-[#182F22]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-10">
+          {/* Column 1: Brand & Bio */}
+          <div className="md:col-span-4 space-y-4">
             <Link to="/" className="inline-block">
               <AdronLogo light={true} showTagline={true} />
             </Link>
-            <p className="text-xs text-[#B5C7B2] leading-relaxed max-w-sm">
-              Adron harnesses the clinical power of cold-pressed okra mucilage and active bio-botanicals to deliver weightless deep cellular hydration for hair and skin.
+            <p className="text-xs text-[#9DBA95] leading-relaxed max-w-sm">
+              Pure botanical formulations crafted with organic cold-pressed okra extract. Ethically sourced, clinically verified, 100% vegan.
             </p>
-
-            <div className="pt-2">
-              <span className="text-xs font-semibold tracking-wider uppercase text-[#EAF1E8] block mb-2">
-                Join the Clean Beauty Circle — Get 15% Off
-              </span>
-              {subscribed ? (
-                <div className="flex items-center gap-2 text-xs text-[#A7C99E] bg-[#1B3626] p-3 rounded-lg border border-[#799A70]/30">
-                  <CheckCircle2 size={16} />
-                  <span>Success! Use promo code <strong>ADRON15</strong> at checkout.</span>
-                </div>
-              ) : (
-                <form onSubmit={handleSubscribe} className="flex gap-2 max-w-md">
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter your email address"
-                    required
-                    className="flex-1 bg-[#182F22] border border-[#2B4E38] rounded-full px-4 py-2.5 text-xs text-white placeholder-gray-400 focus:outline-none focus:border-[#799A70]"
-                  />
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="bg-[#5B7E52] hover:bg-[#6C9461] text-white px-5 py-2.5 rounded-full text-xs font-semibold tracking-wide transition flex items-center gap-1.5"
-                  >
-                    <span>{loading ? 'Subscribing...' : 'Join'}</span>
-                    <ArrowRight size={14} />
-                  </button>
-                </form>
-              )}
+            <div className="flex items-center gap-3 text-[#A3C79B] pt-1">
+              <a href="https://instagram.com" target="_blank" rel="noreferrer" className="p-2 bg-[#182F22] hover:bg-[#254231] rounded-full transition" aria-label="Instagram">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
+                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                  <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
+                </svg>
+              </a>
+              <a href="https://facebook.com" target="_blank" rel="noreferrer" className="p-2 bg-[#182F22] hover:bg-[#254231] rounded-full transition" aria-label="Facebook">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+                </svg>
+              </a>
+              <a href="https://twitter.com" target="_blank" rel="noreferrer" className="p-2 bg-[#182F22] hover:bg-[#254231] rounded-full transition" aria-label="Twitter">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/>
+                </svg>
+              </a>
             </div>
           </div>
 
-          {/* Links Columns */}
+          {/* Column 2: Quick Links */}
           <div className="md:col-span-2 space-y-3">
-            <h5 className="font-serif text-sm font-semibold text-white tracking-wider uppercase">
-              Shop
+            <h5 className="font-serif text-xs font-bold text-white tracking-widest uppercase">
+              Quick Links
             </h5>
             <ul className="space-y-2 text-xs text-[#9DBA95]">
-              <li><Link to="/shop?category=Hair Care" className="hover:text-white transition">Hair Care</Link></li>
-              <li><Link to="/shop?category=Skin Care" className="hover:text-white transition">Skin Care</Link></li>
-              <li><Link to="/shop?category=Serums" className="hover:text-white transition">Serums & Elixirs</Link></li>
-              <li><Link to="/shop?category=Body Care" className="hover:text-white transition">Body Care</Link></li>
-              <li><Link to="/shop" className="hover:text-white transition">All Formulations</Link></li>
+              <li><Link to="/" className="hover:text-white transition">Home</Link></li>
+              <li><Link to="/shop" className="hover:text-white transition">Shop All</Link></li>
+              <li><Link to="/shop" className="hover:text-white transition">Best Sellers</Link></li>
+              <li><Link to="/ingredients" className="hover:text-white transition">Ingredients</Link></li>
+              <li><Link to="/about" className="hover:text-white transition">About Us</Link></li>
+              <li><Link to="/about" className="hover:text-white transition">Contact</Link></li>
             </ul>
           </div>
 
-          <div className="md:col-span-2 space-y-3">
-            <h5 className="font-serif text-sm font-semibold text-white tracking-wider uppercase">
-              Science
-            </h5>
-            <ul className="space-y-2 text-xs text-[#9DBA95]">
-              <li><Link to="/ingredients" className="hover:text-white transition">Why Okra?</Link></li>
-              <li><Link to="/ingredients" className="hover:text-white transition">Ingredients Index</Link></li>
-              <li><Link to="/ingredients" className="hover:text-white transition">Clinical Efficacy</Link></li>
-              <li><Link to="/ingredients" className="hover:text-white transition">Ethical Sourcing</Link></li>
-              <li><Link to="/about" className="hover:text-white transition">Our Story</Link></li>
-            </ul>
-          </div>
-
+          {/* Column 3: Customer Care */}
           <div className="md:col-span-3 space-y-3">
-            <h5 className="font-serif text-sm font-semibold text-white tracking-wider uppercase">
+            <h5 className="font-serif text-xs font-bold text-white tracking-widest uppercase">
               Customer Care
             </h5>
             <ul className="space-y-2 text-xs text-[#9DBA95]">
-              <li><Link to="/cart" className="hover:text-white transition">View Shopping Bag</Link></li>
-              <li><Link to="/favorites" className="hover:text-white transition">Saved Favorites</Link></li>
-              <li><Link to="/login" className="hover:text-white transition">Customer Account</Link></li>
+              <li><Link to="/cart" className="hover:text-white transition">Track Order</Link></li>
+              <li><Link to="/checkout" className="hover:text-white transition">Shipping Policy</Link></li>
+              <li><Link to="/checkout" className="hover:text-white transition">Returns & Exchange</Link></li>
+              <li><Link to="/product/okra-shampoo" className="hover:text-white transition">FAQ</Link></li>
+              <li><Link to="/about" className="hover:text-white transition">Privacy Policy</Link></li>
               <li><Link to="/admin" className="hover:text-white transition text-[#A3C79B] font-semibold">Merchant Admin Portal</Link></li>
             </ul>
           </div>
+
+          {/* Column 4: Stay Connected Newsletter */}
+          <div className="md:col-span-3 space-y-3">
+            <h5 className="font-serif text-xs font-bold text-white tracking-widest uppercase">
+              Stay Connected
+            </h5>
+            <p className="text-xs text-[#9DBA95] leading-relaxed">
+              Subscribe to our newsletter for 15% off your first order, clean beauty rituals, and exclusive product drops.
+            </p>
+
+            {subscribed ? (
+              <div className="flex items-center gap-2 text-xs text-[#A7C99E] bg-[#182F22] p-2.5 rounded-lg border border-[#799A70]/30">
+                <CheckCircle2 size={15} />
+                <span>Subscribed! Use code <strong>ADRON15</strong></span>
+              </div>
+            ) : (
+              <form onSubmit={handleSubscribe} className="flex items-center bg-[#182F22] border border-[#2B4E38] rounded-md overflow-hidden">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter your email..."
+                  required
+                  className="w-full bg-transparent px-3 py-2 text-xs text-white placeholder-gray-400 outline-none"
+                />
+                <button
+                  type="submit"
+                  className="px-3 py-2 text-[#A3C79B] hover:text-white transition"
+                  title="Subscribe"
+                >
+                  <ArrowRight size={16} />
+                </button>
+              </form>
+            )}
+          </div>
         </div>
 
-        {/* Bottom Bar */}
-        <div className="pt-8 border-t border-[#1C3325] flex flex-col sm:flex-row items-center justify-between text-xs text-[#7B9582] gap-4">
-          <p>© 2026 Adron Botanical Science. All rights reserved.</p>
-          <div className="flex gap-6">
-            <span>Free Carbon Neutral Delivery</span>
-            <span>•</span>
-            <span>256-Bit SSL Encrypted</span>
-            <span>•</span>
-            <span>Made with Clean Botanicals</span>
-          </div>
+        {/* Bottom copyright line matching Figma */}
+        <div className="pt-8 border-t border-[#1C3325] flex flex-col sm:flex-row items-center justify-between text-[11px] text-[#7B9582] gap-3">
+          <p>© 2026 Adron Botanical Beauty. All rights reserved.</p>
+          <p>Designed & Formulated in India • Worldwide Shipping</p>
         </div>
       </div>
     </footer>

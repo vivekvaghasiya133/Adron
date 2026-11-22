@@ -24,7 +24,7 @@ export default function Navbar() {
     <header className="sticky top-0 z-40 w-full bg-[#FAF8F5]/95 backdrop-blur-md border-b border-[#E8E4DA] transition-all">
       {/* Top Thin Green Announcement Bar matching Figma */}
       <div className="bg-[#5B7E52] text-[#FAF8F5] text-xs py-1.5 px-4 text-center tracking-wide font-medium flex items-center justify-center gap-2">
-        <span>🌿 100% Cold-Pressed Organic Okra Formulation — Free Shipping on Orders Over $50! Use Code <strong className="text-white underline font-bold">ADRON15</strong> for 15% Off</span>
+        <span>Free shipping on all orders over ₹499 | Use Code: <strong className="text-white underline font-bold">OKRAGLOW</strong> for 15% OFF</span>
       </div>
 
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
