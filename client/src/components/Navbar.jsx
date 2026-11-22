@@ -21,102 +21,75 @@ export default function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-[#FAF8F5]/95 backdrop-blur-md border-b border-[#E8E4DA] transition-all">
-      {/* Top Thin Green Announcement Bar matching Figma */}
-      <div className="bg-[#5B7E52] text-[#FAF8F5] text-xs py-1.5 px-4 text-center tracking-wide font-medium flex items-center justify-center gap-2">
-        <span>Free shipping on all orders over ₹499 | Use Code: <strong className="text-white underline font-bold">OKRAGLOW</strong> for 15% OFF</span>
+    <header className="sticky top-0 z-40 w-full bg-white border-b border-[#EDECE8] transition-all">
+      {/* Top Olive Green Announcement Bar - Exact Match to Figma */}
+      <div className="bg-[#8DAF3E] text-white text-[11px] sm:text-xs py-1.5 px-4 text-center tracking-normal font-medium flex items-center justify-center">
+        <span>Free shipping on orders above ₹999 | Use code GLOW20 for 20% off</span>
       </div>
 
-      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 sm:h-20 flex items-center justify-between">
         {/* Mobile menu toggle */}
         <div className="flex items-center lg:hidden">
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 text-[#153323] hover:text-[#5B7E52] transition"
+            className="p-2 text-[#2D3748] hover:text-[#8DAF3E] transition"
             aria-label="Toggle Menu"
           >
-            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
         </div>
 
-        {/* Brand Logo with Botanical Sprout */}
+        {/* Brand Logo - Exact Serif Wordmark with Leaf Motif */}
         <div className="flex items-center">
           <Link to="/" className="flex items-center group">
-            <AdronLogo showTagline={true} />
+            <img
+              src="/figma_landing/adron_logo_transparent.png"
+              alt="Adron"
+              className="h-8 sm:h-9 w-auto object-contain"
+            />
           </Link>
         </div>
 
-        {/* Desktop Navigation Links */}
-        <div className="hidden lg:flex items-center space-x-8 text-sm font-medium text-[#2C3E33]">
-          <Link to="/" className="hover:text-[#5B7E52] transition pb-1 border-b-2 border-transparent hover:border-[#5B7E52]">
-            Home
+        {/* Desktop Navigation Links - Exact Match to Figma */}
+        <div className="hidden lg:flex items-center space-x-7 xl:space-x-8 text-[13px] font-medium text-[#2D3748]">
+          <Link to="/shop" className="hover:text-[#8DAF3E] transition-colors">
+            Shop
           </Link>
-          <Link to="/shop" className="hover:text-[#5B7E52] transition pb-1 border-b-2 border-transparent hover:border-[#5B7E52]">
-            Shop All
+          <Link to="/product/okra-shampoo" className="hover:text-[#8DAF3E] transition-colors">
+            Okra Shampoo
           </Link>
-          <Link to="/product/okra-shampoo" className="hover:text-[#5B7E52] transition pb-1 border-b-2 border-transparent hover:border-[#5B7E52]">
-            Hair Care
+          <Link to="/product/okra-facewash" className="hover:text-[#8DAF3E] transition-colors">
+            Okra Facewash
           </Link>
-          <Link to="/product/okra-facewash" className="hover:text-[#5B7E52] transition pb-1 border-b-2 border-transparent hover:border-[#5B7E52]">
-            Skin Care
+          <Link to="/product/okra-serum" className="hover:text-[#8DAF3E] transition-colors">
+            Okra Serum
           </Link>
-          <Link to="/product/okra-serum" className="hover:text-[#5B7E52] transition pb-1 border-b-2 border-transparent hover:border-[#5B7E52]">
-            Serums
+          <Link to="/shop?bestseller=true" className="hover:text-[#8DAF3E] transition-colors">
+            Best Sellers
           </Link>
-          <Link to="/ingredients" className="hover:text-[#5B7E52] transition pb-1 border-b-2 border-transparent hover:border-[#5B7E52]">
+          <Link to="/ingredients" className="hover:text-[#8DAF3E] transition-colors">
             Ingredients
           </Link>
         </div>
 
-        {/* Right Action Icons */}
-        <div className="flex items-center space-x-4 sm:space-x-5 text-[#153323]">
+        {/* Right Action Icons - Exact 4 Clean Icons matching Figma */}
+        <div className="flex items-center space-x-4 sm:space-x-5 text-[#2D3748]">
           {/* Search Trigger */}
           <button
             onClick={() => setSearchOpen(!searchOpen)}
-            className="p-2 hover:bg-[#EAF1E8] rounded-full transition"
+            className="p-1 hover:text-[#8DAF3E] transition"
             title="Search Products"
           >
-            <Search size={20} />
+            <Search size={19} strokeWidth={1.75} />
           </button>
 
-          {/* Favorites / Wishlist */}
-          <Link
-            to="/favorites"
-            className="p-2 hover:bg-[#EAF1E8] rounded-full transition relative"
-            title="Wishlist"
-          >
-            <Heart size={20} className={wishlist.length > 0 ? "fill-[#C24B4B] text-[#C24B4B]" : ""} />
-            {wishlist.length > 0 && (
-              <span className="absolute -top-1 -right-1 bg-[#153323] text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
-                {wishlist.length}
-              </span>
-            )}
-          </Link>
-
-          {/* Cart Icon & Trigger */}
-          <button
-            onClick={() => setIsCartOpen(true)}
-            className="p-2 hover:bg-[#EAF1E8] rounded-full transition relative flex items-center gap-1.5"
-            title="Cart"
-          >
-            <ShoppingBag size={20} />
-            {cartCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-[#5B7E52] text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold animate-bounce">
-                {cartCount}
-              </span>
-            )}
-          </button>
-
-          {/* User Auth */}
+          {/* User Account / Sign In */}
           {user ? (
             <div className="relative group">
-              <button className="flex items-center gap-2 p-1.5 rounded-full hover:bg-[#EAF1E8] transition text-xs font-semibold text-[#153323]">
-                <div className="w-7 h-7 rounded-full bg-[#153323] text-white flex items-center justify-center text-xs">
-                  {user.name.charAt(0).toUpperCase()}
-                </div>
-                <span className="hidden md:inline">{user.name.split(' ')[0]}</span>
+              <button className="p-1 hover:text-[#8DAF3E] transition flex items-center">
+                <User size={19} strokeWidth={1.75} />
               </button>
-              <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl py-2 border border-[#E8E4DA] hidden group-hover:block animate-fade-in">
+              <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl py-2 border border-[#E8E4DA] hidden group-hover:block animate-fade-in z-50">
                 <div className="px-4 py-2 border-b border-gray-100 text-xs text-gray-500">
                   Signed in as <br /><strong className="text-gray-800">{user.email}</strong>
                 </div>
@@ -139,13 +112,40 @@ export default function Navbar() {
           ) : (
             <Link
               to="/login"
-              className="p-2 hover:bg-[#EAF1E8] rounded-full transition flex items-center gap-1 text-xs font-medium"
-              title="Sign In"
+              className="p-1 hover:text-[#8DAF3E] transition"
+              title="Sign In / Account"
             >
-              <User size={20} />
-              <span className="hidden sm:inline">Sign In</span>
+              <User size={19} strokeWidth={1.75} />
             </Link>
           )}
+
+          {/* Favorites / Wishlist */}
+          <Link
+            to="/favorites"
+            className="p-1 hover:text-[#8DAF3E] transition relative"
+            title="Wishlist"
+          >
+            <Heart size={19} strokeWidth={1.75} className={wishlist.length > 0 ? "fill-[#C24B4B] text-[#C24B4B]" : ""} />
+            {wishlist.length > 0 && (
+              <span className="absolute -top-1 -right-1 bg-[#8DAF3E] text-white text-[9px] w-3.5 h-3.5 rounded-full flex items-center justify-center font-bold">
+                {wishlist.length}
+              </span>
+            )}
+          </Link>
+
+          {/* Cart Icon */}
+          <button
+            onClick={() => setIsCartOpen(true)}
+            className="p-1 hover:text-[#8DAF3E] transition relative"
+            title="Cart"
+          >
+            <ShoppingBag size={19} strokeWidth={1.75} />
+            {cartCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-[#8DAF3E] text-white text-[9px] w-3.5 h-3.5 rounded-full flex items-center justify-center font-bold">
+                {cartCount}
+              </span>
+            )}
+          </button>
         </div>
       </nav>
 
