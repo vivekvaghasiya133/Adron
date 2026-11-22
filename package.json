@@ -5,9 +5,10 @@
   "description": "Adron - Okra + Science Naturally Nourishing Beauty E-Commerce Website",
   "scripts": {
     "dev": "node start-dev.js",
+    "build": "cd client && npm install && npm run build && cd ../server && npm install",
+    "start": "node server/server.js",
     "client": "cd client && npm run dev",
-    "server": "cd server && npm run dev",
-    "build": "cd client && npm run build"
+    "server": "cd server && npm run dev"
   },
   "keywords": ["adron", "okra", "react", "node", "vite", "ecommerce"]
 }
