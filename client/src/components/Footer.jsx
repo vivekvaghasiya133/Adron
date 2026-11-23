@@ -21,7 +21,7 @@ export default function Footer() {
           {/* Column 1: Brand & Bio */}
           <div className="md:col-span-4 space-y-4">
             <Link to="/" className="inline-block">
-              <AdronLogo light={true} showTagline={true} />
+              <AdronLogo light={true} showTagline={false} className="h-9 sm:h-10" />
             </Link>
             <p className="text-xs text-[#9DBA95] leading-relaxed max-w-sm">
               Pure botanical formulations crafted with organic cold-pressed okra extract. Ethically sourced, clinically verified, 100% vegan.
