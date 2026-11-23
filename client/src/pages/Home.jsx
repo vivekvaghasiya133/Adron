@@ -235,43 +235,58 @@ export default function Home() {
       </section>
 
       {/* ============================================================== */}
-      {/* 2. SHOP BY CATEGORIES - 5 Cards with Bottom Pill Badges        */}
+      {/* 2. SHOP BY CATEGORIES - 100% 1:1 Pixel Match to Figma Design   */}
       {/* ============================================================== */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-7 pt-4">
         <div className="text-center">
-          <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#153323]">
-            Shop by <span className="text-[#7EA735]">categories</span>
+          <h2 className="font-sans text-2xl sm:text-[34px] font-bold text-[#1F2937] tracking-tight">
+            Shop by <span className="text-[#84A338]">Categories</span>
           </h2>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6 justify-center">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-5 justify-center">
           {[
-            { name: 'All Products', path: '/shop', img: '/figma_landing/cat_all.png' },
-            { name: 'Hair Care', path: '/product/okra-shampoo', img: '/figma_landing/cat_hair.png' },
-            { name: 'Face Wash', path: '/product/okra-facewash', img: '/figma_landing/cat_facewash.png' },
-            { name: 'Glow Serums', path: '/product/okra-serum', img: '/figma_landing/cat_serum.png' },
-            { name: 'Hair Routine', path: '/shop?category=Hair Care', img: '/figma_landing/cat_routine.png' }
+            {
+              name: 'Cosmetics',
+              count: '7 Products',
+              path: '/shop',
+              img: '/figma_landing/cat_cosmetics_exact.png'
+            },
+            {
+              name: 'Hair shampoo',
+              count: '1 Products',
+              path: '/product/okra-shampoo',
+              img: '/figma_landing/cat_shampoo_exact.png'
+            },
+            {
+              name: 'Face Wash',
+              count: '1 Products',
+              path: '/product/okra-facewash',
+              img: '/figma_landing/cat_facewash_exact.png'
+            },
+            {
+              name: 'Face Serum',
+              count: '1 Products',
+              path: '/product/okra-serum',
+              img: '/figma_landing/cat_serum_exact.png'
+            },
+            {
+              name: 'Hair Serum',
+              count: '1 Products',
+              path: '/shop?category=Hair Care',
+              img: '/figma_landing/cat_hair_serum_exact.png'
+            }
           ].map((cat, i) => (
             <Link
               key={i}
               to={cat.path}
-              className="group flex flex-col items-center bg-white rounded-2xl overflow-hidden border border-[#EAE6DE] shadow-sm hover:shadow-md transition-all duration-300"
+              className="group block rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1"
             >
-              <div className="aspect-[4/3] w-full overflow-hidden bg-[#F5F3EC]">
-                <img
-                  src={cat.img}
-                  alt={cat.name}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-              </div>
-              <div className="w-full py-2.5 px-2 bg-white text-center border-t border-gray-100">
-                <span className="text-[11px] font-bold text-[#153323] group-hover:text-[#7EA735] transition-colors block">
-                  {cat.name}
-                </span>
-                <span className="text-[9px] text-[#7EA735] uppercase font-semibold tracking-wider">
-                  Explore All ›
-                </span>
-              </div>
+              <img
+                src={cat.img}
+                alt={`${cat.name} - ${cat.count}`}
+                className="w-full h-auto object-contain select-none"
+              />
             </Link>
           ))}
         </div>
@@ -282,8 +297,8 @@ export default function Home() {
       {/* ============================================================== */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 relative">
         <div className="text-center">
-          <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#153323]">
-            Our <span className="text-[#7EA735]">Products</span>
+          <h2 className="font-sans text-2xl sm:text-[34px] font-bold text-[#1F2937] tracking-tight">
+            Our <span className="text-[#84A338]">Products</span>
           </h2>
         </div>
 
