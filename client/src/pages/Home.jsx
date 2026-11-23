@@ -237,58 +237,60 @@ export default function Home() {
       {/* ============================================================== */}
       {/* 2. SHOP BY CATEGORIES - 100% 1:1 Pixel Match to Figma Design   */}
       {/* ============================================================== */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-7 pt-4">
-        <div className="text-center">
-          <h2 className="font-sans text-2xl sm:text-[34px] font-bold text-[#1F2937] tracking-tight">
-            Shop by <span className="text-[#84A338]">Categories</span>
-          </h2>
-        </div>
+      <section className="w-full bg-white py-12 sm:py-16 -mt-16 sm:-mt-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+          <div className="text-center">
+            <h2 className="font-sans text-2xl sm:text-[34px] font-bold text-[#1F2937] tracking-tight">
+              Shop by <span className="text-[#84A338]">Categories</span>
+            </h2>
+          </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-5 justify-center">
-          {[
-            {
-              name: 'Cosmetics',
-              count: '7 Products',
-              path: '/shop',
-              img: '/figma_landing/cat_cosmetics_exact.png'
-            },
-            {
-              name: 'Hair shampoo',
-              count: '1 Products',
-              path: '/product/okra-shampoo',
-              img: '/figma_landing/cat_shampoo_exact.png'
-            },
-            {
-              name: 'Face Wash',
-              count: '1 Products',
-              path: '/product/okra-facewash',
-              img: '/figma_landing/cat_facewash_exact.png'
-            },
-            {
-              name: 'Face Serum',
-              count: '1 Products',
-              path: '/product/okra-serum',
-              img: '/figma_landing/cat_serum_exact.png'
-            },
-            {
-              name: 'Hair Serum',
-              count: '1 Products',
-              path: '/shop?category=Hair Care',
-              img: '/figma_landing/cat_hair_serum_exact.png'
-            }
-          ].map((cat, i) => (
-            <Link
-              key={i}
-              to={cat.path}
-              className="group block rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1"
-            >
-              <img
-                src={cat.img}
-                alt={`${cat.name} - ${cat.count}`}
-                className="w-full h-auto object-contain select-none"
-              />
-            </Link>
-          ))}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-5 justify-center">
+            {[
+              {
+                name: 'Cosmetics',
+                count: '7 Products',
+                path: '/shop',
+                img: '/figma_landing/cat_cosmetics_exact.png'
+              },
+              {
+                name: 'Hair shampoo',
+                count: '1 Products',
+                path: '/product/okra-shampoo',
+                img: '/figma_landing/cat_shampoo_exact.png'
+              },
+              {
+                name: 'Face Wash',
+                count: '1 Products',
+                path: '/product/okra-facewash',
+                img: '/figma_landing/cat_facewash_exact.png'
+              },
+              {
+                name: 'Face Serum',
+                count: '1 Products',
+                path: '/product/okra-serum',
+                img: '/figma_landing/cat_serum_exact.png'
+              },
+              {
+                name: 'Hair Serum',
+                count: '1 Products',
+                path: '/shop?category=Hair Care',
+                img: '/figma_landing/cat_hair_serum_exact.png'
+              }
+            ].map((cat, i) => (
+              <Link
+                key={i}
+                to={cat.path}
+                className="group block transition-all duration-300 hover:-translate-y-1.5 focus:outline-none"
+              >
+                <img
+                  src={cat.img}
+                  alt={`${cat.name} - ${cat.count}`}
+                  className="w-full h-auto object-contain select-none transition-transform duration-300 group-hover:scale-[1.02]"
+                />
+              </Link>
+            ))}
+          </div>
         </div>
       </section>
 
