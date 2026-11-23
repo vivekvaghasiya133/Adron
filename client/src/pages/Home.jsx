@@ -295,123 +295,128 @@ export default function Home() {
       </section>
 
       {/* ============================================================== */}
-      {/* 3. OUR PRODUCTS - 4 Cards in Pale Mint Container + Sliced Okra */}
+      {/* 3. OUR PRODUCTS - 100% 1:1 Pixel Match to Figma Design         */}
       {/* ============================================================== */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 relative">
-        <div className="text-center">
-          <h2 className="font-sans text-2xl sm:text-[34px] font-bold text-[#1F2937] tracking-tight">
-            Our <span className="text-[#84A338]">Products</span>
-          </h2>
-        </div>
-
-        {/* Floating Okra Slices on right edge */}
-        <div className="hidden xl:block absolute -right-8 top-1/2 -translate-y-1/2 w-48 pointer-events-none select-none z-10">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-12 relative">
+        {/* Floating Okra Slices on right edge matching Figma 1:1 */}
+        <div className="hidden xl:block absolute -right-10 top-1/2 -translate-y-1/2 w-52 2xl:w-60 pointer-events-none select-none z-30">
           <img
-            src="/figma_landing/okra_floating_seeds.png"
+            src="/figma_landing/okra_flying_slices_hd.png"
             alt=""
-            className="w-full h-auto drop-shadow-sm opacity-90"
+            className="w-full h-auto drop-shadow-md select-none"
           />
         </div>
 
-        <div className="bg-[#F3F7F1] rounded-3xl p-6 sm:p-8 border border-[#DEEADE] shadow-sm relative overflow-hidden">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
+        {/* Pale Mint Container */}
+        <div className="bg-[#F4F6EB] rounded-[36px] pt-16 pb-10 px-6 sm:px-10 lg:px-12 border border-[#E5EBDD] relative shadow-sm">
+          {/* Top White Tab / Notch Title matching Figma */}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 bg-white px-10 pt-3 pb-3.5 rounded-b-2xl shadow-sm border-x border-b border-[#E5EBDD]/60 z-20">
+            <h2 className="font-sans text-xl sm:text-2xl font-bold text-[#1F2937] tracking-tight whitespace-nowrap">
+              Our <span className="text-[#84A338]">Products</span>
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-6 relative z-10">
             {[
               {
                 prod: shampoo,
-                badge: 'HAIR CARE',
-                size: '250ml / 8.5 fl oz',
-                desc: 'Restores cuticle health & mirror glass shine with pure cold-pressed Okra.',
-                price: '₹ 599',
-                img: '/figma_landing/prod_shampoo.png',
-                rating: '4.9 (128)',
+                title: 'Nourish & Shine Hair Shampoo',
+                subtitle: 'HYDRATION & GLOW',
+                desc: 'Powered by Okra, Cucumber & Licorice Extracts For 24H botanical glow.',
+                price: '₹1,299',
+                rating: '4.5',
+                img: '/figma_landing/our_prod_shampoo.png',
                 path: '/product/okra-shampoo'
               },
               {
                 prod: facewash,
-                badge: 'SKIN CARE',
-                size: '150ml / 5.1 fl oz',
-                desc: 'Deep pore cleanse without stripping natural moisture barrier.',
-                price: '₹ 399',
-                img: '/figma_landing/prod_facewash.png',
-                rating: '4.8 (96)',
+                title: 'Okra Hydra Glow Face Eash',
+                subtitle: 'HYDRATION & GLOW',
+                desc: 'Powered by Okra, Cucumber & Licorice Extracts For 24H botanical glow.',
+                price: '₹1,299',
+                rating: '4.5',
+                img: '/figma_landing/our_prod_facewash_purple.png',
                 path: '/product/okra-facewash'
               },
               {
                 prod: serum,
-                badge: 'SERUMS',
-                size: '30ml / 1.0 fl oz',
-                desc: '72-hr glass skin hydration with 5% Niacinamide & Okra peptides.',
-                price: '₹ 799',
-                img: '/figma_landing/prod_serum.png',
-                rating: '4.9 (214)',
+                title: 'Okra Boost Glow Serum',
+                subtitle: 'HYDRATION & GLOW',
+                desc: 'Powered by Okra, Cucumber & Licorice Extracts For 24H botanical glow.',
+                price: '₹1,299',
+                rating: '4.9',
+                img: '/figma_landing/our_prod_serum.png',
                 path: '/product/okra-serum'
               },
               {
                 prod: mask,
-                badge: 'HAIR CARE',
-                size: '200ml / 6.8 fl oz',
-                desc: 'Intensive bond repair and frizz elimination for dry textured hair.',
-                price: '₹ 699',
-                img: '/figma_landing/prod_mask.png',
-                rating: '4.9 (84)',
-                path: '/shop'
+                title: 'Okra Boost Glow Serum',
+                subtitle: 'HYDRATION & GLOW',
+                desc: 'Powered by Okra, Cucumber & Licorice Extracts For 24H botanical glow.',
+                price: '₹1,299',
+                rating: '4.9',
+                img: '/figma_landing/our_prod_facewash_white.png',
+                path: '/product/okra-facewash'
               }
             ].map((item, idx) => {
-              const isWish = wishlist.some(w => w.id === item.prod.id);
               const isAdded = addedIds[item.prod.id];
 
               return (
                 <div
                   key={idx}
-                  className="bg-white rounded-2xl p-4 border border-[#E8E4DA] shadow-sm flex flex-col justify-between hover:shadow-md transition-all duration-300 relative group"
+                  className="flex flex-col justify-between group"
                 >
                   <div>
-                    {/* Wishlist Heart Button */}
-                    <button
-                      onClick={() => toggleWishlist(item.prod)}
-                      className="absolute top-6 right-6 p-1.5 rounded-full bg-white/80 backdrop-blur-sm text-gray-400 hover:text-[#C24B4B] transition z-10"
-                      title={isWish ? "Remove from Wishlist" : "Add to Wishlist"}
-                    >
-                      <Heart size={16} className={isWish ? "fill-[#C24B4B] text-[#C24B4B]" : ""} />
-                    </button>
-
                     {/* Product Image */}
-                    <Link to={item.path} className="aspect-square rounded-xl overflow-hidden bg-white flex items-center justify-center p-2 mb-3 block">
+                    <Link
+                      to={item.path}
+                      className="w-full aspect-square flex items-center justify-center mb-3 select-none overflow-hidden"
+                    >
                       <img
                         src={item.img}
-                        alt={item.prod.name}
+                        alt={item.title}
                         className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
                       />
                     </Link>
 
-                    <span className="text-[9px] uppercase font-bold tracking-widest text-[#7EA735] block mb-1">
-                      {item.badge}
-                    </span>
+                    {/* Star Rating */}
+                    <div className="flex items-center gap-1 mb-1">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} size={13} className="text-[#E5A93C] stroke-[#E5A93C] fill-none" />
+                      ))}
+                      <span className="text-[11px] text-gray-500 font-sans ml-1">({item.rating})</span>
+                    </div>
 
-                    <Link to={item.path} className="font-serif text-sm font-bold text-[#153323] hover:text-[#7EA735] block line-clamp-1 transition-colors">
-                      {item.prod.name}
+                    {/* Product Title */}
+                    <Link
+                      to={item.path}
+                      className="font-sans font-bold text-[15px] sm:text-[16px] text-[#1F2937] hover:text-[#84A338] block tracking-tight leading-snug transition-colors"
+                    >
+                      {item.title}
                     </Link>
 
-                    <p className="text-[11px] text-gray-500 mt-1 line-clamp-2">
-                      {item.size} • {item.desc}
-                    </p>
+                    {/* Category / Subtitle */}
+                    <span className="text-[10px] sm:text-[11px] font-semibold tracking-wider text-[#BA9968] block uppercase mt-1">
+                      {item.subtitle}
+                    </span>
 
-                    <div className="flex text-[#E5A93C] items-center gap-1 mt-2">
-                      {[...Array(5)].map((_, i) => (
-                        <Star key={i} size={11} className="fill-[#E5A93C]" />
-                      ))}
-                      <span className="text-[10px] text-gray-400 font-medium ml-1">{item.rating}</span>
-                    </div>
+                    {/* Description */}
+                    <p className="text-[11px] sm:text-[12px] text-[#6B7280] mt-1.5 leading-relaxed font-sans">
+                      {item.desc}
+                    </p>
                   </div>
 
-                  <div className="pt-4 border-t border-gray-100 flex items-center justify-between mt-3">
-                    <span className="font-serif font-bold text-sm text-[#153323]">{item.price}</span>
+                  {/* Price & Add to Cart button */}
+                  <div className="pt-4 flex items-center justify-between mt-3">
+                    <span className="font-sans font-bold text-lg text-[#111827]">
+                      {item.price}
+                    </span>
                     <button
                       onClick={() => handleAddToCart(item.prod)}
-                      className={`text-[10px] font-bold uppercase tracking-wider px-3.5 py-1.5 rounded-sm transition-all duration-200 ${
+                      className={`text-[11px] font-bold uppercase tracking-wider px-4 py-2 border transition-all duration-200 ${
                         isAdded
-                          ? 'bg-[#7EA735] text-white'
-                          : 'bg-[#122519] hover:bg-[#20402c] text-white'
+                          ? 'bg-[#84A338] border-[#84A338] text-white'
+                          : 'bg-white border-[#111827] text-[#111827] hover:bg-[#111827] hover:text-white'
                       }`}
                     >
                       {isAdded ? 'ADDED ✓' : 'ADD TO CART'}
