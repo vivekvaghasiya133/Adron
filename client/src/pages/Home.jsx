@@ -432,45 +432,52 @@ export default function Home() {
       {/* ============================================================== */}
       {/* 4. WHY OKRA BELONGS IN YOUR BEAUTY RITUAL                      */}
       {/* ============================================================== */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-        <div className="text-center">
-          <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#153323]">
-            <span className="text-[#7EA735]">Why Okra</span> Belongs in Your Beauty Ritual
-          </h2>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-white p-6 sm:p-10 rounded-3xl border border-[#E8E4DA] shadow-sm">
-          {/* Left Visual Card */}
-          <div className="lg:col-span-6 flex justify-center">
-            <div className="w-full max-w-md rounded-2xl overflow-hidden shadow-sm">
-              <img
-                src="/figma_landing/why_okra_visual.png"
-                alt="Why Okra in Your Ritual"
-                className="w-full h-auto object-cover"
-              />
-            </div>
+      <section className="w-full bg-white py-12 sm:py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 sm:space-y-12">
+          {/* Centered Heading */}
+          <div className="text-center">
+            <h2 className="font-sans text-2xl sm:text-[34px] font-bold text-[#1F2937] tracking-tight">
+              <span className="text-[#84A338]">Why Okra</span> Belongs in Your Beauty Ritual
+            </h2>
           </div>
 
-          {/* Right Text & Circular Badge */}
-          <div className="lg:col-span-6 space-y-6 text-center lg:text-left">
-            {/* Dotted Circular Emblem matching Figma */}
-            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full border-2 border-dashed border-[#7EA735] p-2 bg-[#FAF9F5]">
-              <span className="font-serif font-bold text-base text-[#153323] tracking-wider uppercase">
-                Adron
-              </span>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+            {/* Left Visual: exact high-res composite asset with 5+ Years badge and checklists */}
+            <div className="lg:col-span-7 flex justify-center lg:justify-start">
+              <div className="w-full max-w-[640px] select-none">
+                <img
+                  src="/figma_landing/why_okra_visual_exact.png"
+                  alt="Why Okra Belongs in Your Beauty Ritual"
+                  className="w-full h-auto object-contain select-none"
+                />
+              </div>
             </div>
 
-            <p className="text-xs sm:text-sm text-[#556358] leading-relaxed font-sans max-w-lg mx-auto lg:mx-0">
-              Okra mucilage is nature's answer to synthetic silicones. Packed with galacturonic acid and essential pectins, it forms a protective, breathable moisture barrier over skin and hair fibers that locks in hydration without clogging pores or weighing down curls.
-            </p>
+            {/* Right Column: Circular Adron Since 2020 seal stamp + exact description + DISCOVER MORE button */}
+            <div className="lg:col-span-5 flex flex-col items-center lg:items-start text-center lg:text-left space-y-5">
+              {/* Official Circular Stamp from Figma */}
+              <div className="w-28 sm:w-36 select-none">
+                <img
+                  src="/figma_landing/adron_seal_stamp.png"
+                  alt="Adron Since 2020 Cosmetic Product Establish Company"
+                  className="w-full h-auto object-contain select-none"
+                />
+              </div>
 
-            <div className="pt-2 flex justify-center lg:justify-start">
-              <Link
-                to="/ingredients"
-                className="bg-[#122519] hover:bg-[#20402c] text-white text-xs font-bold uppercase tracking-widest px-7 py-3 rounded-sm transition shadow-md inline-flex items-center gap-1.5"
-              >
-                LEARN MORE <span>›</span>
-              </Link>
+              {/* Exact Description text from Figma Image 1 */}
+              <p className="text-[13px] sm:text-[14px] text-[#4A5568] leading-relaxed font-sans max-w-md pt-1">
+                Discover the natural power of okra—a nutrient-rich botanical that helps hydrate, nourish, and care for your skin and hair. Thoughtfully blended with modern beauty science, it brings gentle, effective care to your everyday ritual.
+              </p>
+
+              {/* Exact DISCOVER MORE button from Figma Image 1 */}
+              <div className="pt-2">
+                <Link
+                  to="/ingredients"
+                  className="bg-[#151515] hover:bg-[#2C3E33] text-white text-xs font-bold uppercase tracking-wider px-7 py-3.5 shadow-sm transition-all inline-flex items-center gap-2 group active:scale-95"
+                >
+                  DISCOVER MORE <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </div>
             </div>
           </div>
         </div>
@@ -479,13 +486,27 @@ export default function Home() {
       {/* ============================================================== */}
       {/* 5. EDITORIAL FULL-WIDTH BANNER / MARQUEE                       */}
       {/* ============================================================== */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="py-6 sm:py-8 border-y border-[#E0DCCE] flex items-center justify-center text-center gap-4 text-[#153323]">
-          <span className="text-xl sm:text-2xl">🌿</span>
-          <h3 className="font-serif text-lg sm:text-2xl lg:text-3xl font-medium tracking-wide">
-            Powered by <strong className="font-bold">Naturally Nourishing</strong> • <span className="italic text-[#7EA735]">Deeply Hydrating</span>
-          </h3>
-          <span className="text-xl sm:text-2xl">🌿</span>
+      <section className="w-full bg-white py-6 sm:py-8 overflow-hidden select-none border-y border-[#F0EFEB]">
+        <div className="flex items-center justify-center gap-4 text-center px-4 whitespace-nowrap overflow-x-auto no-scrollbar">
+          <span className="font-sans text-xl sm:text-2xl lg:text-3xl font-medium text-[#9CA3AF]">
+            Powered by
+          </span>
+          <img
+            src="/figma_landing/marquee_leaf_icon.png"
+            alt=""
+            className="w-8 sm:w-10 h-auto inline-block -mt-1 select-none"
+          />
+          <span className="font-sans text-xl sm:text-2xl lg:text-3xl font-bold text-[#1F2937]">
+            Naturally Nourishing
+          </span>
+          <span className="text-[#9CA3AF] text-xl sm:text-2xl font-light mx-2">•</span>
+          <span className="font-sans text-xl sm:text-2xl lg:text-3xl font-medium text-[#84A338]">
+            Deeply Hydrating
+          </span>
+          <span className="text-[#9CA3AF] text-xl sm:text-2xl font-light mx-2">•</span>
+          <span className="font-sans text-xl sm:text-2xl lg:text-3xl font-medium text-[#4A5568]">
+            Visibly Transforming
+          </span>
         </div>
       </section>
 
