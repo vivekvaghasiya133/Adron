@@ -162,17 +162,36 @@ export default function Home() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-6 items-center">
             {/* Left Content Column */}
             <div className="lg:col-span-6 space-y-3.5 sm:space-y-4 text-left">
-              {/* Huge OKRA + SCIENCE headline */}
-              <h2 className="text-3xl sm:text-5xl lg:text-[48px] font-black tracking-tight text-[#6D9424] uppercase font-sans leading-none">
+              {/* Huge OKRA + SCIENCE headline with exact Figma color grading (Dark Forest Green to Vibrant Lime) */}
+              <h2 className="text-3xl sm:text-5xl lg:text-[48px] font-black tracking-tight uppercase font-sans leading-none bg-gradient-to-r from-[#2C520D] via-[#5A7E17] to-[#A1C328] bg-clip-text text-transparent inline-block">
                 OKRA + SCIENCE
               </h2>
 
               {/* PURE BY NATURE. PROVEN BY SCIENCE. */}
-              <h1 className="font-sans text-2xl sm:text-4xl lg:text-[42px] font-extrabold tracking-tight text-[#153323] uppercase leading-[1.12]">
+              <h1 className="font-sans text-2xl sm:text-4xl lg:text-[42px] font-extrabold tracking-tight text-[#18251E] uppercase leading-[1.12]">
                 PURE BY{' '}
                 <span className="relative inline-block">
                   NATURE.
-                  <span className="absolute -bottom-1 left-0 w-full h-[3px] bg-[#6D9424] rounded-full"></span>
+                  {/* Organic double sketched botanical doodle underline matching Figma 1:1 */}
+                  <svg
+                    className="absolute -bottom-2.5 left-0 w-[106%] h-auto pointer-events-none select-none overflow-visible"
+                    viewBox="0 0 160 14"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M 4 11.5 C 36 12.8, 92 9.5, 156 4"
+                      stroke="#84A338"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                    />
+                    <path
+                      d="M 16 6.5 C 48 8, 98 6.8, 134 5.2"
+                      stroke="#668820"
+                      strokeWidth="1.9"
+                      strokeLinecap="round"
+                    />
+                  </svg>
                 </span>
                 <br />
                 PROVEN BY SCIENCE.
