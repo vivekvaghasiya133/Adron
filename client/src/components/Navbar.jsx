@@ -21,9 +21,9 @@ export default function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-white border-b border-[#EDECE8] transition-all">
+    <header className="sticky top-0 z-40 w-full bg-white transition-all">
       {/* Top Olive Green Announcement Bar - Exact Match to Figma */}
-      <div className="bg-[#8DAF3E] text-white text-[11px] sm:text-xs py-1.5 px-4 text-center tracking-normal font-medium flex items-center justify-center">
+      <div className="bg-[#82AF28] text-white text-[11px] sm:text-xs py-2 px-4 text-center tracking-normal font-medium flex items-center justify-center">
         <span>Free shipping on orders above ₹999 | Use code GLOW20 for 20% off</span>
       </div>
 

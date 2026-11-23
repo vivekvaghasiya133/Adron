@@ -148,9 +148,9 @@ export default function Home() {
       {/* ============================================================== */}
       {/* 1. HERO SECTION - 100% 1:1 Pixel Match to Figma Design         */}
       {/* ============================================================== */}
-      <section className="relative overflow-hidden bg-[#F4F5F0] pt-10 sm:pt-14 pb-8 border-b border-[#E8E8E2]">
+      <section className="relative overflow-hidden bg-[#F2F4EF] pt-8 sm:pt-12 pb-8">
         {/* Soft bottom-left decorative foliage blur from Figma */}
-        <div className="absolute -bottom-6 -left-6 w-48 sm:w-60 pointer-events-none select-none z-0 opacity-60">
+        <div className="absolute -bottom-6 -left-6 w-48 sm:w-64 pointer-events-none select-none z-0 opacity-70">
           <img
             src="/figma_landing/hero_leaf_blur.png"
             alt=""
@@ -159,27 +159,27 @@ export default function Home() {
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-8 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-6 items-center">
             {/* Left Content Column */}
-            <div className="lg:col-span-6 space-y-3 sm:space-y-4 text-left">
+            <div className="lg:col-span-6 space-y-3.5 sm:space-y-4 text-left">
               {/* Huge OKRA + SCIENCE headline */}
-              <h2 className="text-3xl sm:text-5xl lg:text-[46px] font-extrabold tracking-tight text-[#7EA735] uppercase font-sans leading-none">
+              <h2 className="text-3xl sm:text-5xl lg:text-[48px] font-black tracking-tight text-[#6D9424] uppercase font-sans leading-none">
                 OKRA + SCIENCE
               </h2>
 
               {/* PURE BY NATURE. PROVEN BY SCIENCE. */}
-              <h1 className="font-serif text-2xl sm:text-4xl lg:text-[40px] font-bold tracking-tight text-[#153323] uppercase leading-[1.15]">
+              <h1 className="font-sans text-2xl sm:text-4xl lg:text-[42px] font-extrabold tracking-tight text-[#153323] uppercase leading-[1.12]">
                 PURE BY{' '}
                 <span className="relative inline-block">
                   NATURE.
-                  <span className="absolute -bottom-0.5 left-0 w-full h-[2.5px] bg-[#7EA735] rounded-full"></span>
+                  <span className="absolute -bottom-1 left-0 w-full h-[3px] bg-[#6D9424] rounded-full"></span>
                 </span>
                 <br />
                 PROVEN BY SCIENCE.
               </h1>
 
               {/* Exact Description Paragraph */}
-              <p className="text-[13px] sm:text-[14px] text-[#4A5568] max-w-[470px] leading-relaxed font-sans pt-1">
+              <p className="text-[13px] sm:text-[14px] lg:text-[15px] text-[#4A5568] max-w-[480px] leading-relaxed font-sans pt-1">
                 Discover the power of Okra-infused hydration — deeply nourishing, visibly transforming. Powered by nature, perfected by science, infused with Okra, Cucumber & Licorice Extracts.
               </p>
 
@@ -187,9 +187,9 @@ export default function Home() {
               <div className="pt-3">
                 <Link
                   to="/product/okra-serum"
-                  className="bg-[#1A1A1A] hover:bg-[#2C3E33] text-white text-[11px] sm:text-xs font-bold uppercase tracking-wider px-7 py-3.5 shadow-sm transition-all inline-flex items-center gap-2 group active:scale-95"
+                  className="bg-[#151515] hover:bg-[#2C3E33] text-white text-xs font-bold uppercase tracking-wider px-7 py-3.5 shadow-sm transition-all inline-flex items-center gap-2 group active:scale-95"
                 >
-                  SHOP THE SERUM <span className="group-hover:translate-x-1 transition-transform">→</span>
+                  SHOP THE SERUM <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </div>
             </div>
@@ -198,7 +198,7 @@ export default function Home() {
             <div className="lg:col-span-6 flex justify-center lg:justify-end">
               <div className="w-full max-w-xl select-none">
                 <img
-                  src="/figma_landing/hero_pedestal_feathered.png"
+                  src="/figma_landing/hero_pedestal_flawless.png"
                   alt="Adron Okra Boost Deep Hydrating Glow Serum on Pedestal"
                   className="w-full h-auto object-contain drop-shadow-sm select-none pointer-events-none"
                 />
@@ -207,8 +207,9 @@ export default function Home() {
           </div>
 
           {/* Bottom Pagination Indicators matching Figma */}
-          <div className="flex items-center justify-center gap-2 pt-6">
+          <div className="flex items-center justify-center gap-2.5 pt-6 pb-2">
             <span className="w-2.5 h-2.5 rounded-full bg-[#1A1A1A]"></span>
+            <span className="w-2.5 h-2.5 rounded-full bg-[#CBD5E1]"></span>
             <span className="w-2.5 h-2.5 rounded-full bg-[#CBD5E1]"></span>
           </div>
         </div>
