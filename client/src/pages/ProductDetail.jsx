@@ -8,8 +8,6 @@ import {
   ArrowRight,
   ChevronRight,
   ChevronLeft,
-  ChevronDown,
-  ChevronUp,
   X
 } from 'lucide-react';
 import { useShop, fallbackProducts } from '../context/ShopContext';
@@ -18,6 +16,9 @@ export default function ProductDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { products, addToCart } = useShop();
+
+  const isFacewash = id === 'okra-facewash' || id === 'facewash';
+  const isShampoo = id === 'okra-shampoo' || (!isFacewash && id !== 'okra-serum');
 
   const [product, setProduct] = useState(() => {
     return (
@@ -35,11 +36,20 @@ export default function ProductDetail() {
     '/figma_landing/shampoo_thumb_4.png'
   ];
 
+  const facewashGallery = [
+    '/figma_landing/fw_showcase_exact.png',
+    '/figma_landing/fw_thumb_2.png',
+    '/figma_landing/fw_thumb_3.png',
+    '/figma_landing/fw_thumb_4.png'
+  ];
+
+  const currentGallery = isFacewash ? facewashGallery : shampooGallery;
+
   const [activeThumb, setActiveThumb] = useState(0);
   const [selectedSize, setSelectedSize] = useState('250 ml');
   const [quantity, setQuantity] = useState(1);
 
-  // Scalp Before/After comparison slider state
+  // Scalp / Face Before/After comparison slider state
   const [sliderPos, setSliderPos] = useState(50);
   const sliderContainerRef = useRef(null);
   const isDraggingSlider = useRef(false);
@@ -52,30 +62,33 @@ export default function ProductDetail() {
   const [reviewsList, setReviewsList] = useState([
     {
       id: 'rev-1',
-      author: 'Ananya S.',
+      author: isFacewash ? 'Riya Patel' : 'Ananya S.',
       rating: 5,
       date: '2 days ago',
-      title: 'Miraculous slip and softness!',
-      comment:
-        'The natural okra mucilage gives unbelievable slip. I was skeptical about no silicone, but my hair detangles in seconds and stays lightweight with zero greasy residue.'
+      title: isFacewash ? 'Gentle and so hydrating!' : 'Miraculous slip and softness!',
+      comment: isFacewash
+        ? 'Leaves my skin thoroughly clean without that dry, tight squeaky feeling. The creamy texture melts away dirt and leaves a radiant dewy bounce.'
+        : 'The natural okra mucilage gives unbelievable slip. I was skeptical about no silicone, but my hair detangles in seconds and stays lightweight with zero greasy residue.'
     },
     {
       id: 'rev-2',
-      author: 'Pooja V.',
+      author: isFacewash ? 'Meera S.' : 'Pooja V.',
       rating: 5,
       date: '1 week ago',
-      title: 'Scalp irritation completely calmed',
-      comment:
-        'Finally a botanical shampoo that actually lathers richly without stripping my scalp. The itchiness and flaking went away in 3 washes.'
+      title: isFacewash ? 'Redness calmed in days' : 'Scalp irritation completely calmed',
+      comment: isFacewash
+        ? 'Aloe vera, cucumber and hibiscus combination is so calming for sensitive acne-prone skin. It balances natural oils effortlessly.'
+        : 'Finally a botanical shampoo that actually lathers richly without stripping my scalp. The itchiness and flaking went away in 3 washes.'
     },
     {
       id: 'rev-3',
-      author: 'Kavita M.',
+      author: isFacewash ? 'Divya K.' : 'Kavita M.',
       rating: 5,
       date: '2 weeks ago',
-      title: 'Best Ayurvedic + Botanical hair care',
-      comment:
-        'Hibiscus and Shikakai paired with Okra is a genius formulation. Hair looks glossy and vibrant like salon treatments.'
+      title: isFacewash ? 'Fresh everyday glow' : 'Best Ayurvedic + Botanical hair care',
+      comment: isFacewash
+        ? 'A luxurious creamy cleanser that feels like a spa facial. Skin feels soft, refreshed, and hydrated after every morning wash.'
+        : 'Hibiscus and Shikakai paired with Okra is a genius formulation. Hair looks glossy and vibrant like salon treatments.'
     }
   ]);
   const [reviewName, setReviewName] = useState('');
@@ -89,12 +102,14 @@ export default function ProductDetail() {
       fallbackProducts.find((p) => p.id === id);
     if (found) {
       setProduct(found);
-      setActiveThumb(0);
-      setQuantity(1);
     }
+    setActiveThumb(0);
+    setQuantity(1);
+    setSelectedSize('250 ml');
+    setSliderPos(50);
   }, [id, products]);
 
-  // Scalp slider mouse/touch drag handlers
+  // Scalp / Face slider mouse/touch drag handlers
   const handleSliderMove = (clientX) => {
     if (!sliderContainerRef.current) return;
     const rect = sliderContainerRef.current.getBoundingClientRect();
@@ -155,47 +170,109 @@ export default function ProductDetail() {
   };
 
   const prevThumb = () => {
-    setActiveThumb((prev) => (prev === 0 ? shampooGallery.length - 1 : prev - 1));
+    setActiveThumb((prev) => (prev === 0 ? currentGallery.length - 1 : prev - 1));
   };
   const nextThumb = () => {
-    setActiveThumb((prev) => (prev === shampooGallery.length - 1 ? 0 : prev + 1));
+    setActiveThumb((prev) => (prev === currentGallery.length - 1 ? 0 : prev + 1));
   };
 
+  // Pricing logic matching Figma
+  const basePrice = isFacewash ? 999 : 1299;
+  const originalPrice = isFacewash ? 1299 : 1599;
+  const priceDisplay = isFacewash
+    ? selectedSize.includes('500')
+      ? '1,699.0'
+      : '999.0'
+    : selectedSize.includes('500')
+    ? '2,199'
+    : '1,299';
+
+  const origPriceDisplay = isFacewash
+    ? selectedSize.includes('500')
+      ? '2,199'
+      : '1,299'
+    : selectedSize.includes('500')
+    ? '2,799'
+    : '1,599';
+
+  const unitNumericPrice = isFacewash
+    ? selectedSize.includes('500')
+      ? 1699
+      : 999
+    : selectedSize.includes('500')
+    ? 2199
+    : 1299;
+
   // 8 FAQs exact text from Figma
-  const faqs = [
-    {
-      q: '1. What is Okra Shampoo?',
-      a: 'Okra Shampoo is a hair-care formula enriched with the benefits of okra, designed to gently cleanse the hair while helping improve softness, smoothness, and manageability.'
-    },
-    {
-      q: '2. What are the benefits of Okra Shampoo?',
-      a: 'It deeply hydrates dry and frizzy strands, gently cleanses without stripping natural oils, enhances natural shine, supports scalp health, and makes hair noticeably softer and easier to detangle.'
-    },
-    {
-      q: '3. Is Okra Shampoo suitable for all hair types?',
-      a: 'Yes, our gentle pH-balanced formula is carefully crafted for straight, wavy, curly, coily, fine, coarse, and color-treated hair.'
-    },
-    {
-      q: '4. Does Okra Shampoo help with frizzy hair?',
-      a: 'Absolutely. Pure okra mucilage is rich in natural pectins and polysaccharides that coat the hair fiber, locking out external humidity and smoothing rough cuticles to prevent frizz.'
-    },
-    {
-      q: '5. Can I use Okra Shampoo every day?',
-      a: 'Yes. Because it is completely free from harsh sulfates, parabens, and aggressive detergents, it is mild enough for daily use or whenever your hair needs washing.'
-    },
-    {
-      q: '6. Does Okra Shampoo contain natural okra?',
-      a: 'Yes, it contains cold-extracted natural Okra (Abelmoschus Esculentus) extract alongside Hibiscus and Shikakai for maximum botanical efficacy.'
-    },
-    {
-      q: '7. Is Okra Shampoo suitable for dry hair?',
-      a: 'Yes, dry and brittle hair benefits tremendously from the intense moisture-locking power of natural okra mucilage, restoring elasticity and soft movement.'
-    },
-    {
-      q: '8. How should I use Okra Shampoo?',
-      a: 'Wet hair thoroughly, apply an adequate amount to scalp and hair, massage gently into a rich lather, rinse thoroughly with clean water, and repeat if needed.'
-    }
-  ];
+  const faqs = isFacewash
+    ? [
+        {
+          q: '1. What is Okra Facewash?',
+          a: 'Adron Hydra Glow Creamy Face Wash is a gentle botanical cleanser enriched with cold-pressed okra, cucumber, aloe vera, and hibiscus, designed to cleanse away daily impurities while preserving natural skin barrier moisture.'
+        },
+        {
+          q: '2. What are the benefits of Okra Facewash?',
+          a: 'It gently removes dirt and excess sebum without stripping the skin, hydrates deeply with plant mucilage, soothes redness, and leaves your complexion soft, plump, and glowing.'
+        },
+        {
+          q: '3. Is Okra Facewash suitable for all skin types?',
+          a: 'Yes, its balanced, pH-neutral creamy formula is dermatologically tested for dry, oily, combination, sensitive, and acne-prone skin.'
+        },
+        {
+          q: '4. Does Okra Facewash leave skin feeling tight or dry?',
+          a: 'Not at all. Unlike soap-based or harsh foam cleansers that disrupt your acid mantle, our creamy botanical blend nourishes while cleansing for a velvety petal-soft finish.'
+        },
+        {
+          q: '5. Can I use Okra Facewash twice a day?',
+          a: 'Yes! It is mild and gentle enough to be used every morning to awaken your skin and every evening to cleanse away pollutants and daily buildup.'
+        },
+        {
+          q: '6. Does it help soothe active acne and redness?',
+          a: 'Yes, natural anti-inflammatory bioflavonoids from Okra paired with soothing Aloe Vera and cooling Cucumber calm active irritation and balance sebum production.'
+        },
+        {
+          q: '7. Can I use it to remove makeup or sunscreen?',
+          a: 'Yes, the creamy botanical lather effortlessly dissolves water-resistant sunscreen, daily grime, and light makeup without aggressive rubbing or tugging.'
+        },
+        {
+          q: '8. How should I use Okra Facewash?',
+          a: 'Wet face with lukewarm water, apply an adequate amount to clean palms, massage in gentle circular motions for 60 seconds, and rinse clean with water.'
+        }
+      ]
+    : [
+        {
+          q: '1. What is Okra Shampoo?',
+          a: 'Okra Shampoo is a hair-care formula enriched with the benefits of okra, designed to gently cleanse the hair while helping improve softness, smoothness, and manageability.'
+        },
+        {
+          q: '2. What are the benefits of Okra Shampoo?',
+          a: 'It deeply hydrates dry and frizzy strands, gently cleanses without stripping natural oils, enhances natural shine, supports scalp health, and makes hair noticeably softer and easier to detangle.'
+        },
+        {
+          q: '3. Is Okra Shampoo suitable for all hair types?',
+          a: 'Yes, our gentle pH-balanced formula is carefully crafted for straight, wavy, curly, coily, fine, coarse, and color-treated hair.'
+        },
+        {
+          q: '4. Does Okra Shampoo help with frizzy hair?',
+          a: 'Absolutely. Pure okra mucilage is rich in natural pectins and polysaccharides that coat the hair fiber, locking out external humidity and smoothing rough cuticles to prevent frizz.'
+        },
+        {
+          q: '5. Can I use Okra Shampoo every day?',
+          a: 'Yes. Because it is completely free from harsh sulfates, parabens, and aggressive detergents, it is mild enough for daily use or whenever your hair needs washing.'
+        },
+        {
+          q: '6. Does Okra Shampoo contain natural okra?',
+          a: 'Yes, it contains cold-extracted natural Okra (Abelmoschus Esculentus) extract alongside Hibiscus and Shikakai for maximum botanical efficacy.'
+        },
+        {
+          q: '7. Is Okra Shampoo suitable for dry hair?',
+          a: 'Yes, dry and brittle hair benefits tremendously from the intense moisture-locking power of natural okra mucilage, restoring elasticity and soft movement.'
+        },
+        {
+          q: '8. How should I use Okra Shampoo?',
+          a: 'Wet hair thoroughly, apply an adequate amount to scalp and hair, massage gently into a rich lather, rinse thoroughly with clean water, and repeat if needed.'
+        }
+      ];
 
   return (
     <div className="w-full bg-white text-[#1C201D] font-sans antialiased selection:bg-[#84A338]/20">
@@ -219,7 +296,9 @@ export default function ProductDetail() {
               Home
             </Link>
             <span className="text-gray-400">/</span>
-            <span className="text-[#1C201D] font-medium">Okra Shampoo</span>
+            <span className="text-[#1C201D] font-medium">
+              {isFacewash ? 'Okra Facewash' : 'Okra Shampoo'}
+            </span>
           </nav>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-start">
@@ -228,8 +307,8 @@ export default function ProductDetail() {
               {/* Main White Showcase Box */}
               <div className="w-full max-w-[540px] aspect-square bg-white rounded-[28px] sm:rounded-[32px] p-6 sm:p-8 flex items-center justify-center shadow-[0_4px_24px_rgba(0,0,0,0.03)] border border-[#E9ECE0] transition-all">
                 <img
-                  src={shampooGallery[activeThumb]}
-                  alt="Nourish & Shine Okra Shampoo"
+                  src={currentGallery[activeThumb]}
+                  alt={isFacewash ? 'Hydra Glow Creamy Face Wash' : 'Nourish & Shine Okra Shampoo'}
                   className="w-full h-full object-contain drop-shadow-sm transition-all duration-300"
                 />
               </div>
@@ -245,7 +324,7 @@ export default function ProductDetail() {
                 </button>
 
                 <div className="flex items-center gap-2.5 sm:gap-3 overflow-x-auto py-1">
-                  {shampooGallery.map((img, idx) => (
+                  {currentGallery.map((img, idx) => (
                     <button
                       key={idx}
                       onClick={() => setActiveThumb(idx)}
@@ -283,7 +362,7 @@ export default function ProductDetail() {
 
               {/* Title */}
               <h1 className="text-3xl sm:text-4xl lg:text-[44px] font-bold text-[#1C201D] leading-[1.15] tracking-tight">
-                Nourish & Shine Okra Shampoo
+                {isFacewash ? 'Hydra Glow Creamy Face Wash' : 'Nourish & Shine Okra Shampoo'}
               </h1>
 
               {/* Ratings */}
@@ -307,22 +386,21 @@ export default function ProductDetail() {
 
               {/* Editorial Description */}
               <p className="text-xs sm:text-[13px] text-gray-600 leading-relaxed max-w-xl font-normal">
-                Revitalize dull, thirsty hair with the ultimate power of Okra-infused hydration.
-                Rich in vitamins A, C, and natural mucilage, our scientifically refined formula
-                coats your strands to seal in maximum moisture, preventing split ends while calming
-                sensitive scalps.
+                {isFacewash
+                  ? 'Revitalize dull, thirsty skin with the ultimate power of Okra-infused hydration. Rich in vitamins A, C, and natural mucilage, our scientifically refined creamy formula cleanses away impurities while sealing in maximum moisture.'
+                  : 'Revitalize dull, thirsty hair with the ultimate power of Okra-infused hydration. Rich in vitamins A, C, and natural mucilage, our scientifically refined formula coats your strands to seal in maximum moisture, preventing split ends while calming sensitive scalps.'}
               </p>
 
               {/* Price & Discount */}
               <div className="flex items-baseline gap-3.5 pt-2">
                 <span className="text-3xl sm:text-[34px] font-bold text-[#1C201D] tracking-tight">
-                  ₹{selectedSize.includes('500') ? '2,199' : '1,299'}
+                  ₹{priceDisplay}
                 </span>
                 <span className="text-base sm:text-lg text-gray-400 line-through">
-                  ₹{selectedSize.includes('500') ? '2,799' : '1,599'}
+                  ₹{origPriceDisplay}
                 </span>
                 <span className="bg-[#EBF2D8] text-[#55781E] text-[11px] font-bold px-2.5 py-0.5 rounded tracking-wide">
-                  SAVE {selectedSize.includes('500') ? '21%' : '18%'}
+                  SAVE 18%
                 </span>
               </div>
 
@@ -382,7 +460,8 @@ export default function ProductDetail() {
                     addToCart(
                       {
                         ...product,
-                        price: selectedSize.includes('500') ? 2199 : 1299
+                        name: isFacewash ? 'Hydra Glow Creamy Face Wash' : 'Nourish & Shine Okra Shampoo',
+                        price: unitNumericPrice
                       },
                       selectedSize,
                       quantity
@@ -392,9 +471,7 @@ export default function ProductDetail() {
                 >
                   <span>
                     ADD TO CART — ₹
-                    {(
-                      (selectedSize.includes('500') ? 2199 : 1299) * quantity
-                    ).toLocaleString()}
+                    {(unitNumericPrice * quantity).toLocaleString()}
                   </span>
                   <ArrowRight size={15} />
                 </button>
@@ -421,65 +498,107 @@ export default function ProductDetail() {
       </section>
 
       {/* ========================================================= */}
-      {/* SECTION 2: WHY OKRA BELONGS IN YOUR BEAUTY RITUAL (White) */}
+      {/* SECTION 2: WHY BELONGS IN YOUR BEAUTY RITUAL (White)      */}
       {/* ========================================================= */}
       <section className="w-full bg-white py-20 lg:py-28 overflow-hidden">
         <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
             {/* Left Column: Heading, Paragraphs & Stats */}
             <div className="lg:col-span-7 space-y-6 sm:space-y-8">
-              <h2 className="text-3xl sm:text-4xl lg:text-[42px] font-bold text-[#1C201D] leading-[1.2] tracking-tight">
-                Why <span className="text-[#84A338]">Okra</span> Belongs in Your Ultimate Beauty Ritual
-              </h2>
-
-              <p className="text-xs sm:text-[13px] text-gray-600 leading-relaxed font-normal">
-                Okra is not just a nutrient-dense dietary staple—it is a botanical powerhouse for
-                cuticle repair. When processed utilizing our clinical cold-extraction method, Okra
-                pods release a rich, slippery mucilage packed with polysaccharides, amino acids,
-                and antioxidant vitamins.
-              </p>
-
-              <p className="text-xs sm:text-[13px] text-gray-600 leading-relaxed font-normal">
-                This natural film-forming agent wraps each hair strand in a weightless, protective
-                barrier that seals cuticle scales flat, trapping moisture and generating an
-                unparalleled brilliant glass-like shine without heavy chemical silicones.
-              </p>
-
-              {/* 3 Stats Row */}
-              <div className="grid grid-cols-3 gap-6 pt-4 border-t border-gray-100">
-                <div>
-                  <span className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#84A338] block tracking-tight">
-                    94%
+              {isFacewash ? (
+                <>
+                  <span className="text-[11px] sm:text-xs font-bold tracking-[0.16em] uppercase text-[#B59059] block">
+                    YOUR DAILY FRESH START
                   </span>
-                  <span className="text-[11px] sm:text-xs text-gray-600 font-medium block mt-1.5 leading-tight">
-                    Reported Deeper Hydration
-                  </span>
-                </div>
-                <div>
-                  <span className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#84A338] block tracking-tight">
-                    72%
-                  </span>
-                  <span className="text-[11px] sm:text-xs text-gray-600 font-medium block mt-1.5 leading-tight">
-                    Increase in Natural Shine
-                  </span>
-                </div>
-                <div>
-                  <span className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#84A338] block tracking-tight">
-                    24H
-                  </span>
-                  <span className="text-[11px] sm:text-xs text-gray-600 font-medium block mt-1.5 leading-tight">
-                    Moisture Lock Shield
-                  </span>
-                </div>
-              </div>
+                  <h2 className="text-3xl sm:text-4xl lg:text-[42px] font-bold text-[#1C201D] leading-[1.2] tracking-tight">
+                    Why <span className="text-[#84A338]">a creamy cleanse</span> belongs in your beauty ritual
+                  </h2>
+                  <p className="text-xs sm:text-[13px] text-gray-600 leading-relaxed font-normal">
+                    Great skincare begins with a clean canvas. Meet Hydra Glow, the creamy face wash in our Okra Facewash collection, created around the simple ritual of cleansing, hydration and glow.
+                  </p>
+                  <p className="text-xs sm:text-[13px] text-gray-600 leading-relaxed font-normal">
+                    With hibiscus, cucumber, aloe vera and licorice extracts named on the pack, this botanical-inspired formula brings a little everyday care to your morning and evening routine.
+                  </p>
+                  {/* 3 Callouts */}
+                  <div className="grid grid-cols-3 gap-6 pt-4 border-t border-gray-100">
+                    <div>
+                      <span className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#84A338] block tracking-tight">
+                        Cleanse
+                      </span>
+                      <span className="text-[11px] sm:text-xs text-gray-600 font-medium block mt-1.5 leading-tight">
+                        Reported Deeper Hydration
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#84A338] block tracking-tight">
+                        Hydrate
+                      </span>
+                      <span className="text-[11px] sm:text-xs text-gray-600 font-medium block mt-1.5 leading-tight">
+                        Increase in Natural Shine
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#84A338] block tracking-tight">
+                        Glow
+                      </span>
+                      <span className="text-[11px] sm:text-xs text-gray-600 font-medium block mt-1.5 leading-tight">
+                        Moisture Lock Shield
+                      </span>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <h2 className="text-3xl sm:text-4xl lg:text-[42px] font-bold text-[#1C201D] leading-[1.2] tracking-tight">
+                    Why <span className="text-[#84A338]">Okra</span> Belongs in Your Ultimate Beauty Ritual
+                  </h2>
+                  <p className="text-xs sm:text-[13px] text-gray-600 leading-relaxed font-normal">
+                    Okra is not just a nutrient-dense dietary staple—it is a botanical powerhouse for cuticle repair. When processed utilizing our clinical cold-extraction method, Okra pods release a rich, slippery mucilage packed with polysaccharides, amino acids, and antioxidant vitamins.
+                  </p>
+                  <p className="text-xs sm:text-[13px] text-gray-600 leading-relaxed font-normal">
+                    This natural film-forming agent wraps each hair strand in a weightless, protective barrier that seals cuticle scales flat, trapping moisture and generating an unparalleled brilliant glass-like shine without heavy chemical silicones.
+                  </p>
+                  {/* 3 Stats Row */}
+                  <div className="grid grid-cols-3 gap-6 pt-4 border-t border-gray-100">
+                    <div>
+                      <span className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#84A338] block tracking-tight">
+                        94%
+                      </span>
+                      <span className="text-[11px] sm:text-xs text-gray-600 font-medium block mt-1.5 leading-tight">
+                        Reported Deeper Hydration
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#84A338] block tracking-tight">
+                        72%
+                      </span>
+                      <span className="text-[11px] sm:text-xs text-gray-600 font-medium block mt-1.5 leading-tight">
+                        Increase in Natural Shine
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#84A338] block tracking-tight">
+                        24H
+                      </span>
+                      <span className="text-[11px] sm:text-xs text-gray-600 font-medium block mt-1.5 leading-tight">
+                        Moisture Lock Shield
+                      </span>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
 
-            {/* Right Column: Model Photo Holding Shampoo */}
+            {/* Right Column: Model Photo Holding Product */}
             <div className="lg:col-span-5 flex justify-center lg:justify-end">
               <div className="w-full max-w-[460px] flex items-center justify-center">
                 <img
-                  src="/figma_landing/shampoo_model_hero_exact.png"
-                  alt="Model holding Nourish & Shine Okra Shampoo"
+                  src={
+                    isFacewash
+                      ? '/figma_landing/fw_model_hero_exact.png'
+                      : '/figma_landing/shampoo_model_hero_exact.png'
+                  }
+                  alt={isFacewash ? 'Model holding Hydra Glow Face Wash' : 'Model holding Okra Shampoo'}
                   className="w-full h-auto object-contain drop-shadow-md"
                 />
               </div>
@@ -497,8 +616,12 @@ export default function ProductDetail() {
             {/* Left: 3 Circular Outline Badges */}
             <div className="lg:col-span-5 flex justify-center">
               <img
-                src="/figma_landing/shampoo_3_badges_exact.png"
-                alt="Nourishing, Sulfate-Free, Soft-Hair Badges"
+                src={
+                  isFacewash
+                    ? '/figma_landing/fw_3_badges_exact.png'
+                    : '/figma_landing/shampoo_3_badges_exact.png'
+                }
+                alt="Product feature badges"
                 className="w-full max-w-[480px] h-auto object-contain"
               />
             </div>
@@ -509,22 +632,28 @@ export default function ProductDetail() {
                 Product Description
               </h2>
 
-              <h3 className="text-xs sm:text-sm font-semibold text-[#B59059]">
-                Nourish your hair. Restore its natural shine.
-              </h3>
-
-              <p className="text-xs sm:text-[13px] text-gray-600 leading-relaxed font-normal">
-                Adron Nourish & Shine Hair Shampoo is a nature-inspired hair care formula designed
-                to gently cleanse and nourish your hair while helping it feel softer, smoother, and
-                healthier. Enriched with Okra, Hibiscus, and Shikakai, the shampoo combines
-                traditional botanical ingredients with everyday hair-care needs.
-              </p>
-
-              <p className="text-xs sm:text-[13px] text-gray-600 leading-relaxed font-normal">
-                Its nourishing formula helps support stronger-looking hair, improved softness, and
-                a natural-looking shine, making it suitable for regular use across different hair
-                types.
-              </p>
+              {isFacewash ? (
+                <>
+                  <p className="text-xs sm:text-[13px] text-gray-600 leading-relaxed font-normal">
+                    Experience fresh, clean, and glowing-looking skin with Adron Hydra Glow Creamy Face Wash. Enriched with the goodness of aloe vera, cucumber, and hibiscus extracts, this creamy face wash helps cleanse your skin by removing everyday dirt and impurities while leaving it feeling soft, refreshed, and hydrated.
+                  </p>
+                  <p className="text-xs sm:text-[13px] text-gray-600 leading-relaxed font-normal">
+                    Its gentle cleansing formula is designed for all skin types and is suitable for everyday skincare. The refreshing botanical-inspired blend makes it a great addition to your daily beauty routine, helping your skin feel clean, smooth, and comfortable after every wash.
+                  </p>
+                </>
+              ) : (
+                <>
+                  <h3 className="text-xs sm:text-sm font-semibold text-[#B59059]">
+                    Nourish your hair. Restore its natural shine.
+                  </h3>
+                  <p className="text-xs sm:text-[13px] text-gray-600 leading-relaxed font-normal">
+                    Adron Nourish & Shine Hair Shampoo is a nature-inspired hair care formula designed to gently cleanse and nourish your hair while helping it feel softer, smoother, and healthier. Enriched with Okra, Hibiscus, and Shikakai, the shampoo combines traditional botanical ingredients with everyday hair-care needs.
+                  </p>
+                  <p className="text-xs sm:text-[13px] text-gray-600 leading-relaxed font-normal">
+                    Its nourishing formula helps support stronger-looking hair, improved softness, and a natural-looking shine, making it suitable for regular use across different hair types.
+                  </p>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -547,53 +676,90 @@ export default function ProductDetail() {
                 </span>
               </div>
 
-              <ul className="space-y-2 text-xs sm:text-[13px] text-gray-600 leading-relaxed font-normal">
-                <li className="flex items-start gap-2">
-                  <span className="text-[#84A338] font-bold">•</span>
-                  <span><strong>Helps control hair fall</strong> – Supports healthier-looking, stronger hair.</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-[#84A338] font-bold">•</span>
-                  <span><strong>Nourishes hair</strong> – Helps provide essential care to dry and stressed hair.</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-[#84A338] font-bold">•</span>
-                  <span><strong>Adds shine</strong> – Leaves hair looking naturally glossy and vibrant.</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-[#84A338] font-bold">•</span>
-                  <span><strong>Improves softness</strong> – Helps make hair feel smoother and more manageable.</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-[#84A338] font-bold">•</span>
-                  <span><strong>Gentle cleansing</strong> – Cleanses away dirt, excess oil, and buildup without leaving hair feeling overly dry.</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-[#84A338] font-bold">•</span>
-                  <span><strong>For all hair types</strong> – Suitable for different hair textures and everyday hair-care routines.</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-[#84A338] font-bold">•</span>
-                  <span><strong>Sulfate-free & paraben-free</strong> – Formulated without sulfates and parabens.</span>
-                </li>
-              </ul>
+              {isFacewash ? (
+                <ul className="space-y-2 text-xs sm:text-[13px] text-gray-600 leading-relaxed font-normal">
+                  <li className="flex items-start gap-2">
+                    <span className="text-[#84A338] font-bold">•</span>
+                    <span><strong>Deep Cleansing:</strong> Helps remove everyday dirt, oil, and impurities.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-[#84A338] font-bold">•</span>
+                    <span><strong>Hydration Support:</strong> Helps keep skin feeling soft and moisturized.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-[#84A338] font-bold">•</span>
+                    <span><strong>Aloe Vera Extracts:</strong> Help maintain a comfortable, refreshed skin feel.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-[#84A338] font-bold">•</span>
+                    <span><strong>Cucumber Extracts:</strong> Provide a refreshing touch to your skincare routine.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-[#84A338] font-bold">•</span>
+                    <span><strong>Hibiscus Extracts:</strong> Add a botanical-inspired touch to your daily cleansing ritual.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-[#84A338] font-bold">•</span>
+                    <span><strong>For All Skin Types:</strong> Suitable for daily use as part of your skincare routine.</span>
+                  </li>
+                </ul>
+              ) : (
+                <ul className="space-y-2 text-xs sm:text-[13px] text-gray-600 leading-relaxed font-normal">
+                  <li className="flex items-start gap-2">
+                    <span className="text-[#84A338] font-bold">•</span>
+                    <span><strong>Helps control hair fall</strong> – Supports healthier-looking, stronger hair.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-[#84A338] font-bold">•</span>
+                    <span><strong>Nourishes hair</strong> – Helps provide essential care to dry and stressed hair.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-[#84A338] font-bold">•</span>
+                    <span><strong>Adds shine</strong> – Leaves hair looking naturally glossy and vibrant.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-[#84A338] font-bold">•</span>
+                    <span><strong>Improves softness</strong> – Helps make hair feel smoother and more manageable.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-[#84A338] font-bold">•</span>
+                    <span><strong>Gentle cleansing</strong> – Cleanses away dirt, excess oil, and buildup without leaving hair feeling overly dry.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-[#84A338] font-bold">•</span>
+                    <span><strong>For all hair types</strong> – Suitable for different hair textures and everyday hair-care routines.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-[#84A338] font-bold">•</span>
+                    <span><strong>Sulfate-free & paraben-free</strong> – Formulated without sulfates and parabens.</span>
+                  </li>
+                </ul>
+              )}
 
               {/* 3 Circular Benefit Icons */}
               <div className="pt-4">
                 <img
-                  src="/figma_landing/shampoo_benefit_icons_exact.png"
-                  alt="Anti-frizz, Illuminate Hair, Smooth Hair"
+                  src={
+                    isFacewash
+                      ? '/figma_landing/fw_benefit_icons_exact.png'
+                      : '/figma_landing/shampoo_benefit_icons_exact.png'
+                  }
+                  alt="Product benefit icons"
                   className="w-full max-w-[480px] h-auto object-contain"
                 />
               </div>
             </div>
 
-            {/* Right: Shower Lather Model with Play Button */}
+            {/* Right: Shower / Splashing Water Model with Play Button */}
             <div className="lg:col-span-5 flex justify-center">
               <div className="w-full max-w-[480px] rounded-2xl overflow-hidden shadow-sm relative group cursor-pointer">
                 <img
-                  src="/figma_landing/shampoo_shower_lather_exact.png"
-                  alt="Shower Lather Application"
+                  src={
+                    isFacewash
+                      ? '/figma_landing/fw_splashing_exact.png'
+                      : '/figma_landing/shampoo_shower_lather_exact.png'
+                  }
+                  alt={isFacewash ? 'Water Splashing Application' : 'Shower Lather Application'}
                   className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500"
                 />
               </div>
@@ -603,12 +769,12 @@ export default function ProductDetail() {
       </section>
 
       {/* ========================================================= */}
-      {/* SECTION 5: HOW TO USE & SCALP COMPARISON (White)          */}
+      {/* SECTION 5: HOW TO USE & BEFORE/AFTER COMPARISON (White)   */}
       {/* ========================================================= */}
       <section className="w-full bg-white py-16 sm:py-24 border-t border-gray-100">
         <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
-            {/* Left: Scalp Before / After Interactive Slider */}
+            {/* Left: Scalp or Face Before / After Interactive Slider */}
             <div className="lg:col-span-6 flex justify-center">
               <div
                 ref={sliderContainerRef}
@@ -618,8 +784,12 @@ export default function ProductDetail() {
               >
                 {/* AFTER image (Background layer) */}
                 <img
-                  src="/figma_landing/shampoo_scalp_after_exact.png"
-                  alt="After Scalp Treatment"
+                  src={
+                    isFacewash
+                      ? '/figma_landing/fw_face_after_exact.png'
+                      : '/figma_landing/shampoo_scalp_after_exact.png'
+                  }
+                  alt="After Treatment"
                   className="absolute inset-0 w-full h-full object-cover"
                 />
 
@@ -629,8 +799,12 @@ export default function ProductDetail() {
                   style={{ width: `${sliderPos}%` }}
                 >
                   <img
-                    src="/figma_landing/shampoo_scalp_before_exact.png"
-                    alt="Before Scalp Treatment"
+                    src={
+                      isFacewash
+                        ? '/figma_landing/fw_face_before_exact.png'
+                        : '/figma_landing/shampoo_scalp_before_exact.png'
+                    }
+                    alt="Before Treatment"
                     className="absolute top-0 left-0 h-full w-[520px] max-w-none object-cover"
                   />
                 </div>
@@ -661,23 +835,40 @@ export default function ProductDetail() {
                 HOW TO USE
               </h2>
 
-              <div className="space-y-4 text-xs sm:text-[13px] text-gray-700 leading-relaxed">
-                <p>
-                  <strong className="text-[#1C201D]">Step 1:</strong> Wet your hair thoroughly with water.
-                </p>
-                <p>
-                  <strong className="text-[#1C201D]">Step 2:</strong> Apply an adequate amount of shampoo to your scalp and hair.
-                </p>
-                <p>
-                  <strong className="text-[#1C201D]">Step 3:</strong> Gently massage into the scalp and hair to create a rich lather.
-                </p>
-                <p>
-                  <strong className="text-[#1C201D]">Step 4:</strong> Rinse thoroughly with clean water.
-                </p>
-                <p>
-                  <strong className="text-[#1C201D]">Step 5:</strong> Repeat if needed and follow with your preferred conditioner.
-                </p>
-              </div>
+              {isFacewash ? (
+                <div className="space-y-4 text-xs sm:text-[13px] text-gray-700 leading-relaxed">
+                  <p>
+                    <strong className="text-[#1C201D]">Step 1: Wet :</strong> Start with clean hands and wet your face with lukewarm water.
+                  </p>
+                  <p>
+                    <strong className="text-[#1C201D]">Step 2: Cleanse :</strong> Apply a small amount. Gently massage over your face, avoiding the eye area.
+                  </p>
+                  <p>
+                    <strong className="text-[#1C201D]">Step 3: Rinse :</strong> Rinse thoroughly with water and pat dry with a soft towel.
+                  </p>
+                  <p>
+                    <strong className="text-[#1C201D]">Step 4: Replenish :</strong> Rinse thoroughly with clean water.
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-4 text-xs sm:text-[13px] text-gray-700 leading-relaxed">
+                  <p>
+                    <strong className="text-[#1C201D]">Step 1:</strong> Wet your hair thoroughly with water.
+                  </p>
+                  <p>
+                    <strong className="text-[#1C201D]">Step 2:</strong> Apply an adequate amount of shampoo to your scalp and hair.
+                  </p>
+                  <p>
+                    <strong className="text-[#1C201D]">Step 3:</strong> Gently massage into the scalp and hair to create a rich lather.
+                  </p>
+                  <p>
+                    <strong className="text-[#1C201D]">Step 4:</strong> Rinse thoroughly with clean water.
+                  </p>
+                  <p>
+                    <strong className="text-[#1C201D]">Step 5:</strong> Repeat if needed and follow with your preferred conditioner.
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -695,39 +886,70 @@ export default function ProductDetail() {
                 Key Ingredients
               </h2>
 
-              <div className="space-y-4 text-xs sm:text-[13px] text-gray-600 leading-relaxed">
-                <div>
-                  <h4 className="font-bold text-[#1C201D] text-sm mb-1">Okra</h4>
-                  <p>
-                    A nutrient-rich botanical known for its conditioning properties, helping to
-                    nourish hair and leave it feeling softer, smoother, and more manageable.
-                  </p>
-                </div>
+              {isFacewash ? (
+                <div className="space-y-4 text-xs sm:text-[13px] text-gray-600 leading-relaxed">
+                  <div>
+                    <h4 className="font-bold text-[#1C201D] text-sm mb-1">Hibiscus</h4>
+                    <p>A floral botanical featured in the Hydra Glow blend.</p>
+                  </div>
 
-                <div>
-                  <h4 className="font-bold text-[#1C201D] text-sm mb-1">Hibiscus</h4>
-                  <p>
-                    A flower traditionally used in hair care, known for helping support
-                    healthy-looking hair while enhancing softness and natural shine.
-                  </p>
-                </div>
+                  <div>
+                    <h4 className="font-bold text-[#1C201D] text-sm mb-1">Cucumber</h4>
+                    <p>A fresh botanical companion to your cleansing ritual.</p>
+                  </div>
 
-                <div>
-                  <h4 className="font-bold text-[#1C201D] text-sm mb-1">Shikakai</h4>
-                  <p>
-                    A traditional Ayurvedic ingredient that gently cleanses the scalp and hair while
-                    helping maintain smoothness and manageability.
-                  </p>
-                </div>
+                  <div>
+                    <h4 className="font-bold text-[#1C201D] text-sm mb-1">Aloe vera</h4>
+                    <p>A familiar botanical in hydration-focused skincare.</p>
+                  </div>
 
-                <div className="pt-4 border-t border-gray-100">
-                  <h4 className="font-bold text-[#1C201D] text-sm mb-1">Full Ingredient List</h4>
-                  <p className="text-gray-500 font-medium">
-                    Okra • Hibiscus • Shikakai • Aqua / Water • Cleansing Agents • Conditioning
-                    Agents • Fragrance / Parfum
-                  </p>
+                  <div>
+                    <h4 className="font-bold text-[#1C201D] text-sm mb-1">Licorice</h4>
+                    <p>A plant extract named alongside the other botanicals on pack.</p>
+                  </div>
+
+                  <div className="pt-4 border-t border-gray-100">
+                    <h4 className="font-bold text-[#1C201D] text-sm mb-1">Full Ingredient List</h4>
+                    <p className="text-gray-500 font-medium">
+                      The complete INCI list is pending. Please check the product label for the final ingredients and any allergens before use.
+                    </p>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div className="space-y-4 text-xs sm:text-[13px] text-gray-600 leading-relaxed">
+                  <div>
+                    <h4 className="font-bold text-[#1C201D] text-sm mb-1">Okra</h4>
+                    <p>
+                      A nutrient-rich botanical known for its conditioning properties, helping to
+                      nourish hair and leave it feeling softer, smoother, and more manageable.
+                    </p>
+                  </div>
+
+                  <div>
+                    <h4 className="font-bold text-[#1C201D] text-sm mb-1">Hibiscus</h4>
+                    <p>
+                      A flower traditionally used in hair care, known for helping support
+                      healthy-looking hair while enhancing softness and natural shine.
+                    </p>
+                  </div>
+
+                  <div>
+                    <h4 className="font-bold text-[#1C201D] text-sm mb-1">Shikakai</h4>
+                    <p>
+                      A traditional Ayurvedic ingredient that gently cleanses the scalp and hair while
+                      helping maintain smoothness and manageability.
+                    </p>
+                  </div>
+
+                  <div className="pt-4 border-t border-gray-100">
+                    <h4 className="font-bold text-[#1C201D] text-sm mb-1">Full Ingredient List</h4>
+                    <p className="text-gray-500 font-medium">
+                      Okra • Hibiscus • Shikakai • Aqua / Water • Cleansing Agents • Conditioning
+                      Agents • Fragrance / Parfum
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Right: 3 Botanical Laboratory Test Tubes Graphic */}
@@ -914,7 +1136,7 @@ export default function ProductDetail() {
                       rows="3"
                       value={reviewComment}
                       onChange={(e) => setReviewComment(e.target.value)}
-                      placeholder="Share your experience with Okra Shampoo..."
+                      placeholder={isFacewash ? "Share your experience with Okra Facewash..." : "Share your experience with Okra Shampoo..."}
                       className="w-full bg-white border border-gray-200 rounded-lg p-2.5 outline-none"
                     />
                   </div>
