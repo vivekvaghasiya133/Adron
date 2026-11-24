@@ -1,812 +1,1086 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { Star, Heart, Plus, Minus, ShieldCheck, Leaf, Sparkles, Check, ArrowRight, ChevronRight, ChevronDown, ChevronUp, Droplet } from 'lucide-react';
+import {
+  Star,
+  Plus,
+  Minus,
+  Check,
+  ArrowRight,
+  ChevronRight,
+  ChevronLeft,
+  ChevronDown,
+  ChevronUp,
+  X
+} from 'lucide-react';
 import { useShop, fallbackProducts } from '../context/ShopContext';
-import ProductCard from '../components/ProductCard';
 
 export default function ProductDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { products, addToCart, toggleWishlist, isInWishlist } = useShop();
+  const { products, addToCart } = useShop();
 
   const [product, setProduct] = useState(() => {
-    return products.find(p => p.id === id) || fallbackProducts.find(p => p.id === id) || fallbackProducts[0];
+    return (
+      products.find((p) => p.id === id) ||
+      fallbackProducts.find((p) => p.id === id) ||
+      fallbackProducts[0]
+    );
   });
-  const [selectedImage, setSelectedImage] = useState(product?.image);
-  const [selectedSize, setSelectedSize] = useState(product?.sizes ? product.sizes[0] : 'Standard');
+
+  // Hero Gallery Thumbnails
+  const shampooGallery = [
+    '/figma_landing/shampoo_showcase_exact.png',
+    '/figma_landing/shampoo_thumb_2.png',
+    '/figma_landing/shampoo_thumb_3.png',
+    '/figma_landing/shampoo_thumb_4.png'
+  ];
+
+  const [activeThumb, setActiveThumb] = useState(0);
+  const [selectedSize, setSelectedSize] = useState('250 ml');
   const [quantity, setQuantity] = useState(1);
-  const [activeFaq, setActiveFaq] = useState(0);
+
+  // Scalp Before/After comparison slider state
+  const [sliderPos, setSliderPos] = useState(50);
+  const sliderContainerRef = useRef(null);
+  const isDraggingSlider = useRef(false);
+
+  // FAQ Accordion State (first item open by default)
+  const [openFaq, setOpenFaq] = useState(0);
 
   // Reviews state
-  const [reviewsList, setReviewsList] = useState([]);
-  const [newReviewAuthor, setNewReviewAuthor] = useState('');
-  const [newReviewRating, setNewReviewRating] = useState(5);
-  const [newReviewComment, setNewReviewComment] = useState('');
+  const [showReviewForm, setShowReviewForm] = useState(false);
+  const [reviewsList, setReviewsList] = useState([
+    {
+      id: 'rev-1',
+      author: 'Ananya S.',
+      rating: 5,
+      date: '2 days ago',
+      title: 'Miraculous slip and softness!',
+      comment:
+        'The natural okra mucilage gives unbelievable slip. I was skeptical about no silicone, but my hair detangles in seconds and stays lightweight with zero greasy residue.'
+    },
+    {
+      id: 'rev-2',
+      author: 'Pooja V.',
+      rating: 5,
+      date: '1 week ago',
+      title: 'Scalp irritation completely calmed',
+      comment:
+        'Finally a botanical shampoo that actually lathers richly without stripping my scalp. The itchiness and flaking went away in 3 washes.'
+    },
+    {
+      id: 'rev-3',
+      author: 'Kavita M.',
+      rating: 5,
+      date: '2 weeks ago',
+      title: 'Best Ayurvedic + Botanical hair care',
+      comment:
+        'Hibiscus and Shikakai paired with Okra is a genius formulation. Hair looks glossy and vibrant like salon treatments.'
+    }
+  ]);
+  const [reviewName, setReviewName] = useState('');
+  const [reviewRating, setReviewRating] = useState(5);
+  const [reviewComment, setReviewComment] = useState('');
   const [reviewSubmitted, setReviewSubmitted] = useState(false);
 
   useEffect(() => {
-    const found = products.find(p => p.id === id) || fallbackProducts.find(p => p.id === id);
+    const found =
+      products.find((p) => p.id === id) ||
+      fallbackProducts.find((p) => p.id === id);
     if (found) {
       setProduct(found);
-      setSelectedImage(found.image);
-      setSelectedSize(found.sizes ? found.sizes[0] : 'Standard');
+      setActiveThumb(0);
       setQuantity(1);
     }
-    // Fetch live reviews from backend
-    fetch(`/api/products/${id}`)
-      .then(res => res.json())
-      .then(data => {
-        if (data.success && data.product) {
-          setProduct(data.product);
-          if (data.product.reviews && data.product.reviews.length > 0) {
-            setReviewsList(data.product.reviews);
-          }
-        }
-      })
-      .catch(() => {});
   }, [id, products]);
 
-  const isFav = isInWishlist(product.id);
-
-  // Dynamic content based on product type to match Figma slices
-  const isShampoo = product.id === 'okra-shampoo';
-  const isFacewash = product.id === 'okra-facewash';
-  const isSerum = product.id === 'okra-serum';
-
-  const heroFeatureTitle = isShampoo
-    ? "Why Okra Shampoo is Your Ultimate Haircare Hero?"
-    : isFacewash
-    ? "Why Okra Face Wash is Your Skin Barrier Savior"
-    : isSerum
-    ? "Why Okra Glow Serum is the Holy Grail of Glass Skin"
-    : `Why ${product.name} is Your Daily Ritual Hero`;
-
-  const heroFeatureStats = isShampoo
-    ? [
-        { pct: "96%", label: "Reported less frizz & immediate slip" },
-        { pct: "92%", label: "Noticeable increase in gloss & shine" },
-        { pct: "88%", label: "Healthier scalp with reduced flaking" }
-      ]
-    : isFacewash
-    ? [
-        { pct: "98%", label: "Skin feels soft without stripped dryness" },
-        { pct: "94%", label: "Noticeable pore refinement in 14 days" },
-        { pct: "91%", label: "Calmed redness and balanced sebum" }
-      ]
-    : [
-        { pct: "97%", label: "Reported radiant glass-skin glow" },
-        { pct: "93%", label: "Visible reduction in hyperpigmentation" },
-        { pct: "95%", label: "72-hour deep epidermal moisture lock" }
-      ];
-
-  const modelImage = isShampoo
-    ? "/figma/model_shampoo.png"
-    : isFacewash
-    ? "/figma/model_facewash.png"
-    : "/figma/model_serum.png";
-
-  const actionImage = isShampoo
-    ? "/figma/shower_lather.png"
-    : isFacewash
-    ? "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=600&q=80"
-    : "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=600&q=80";
-
-  const beforeAfterImage = isShampoo
-    ? "/figma/scalp_before_after.png"
-    : "/figma/skin_before_after.png";
-
-  // Product specific FAQs matching Figma
-  const faqs = isShampoo
-    ? [
-        { q: "Is this shampoo safe for keratin-treated or color-treated hair?", a: "Yes, absolutely! Our formula is 100% sulfate-free and formulated at a scalp-neutral pH of 5.5, which preserves hair color vibrancy and protects keratin bonds from degradation." },
-        { q: "Does it leave any sticky okra residue in hair?", a: "Not at all. We utilize a micro-filtered cold extraction process that isolates pure soluble polysaccharides. It rinses completely clean with water, leaving only lightweight slip and glossy movement." },
-        { q: "How often should I use the Okra Shampoo?", a: "Because it is gentle and devoid of harsh sulfates or stripping detergents, it is safe for daily use or 2-3 times per week according to your wash routine." },
-        { q: "Is it suitable for an oily scalp with dry ends?", a: "Yes! Okra mucilage balances sebum production at the roots while hydrating and sealing brittle cuticles along the ends." },
-        { q: "What gives it that smooth slip without synthetic silicones?", a: "Pure okra mucilage naturally mimics the lubricating glide of silicones thanks to galacturonic acid and pectin, detangling effortlessly without heavy plastic buildup." }
-      ]
-    : isFacewash
-    ? [
-        { q: "Will this cleanser strip my skin or leave it feeling tight?", a: "No. The combination of gentle plant glucosides and cold-pressed okra mucilage preserves your acid mantle, leaving skin plump, supple, and hydrated." },
-        { q: "Can I use it to remove daily sunscreen and light makeup?", a: "Yes. The dense botanical lather effortlessly breaks down water-resistant sunscreen, sebum, and daily pollutants without harsh tugging." },
-        { q: "Is it safe for acne-prone and sensitive skin?", a: "Yes! Okra mucilage contains natural anti-inflammatory bioflavonoids paired with green tea and cica to soothe active breakouts and redness." }
-      ]
-    : [
-        { q: "How soon can I expect to see visible glass skin results?", a: "Most users notice enhanced bounce and dewy hydration within 24 hours. Clinically, dark spots and pore texture visibly improve after 14 to 21 days of daily use." },
-        { q: "Can I layer this serum with other actives like retinol or AHAs?", a: "Yes. Our stabilized formula features 5% Niacinamide and ethyl ascorbic acid buffered by soothing okra mucilage, making it gentle enough to layer morning and evening." },
-        { q: "Does it feel sticky after absorption?", a: "No. It absorbs in under 30 seconds to a soft, velvety petal finish that sits beautifully under moisturizer and makeup." }
-      ];
-
-  const handleAddReview = async (e) => {
-    e.preventDefault();
-    if (!newReviewAuthor || !newReviewComment) return;
-
-    try {
-      const res = await fetch('/api/reviews', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          productId: product.id,
-          author: newReviewAuthor,
-          rating: newReviewRating,
-          comment: newReviewComment
-        })
-      });
-      const data = await res.json();
-      if (data.success) {
-        setReviewsList(prev => [data.review, ...prev]);
-        setReviewSubmitted(true);
-        setNewReviewAuthor('');
-        setNewReviewComment('');
-      }
-    } catch {
-      const mock = {
-        id: 'rev-' + Date.now(),
-        productId: product.id,
-        author: newReviewAuthor,
-        rating: newReviewRating,
-        comment: newReviewComment,
-        date: new Date().toISOString().split('T')[0],
-        verified: true
-      };
-      setReviewsList(prev => [mock, ...prev]);
-      setReviewSubmitted(true);
-      setNewReviewAuthor('');
-      setNewReviewComment('');
-    }
+  // Scalp slider mouse/touch drag handlers
+  const handleSliderMove = (clientX) => {
+    if (!sliderContainerRef.current) return;
+    const rect = sliderContainerRef.current.getBoundingClientRect();
+    const x = clientX - rect.left;
+    const pct = Math.max(0, Math.min(100, (x / rect.width) * 100));
+    setSliderPos(pct);
   };
 
-  const relatedProducts = products.filter(p => p.id !== product.id).slice(0, 3);
+  const onMouseDownSlider = () => {
+    isDraggingSlider.current = true;
+  };
+
+  useEffect(() => {
+    const onMouseUp = () => {
+      isDraggingSlider.current = false;
+    };
+    const onMouseMove = (e) => {
+      if (isDraggingSlider.current) {
+        handleSliderMove(e.clientX);
+      }
+    };
+    const onTouchMove = (e) => {
+      if (isDraggingSlider.current && e.touches[0]) {
+        handleSliderMove(e.touches[0].clientX);
+      }
+    };
+    window.addEventListener('mouseup', onMouseUp);
+    window.addEventListener('mousemove', onMouseMove);
+    window.addEventListener('touchend', onMouseUp);
+    window.addEventListener('touchmove', onTouchMove);
+    return () => {
+      window.removeEventListener('mouseup', onMouseUp);
+      window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('touchend', onMouseUp);
+      window.removeEventListener('touchmove', onTouchMove);
+    };
+  }, []);
+
+  const handleReviewSubmit = (e) => {
+    e.preventDefault();
+    if (!reviewName || !reviewComment) return;
+    const newRev = {
+      id: 'rev-' + Date.now(),
+      author: reviewName,
+      rating: reviewRating,
+      date: 'Just now',
+      title: 'Verified Customer Review',
+      comment: reviewComment
+    };
+    setReviewsList((prev) => [newRev, ...prev]);
+    setReviewSubmitted(true);
+    setTimeout(() => {
+      setReviewSubmitted(false);
+      setShowReviewForm(false);
+      setReviewName('');
+      setReviewComment('');
+    }, 2000);
+  };
+
+  const prevThumb = () => {
+    setActiveThumb((prev) => (prev === 0 ? shampooGallery.length - 1 : prev - 1));
+  };
+  const nextThumb = () => {
+    setActiveThumb((prev) => (prev === shampooGallery.length - 1 ? 0 : prev + 1));
+  };
+
+  // 8 FAQs exact text from Figma
+  const faqs = [
+    {
+      q: '1. What is Okra Shampoo?',
+      a: 'Okra Shampoo is a hair-care formula enriched with the benefits of okra, designed to gently cleanse the hair while helping improve softness, smoothness, and manageability.'
+    },
+    {
+      q: '2. What are the benefits of Okra Shampoo?',
+      a: 'It deeply hydrates dry and frizzy strands, gently cleanses without stripping natural oils, enhances natural shine, supports scalp health, and makes hair noticeably softer and easier to detangle.'
+    },
+    {
+      q: '3. Is Okra Shampoo suitable for all hair types?',
+      a: 'Yes, our gentle pH-balanced formula is carefully crafted for straight, wavy, curly, coily, fine, coarse, and color-treated hair.'
+    },
+    {
+      q: '4. Does Okra Shampoo help with frizzy hair?',
+      a: 'Absolutely. Pure okra mucilage is rich in natural pectins and polysaccharides that coat the hair fiber, locking out external humidity and smoothing rough cuticles to prevent frizz.'
+    },
+    {
+      q: '5. Can I use Okra Shampoo every day?',
+      a: 'Yes. Because it is completely free from harsh sulfates, parabens, and aggressive detergents, it is mild enough for daily use or whenever your hair needs washing.'
+    },
+    {
+      q: '6. Does Okra Shampoo contain natural okra?',
+      a: 'Yes, it contains cold-extracted natural Okra (Abelmoschus Esculentus) extract alongside Hibiscus and Shikakai for maximum botanical efficacy.'
+    },
+    {
+      q: '7. Is Okra Shampoo suitable for dry hair?',
+      a: 'Yes, dry and brittle hair benefits tremendously from the intense moisture-locking power of natural okra mucilage, restoring elasticity and soft movement.'
+    },
+    {
+      q: '8. How should I use Okra Shampoo?',
+      a: 'Wet hair thoroughly, apply an adequate amount to scalp and hair, massage gently into a rich lather, rinse thoroughly with clean water, and repeat if needed.'
+    }
+  ];
 
   return (
-    <div className="space-y-16 sm:space-y-24 pb-16 bg-[#FAF8F5]">
-      {/* 1. TOP HERO PURCHASE SECTION */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-12">
-        {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 text-xs text-gray-500 font-medium mb-6">
-          <Link to="/" className="hover:text-[#153323] transition">Home</Link>
-          <ChevronRight size={14} />
-          <Link to="/shop" className="hover:text-[#153323] transition">Shop</Link>
-          <ChevronRight size={14} />
-          <Link to={`/shop?category=${product.category}`} className="hover:text-[#153323] transition">
-            {product.category}
-          </Link>
-          <ChevronRight size={14} />
-          <span className="text-[#153323] font-bold line-clamp-1">{product.name}</span>
-        </nav>
+    <div className="w-full bg-white text-[#1C201D] font-sans antialiased selection:bg-[#84A338]/20">
+      {/* ========================================================= */}
+      {/* SECTION 1: HERO / PRODUCT SHOWCASE & PURCHASE (#F4F7EE)   */}
+      {/* ========================================================= */}
+      <section className="relative w-full bg-[#F4F7EE] pt-6 pb-16 lg:pb-24 overflow-hidden">
+        {/* Floating Okra Pod on Far Right */}
+        <div className="hidden xl:block absolute right-0 top-20 pointer-events-none select-none z-0">
+          <img
+            src="/figma_landing/shampoo_hero_floating_okra.png"
+            alt=""
+            className="w-48 lg:w-64 h-auto object-contain opacity-90"
+          />
+        </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-          {/* Left: Product Images & Thumbnails */}
-          <div className="lg:col-span-6 space-y-4">
-            <div className="aspect-square rounded-3xl overflow-hidden bg-white border border-[#E8E4DA] relative shadow-md p-4 flex items-center justify-center">
-              <img
-                src={selectedImage}
-                alt={product.name}
-                className="w-full h-full object-contain transition-all duration-300"
-              />
-              {product.badge && (
-                <span className="absolute top-4 left-4 bg-[#153323] text-white text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full shadow-sm">
-                  {product.badge}
-                </span>
-              )}
-              <button
-                onClick={() => toggleWishlist(product)}
-                className="absolute top-4 right-4 p-2.5 bg-white/90 hover:bg-white rounded-full shadow-md text-gray-700 transition"
-                title={isFav ? "Saved in Favorites" : "Add to Favorites"}
-              >
-                <Heart size={20} className={isFav ? "fill-[#C24B4B] text-[#C24B4B]" : "text-gray-500"} />
-              </button>
-            </div>
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          {/* Top Breadcrumb */}
+          <nav className="flex items-center gap-2 text-xs text-gray-500 font-normal mb-8 sm:mb-10">
+            <Link to="/" className="hover:text-[#1C201D] transition-colors">
+              Home
+            </Link>
+            <span className="text-gray-400">/</span>
+            <span className="text-[#1C201D] font-medium">Okra Shampoo</span>
+          </nav>
 
-            {/* Thumbnails row */}
-            {product.gallery && product.gallery.length > 0 && (
-              <div className="flex gap-3 overflow-x-auto pb-2">
-                {[product.image, ...product.gallery].filter((v, i, a) => a.indexOf(v) === i).map((img, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setSelectedImage(img)}
-                    className={`w-20 h-20 rounded-2xl overflow-hidden border-2 transition-all shrink-0 bg-white p-1 ${
-                      selectedImage === img ? 'border-[#153323] ring-2 ring-[#5B7E52]/30' : 'border-gray-200 opacity-70 hover:opacity-100'
-                    }`}
-                  >
-                    <img src={img} alt="thumbnail" className="w-full h-full object-contain" />
-                  </button>
-                ))}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-start">
+            {/* Left: Showcase Container & 4 Thumbnails */}
+            <div className="lg:col-span-6 flex flex-col items-center">
+              {/* Main White Showcase Box */}
+              <div className="w-full max-w-[540px] aspect-square bg-white rounded-[28px] sm:rounded-[32px] p-6 sm:p-8 flex items-center justify-center shadow-[0_4px_24px_rgba(0,0,0,0.03)] border border-[#E9ECE0] transition-all">
+                <img
+                  src={shampooGallery[activeThumb]}
+                  alt="Nourish & Shine Okra Shampoo"
+                  className="w-full h-full object-contain drop-shadow-sm transition-all duration-300"
+                />
               </div>
-            )}
-          </div>
 
-          {/* Right: Info & Add to Cart */}
-          <div className="lg:col-span-6 space-y-6">
-            <div>
-              <span className="text-xs font-bold uppercase tracking-widest text-[#5B7E52] block mb-1">
-                {product.category} • Okra Botanical Science
-              </span>
-              <h1 className="font-serif text-3xl sm:text-4xl font-bold text-[#153323] leading-tight">
-                {product.name}
-              </h1>
+              {/* 4 Gallery Thumbnails Row */}
+              <div className="w-full max-w-[540px] flex items-center justify-center gap-3 sm:gap-4 mt-6">
+                <button
+                  onClick={prevThumb}
+                  className="w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center text-gray-600 hover:text-black hover:bg-gray-50 transition border border-gray-100 shrink-0"
+                  aria-label="Previous image"
+                >
+                  <ChevronLeft size={16} />
+                </button>
 
-              {/* Rating */}
-              <div className="flex items-center gap-3 mt-3">
-                <div className="flex text-[#E5A93C]">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} size={16} className="fill-[#E5A93C] text-[#E5A93C]" />
-                  ))}
-                </div>
-                <span className="text-xs font-bold text-[#153323]">
-                  5.0 ({product.reviewsCount || 128} Verified Reviews)
-                </span>
-              </div>
-            </div>
-
-            {/* Price */}
-            <div className="flex items-baseline gap-3 pb-2 border-b border-gray-200">
-              <span className="text-3xl font-serif font-bold text-[#153323]">
-                ${Number(product.price).toFixed(2)}
-              </span>
-              {product.originalPrice && product.originalPrice > product.price && (
-                <>
-                  <span className="text-base text-gray-400 line-through">
-                    ${Number(product.originalPrice).toFixed(2)}
-                  </span>
-                  <span className="text-xs font-bold bg-[#EBF2E9] text-[#153323] px-2.5 py-0.5 rounded-full">
-                    Save ${(product.originalPrice - product.price).toFixed(2)}
-                  </span>
-                </>
-              )}
-            </div>
-
-            <p className="text-sm text-gray-600 leading-relaxed font-sans">
-              {product.description}
-            </p>
-
-            {/* Size Selector */}
-            {product.sizes && product.sizes.length > 0 && (
-              <div className="space-y-2">
-                <span className="text-xs font-bold uppercase tracking-wider text-gray-700">
-                  Select Size: <span className="text-[#153323] font-semibold">{selectedSize}</span>
-                </span>
-                <div className="flex gap-3">
-                  {product.sizes.map((s) => (
+                <div className="flex items-center gap-2.5 sm:gap-3 overflow-x-auto py-1">
+                  {shampooGallery.map((img, idx) => (
                     <button
-                      key={s}
-                      onClick={() => setSelectedSize(s)}
-                      className={`text-xs font-bold px-5 py-2.5 rounded-xl border transition-all ${
-                        selectedSize === s
-                          ? 'bg-[#153323] text-white border-[#153323] shadow-md'
-                          : 'bg-white text-gray-700 border-gray-300 hover:border-[#153323]'
+                      key={idx}
+                      onClick={() => setActiveThumb(idx)}
+                      className={`w-[70px] h-[70px] sm:w-[82px] sm:h-[82px] rounded-2xl overflow-hidden bg-white border-2 transition-all p-1.5 flex items-center justify-center shrink-0 ${
+                        activeThumb === idx
+                          ? 'border-[#1C201D] shadow-sm scale-105'
+                          : 'border-transparent opacity-80 hover:opacity-100 hover:border-gray-300'
                       }`}
                     >
-                      {s}
+                      <img
+                        src={img}
+                        alt={`Thumbnail ${idx + 1}`}
+                        className="w-full h-full object-contain"
+                      />
                     </button>
                   ))}
                 </div>
-              </div>
-            )}
 
-            {/* Quantity Selector & Pill Add to Cart */}
-            <div className="space-y-3 pt-2">
-              <div className="flex flex-col sm:flex-row gap-3">
-                {/* Quantity */}
-                <div className="flex items-center justify-between border border-gray-300 rounded-full bg-white px-4 py-2.5 w-full sm:w-36">
+                <button
+                  onClick={nextThumb}
+                  className="w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center text-gray-600 hover:text-black hover:bg-gray-50 transition border border-gray-100 shrink-0"
+                  aria-label="Next image"
+                >
+                  <ChevronRight size={16} />
+                </button>
+              </div>
+            </div>
+
+            {/* Right: Product Info, Price, Size, Add to Cart */}
+            <div className="lg:col-span-6 space-y-5 sm:space-y-6 pt-2">
+              {/* Eyebrow */}
+              <span className="text-[11px] sm:text-xs font-bold tracking-[0.16em] uppercase text-[#B59059] block">
+                BOTANICAL HYDRATION & REPAIR
+              </span>
+
+              {/* Title */}
+              <h1 className="text-3xl sm:text-4xl lg:text-[44px] font-bold text-[#1C201D] leading-[1.15] tracking-tight">
+                Nourish & Shine Okra Shampoo
+              </h1>
+
+              {/* Ratings */}
+              <div className="flex items-center gap-2.5 pt-1">
+                <div className="flex text-[#B59059] text-sm tracking-widest">
+                  <span>★</span>
+                  <span>★</span>
+                  <span>★</span>
+                  <span>★</span>
+                  <span>★</span>
+                </div>
+                <span className="text-xs font-bold text-[#1C201D]">(4.9)</span>
+                <span className="text-gray-300">|</span>
+                <a
+                  href="#reviews"
+                  className="text-xs text-gray-500 hover:text-black underline underline-offset-2 transition-colors"
+                >
+                  148 Verified Reviews
+                </a>
+              </div>
+
+              {/* Editorial Description */}
+              <p className="text-xs sm:text-[13px] text-gray-600 leading-relaxed max-w-xl font-normal">
+                Revitalize dull, thirsty hair with the ultimate power of Okra-infused hydration.
+                Rich in vitamins A, C, and natural mucilage, our scientifically refined formula
+                coats your strands to seal in maximum moisture, preventing split ends while calming
+                sensitive scalps.
+              </p>
+
+              {/* Price & Discount */}
+              <div className="flex items-baseline gap-3.5 pt-2">
+                <span className="text-3xl sm:text-[34px] font-bold text-[#1C201D] tracking-tight">
+                  ₹{selectedSize.includes('500') ? '2,199' : '1,299'}
+                </span>
+                <span className="text-base sm:text-lg text-gray-400 line-through">
+                  ₹{selectedSize.includes('500') ? '2,799' : '1,599'}
+                </span>
+                <span className="bg-[#EBF2D8] text-[#55781E] text-[11px] font-bold px-2.5 py-0.5 rounded tracking-wide">
+                  SAVE {selectedSize.includes('500') ? '21%' : '18%'}
+                </span>
+              </div>
+
+              {/* Size Selector */}
+              <div className="pt-2 space-y-2.5">
+                <span className="text-[11px] font-bold tracking-[0.14em] uppercase text-[#1C201D] block">
+                  SELECT SIZE
+                </span>
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setSelectedSize('250 ml')}
+                    className={`px-5 py-2.5 rounded-lg text-xs font-semibold border transition-all ${
+                      selectedSize === '250 ml'
+                        ? 'border-[#1C201D] text-[#1C201D] bg-white shadow-sm'
+                        : 'border-gray-300 text-gray-600 bg-white/60 hover:border-gray-400'
+                    }`}
+                  >
+                    250 ml
+                  </button>
+                  <button
+                    onClick={() => setSelectedSize('500 ml (Value Pack)')}
+                    className={`px-5 py-2.5 rounded-lg text-xs font-semibold border transition-all ${
+                      selectedSize === '500 ml (Value Pack)'
+                        ? 'border-[#1C201D] text-[#1C201D] bg-white shadow-sm'
+                        : 'border-gray-300 text-gray-600 bg-white/60 hover:border-gray-400'
+                    }`}
+                  >
+                    500 ml (Value Pack)
+                  </button>
+                </div>
+              </div>
+
+              {/* Quantity & Add to Cart Row */}
+              <div className="flex items-center gap-3 pt-3">
+                <div className="flex items-center justify-between border border-gray-300 rounded-lg bg-white px-3 py-2.5 w-28 sm:w-32 shadow-sm">
                   <button
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="p-1 text-gray-600 hover:text-black transition"
+                    className="p-1 text-gray-500 hover:text-black transition"
+                    aria-label="Decrease quantity"
                   >
-                    <Minus size={15} />
+                    <Minus size={14} />
                   </button>
-                  <span className="text-sm font-bold text-gray-800">{quantity}</span>
+                  <span className="text-xs sm:text-sm font-bold text-[#1C201D]">
+                    {quantity}
+                  </span>
                   <button
                     onClick={() => setQuantity(quantity + 1)}
-                    className="p-1 text-gray-600 hover:text-black transition"
+                    className="p-1 text-gray-500 hover:text-black transition"
+                    aria-label="Increase quantity"
                   >
-                    <Plus size={15} />
+                    <Plus size={14} />
                   </button>
                 </div>
 
-                {/* Pill Add to Cart Button matching Figma */}
                 <button
-                  onClick={() => addToCart(product, selectedSize, quantity)}
-                  className="flex-1 bg-[#153323] hover:bg-[#204b34] text-white text-sm font-semibold py-3.5 px-8 rounded-full shadow-lg transition active:scale-95 flex items-center justify-center gap-2"
+                  onClick={() =>
+                    addToCart(
+                      {
+                        ...product,
+                        price: selectedSize.includes('500') ? 2199 : 1299
+                      },
+                      selectedSize,
+                      quantity
+                    )
+                  }
+                  className="flex-1 bg-[#1C201D] hover:bg-[#2C332E] text-white py-3.5 px-6 rounded-lg text-xs font-bold tracking-wider uppercase flex items-center justify-center gap-2 shadow-md transition-all active:scale-[0.99]"
                 >
-                  ADD TO CART • ${(product.price * quantity).toFixed(2)}
+                  <span>
+                    ADD TO CART — ₹
+                    {(
+                      (selectedSize.includes('500') ? 2199 : 1299) * quantity
+                    ).toLocaleString()}
+                  </span>
+                  <ArrowRight size={15} />
                 </button>
               </div>
 
-              <button
-                onClick={() => {
-                  addToCart(product, selectedSize, quantity);
-                  navigate('/checkout');
-                }}
-                className="w-full bg-[#EBF2E9] hover:bg-[#D7E6D3] text-[#153323] text-xs font-bold uppercase tracking-wider py-3 rounded-full transition border border-[#5B7E52]/30"
-              >
-                Instant Buy Now
-              </button>
-            </div>
-
-            {/* Guarantees Box */}
-            <div className="grid grid-cols-3 gap-2 pt-4 border-t border-gray-200 text-center text-[11px] text-gray-500">
-              <div className="flex flex-col items-center gap-1">
-                <Leaf size={16} className="text-[#5B7E52]" />
-                <span>Free shipping over $50</span>
-              </div>
-              <div className="flex flex-col items-center gap-1">
-                <ShieldCheck size={16} className="text-[#5B7E52]" />
-                <span>Cruelty-Free & Vegan</span>
-              </div>
-              <div className="flex flex-col items-center gap-1">
-                <Sparkles size={16} className="text-[#5B7E52]" />
-                <span>30-Day Money Back</span>
+              {/* 3 Guarantees / Trust Badges */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-4 border-t border-gray-200/80 text-[11px] sm:text-xs text-gray-600 font-medium">
+                <div className="flex items-center gap-2">
+                  <Check size={15} className="text-[#84A338] shrink-0" />
+                  <span>100% Organic Extracts</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check size={15} className="text-[#84A338] shrink-0" />
+                  <span>Dermatologist Tested</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check size={15} className="text-[#84A338] shrink-0" />
+                  <span>Free Express Delivery</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 2. FEATURE SPLIT BANNER: "Why Okra Shampoo is Your Ultimate Haircare Hero?" */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-[#EFF5ED] rounded-3xl p-6 sm:p-12 border border-[#D7E6D3] grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-          {/* Left stats & text */}
-          <div className="lg:col-span-7 space-y-6">
-            <span className="text-xs font-bold uppercase tracking-widest text-[#5B7E52] block">
-              Clinical Clinical Excellence
-            </span>
-            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#153323] leading-tight">
-              {heroFeatureTitle}
-            </h2>
-            <p className="text-sm text-[#4E6354] leading-relaxed">
-              Powered by high concentrations of cold-pressed okra mucilage. Pectins and natural bio-polysaccharides create a weightless moisture shield that smooths hair cuticles, calms irritation, and locks in long-lasting bounce.
-            </p>
+      {/* ========================================================= */}
+      {/* SECTION 2: WHY OKRA BELONGS IN YOUR BEAUTY RITUAL (White) */}
+      {/* ========================================================= */}
+      <section className="w-full bg-white py-20 lg:py-28 overflow-hidden">
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+            {/* Left Column: Heading, Paragraphs & Stats */}
+            <div className="lg:col-span-7 space-y-6 sm:space-y-8">
+              <h2 className="text-3xl sm:text-4xl lg:text-[42px] font-bold text-[#1C201D] leading-[1.2] tracking-tight">
+                Why <span className="text-[#84A338]">Okra</span> Belongs in Your Ultimate Beauty Ritual
+              </h2>
 
-            <div className="grid grid-cols-3 gap-4 pt-2">
-              {heroFeatureStats.map((st, i) => (
-                <div key={i} className="bg-white p-4 rounded-2xl border border-[#D7E6D3] text-center space-y-1">
-                  <span className="font-serif text-2xl sm:text-3xl font-bold text-[#5B7E52] block">
-                    {st.pct}
+              <p className="text-xs sm:text-[13px] text-gray-600 leading-relaxed font-normal">
+                Okra is not just a nutrient-dense dietary staple—it is a botanical powerhouse for
+                cuticle repair. When processed utilizing our clinical cold-extraction method, Okra
+                pods release a rich, slippery mucilage packed with polysaccharides, amino acids,
+                and antioxidant vitamins.
+              </p>
+
+              <p className="text-xs sm:text-[13px] text-gray-600 leading-relaxed font-normal">
+                This natural film-forming agent wraps each hair strand in a weightless, protective
+                barrier that seals cuticle scales flat, trapping moisture and generating an
+                unparalleled brilliant glass-like shine without heavy chemical silicones.
+              </p>
+
+              {/* 3 Stats Row */}
+              <div className="grid grid-cols-3 gap-6 pt-4 border-t border-gray-100">
+                <div>
+                  <span className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#84A338] block tracking-tight">
+                    94%
                   </span>
-                  <span className="text-[11px] text-gray-600 font-medium block leading-tight">
-                    {st.label}
+                  <span className="text-[11px] sm:text-xs text-gray-600 font-medium block mt-1.5 leading-tight">
+                    Reported Deeper Hydration
                   </span>
                 </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Right Model Holding Product */}
-          <div className="lg:col-span-5 flex justify-center">
-            <div className="max-w-xs rounded-2xl overflow-hidden shadow-lg border-2 border-white bg-white">
-              <img
-                src={modelImage}
-                onError={(e) => { e.currentTarget.src = product.image; }}
-                alt="Product Hero Model"
-                className="w-full h-auto object-cover"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 3. PRODUCT DESCRIPTION & BOTANICAL ICONS (Mint Card matching Figma) */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-[#EFF5ED] rounded-3xl p-6 sm:p-10 border border-[#D7E6D3] grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
-          <div className="md:col-span-4 flex justify-around md:flex-col md:space-y-6">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-full bg-white text-[#153323] flex items-center justify-center shadow-sm">
-                <Leaf size={22} className="text-[#5B7E52]" />
-              </div>
-              <div>
-                <h4 className="font-serif text-sm font-bold text-[#153323]">100% Vegan</h4>
-                <p className="text-[11px] text-gray-500">Pure plant-derived</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-full bg-white text-[#153323] flex items-center justify-center shadow-sm">
-                <Droplet size={22} className="text-[#5B7E52]" />
-              </div>
-              <div>
-                <h4 className="font-serif text-sm font-bold text-[#153323]">Sulfate-Free</h4>
-                <p className="text-[11px] text-gray-500">Zero harsh chemicals</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-full bg-white text-[#153323] flex items-center justify-center shadow-sm">
-                <ShieldCheck size={22} className="text-[#5B7E52]" />
-              </div>
-              <div>
-                <h4 className="font-serif text-sm font-bold text-[#153323]">Cruelty-Free</h4>
-                <p className="text-[11px] text-gray-500">Leaping bunny certified</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="md:col-span-8 space-y-4">
-            <h3 className="font-serif text-2xl font-bold text-[#153323]">
-              Product Description
-            </h3>
-            <p className="text-sm text-[#4E6354] leading-relaxed">
-              {product.description}
-            </p>
-            <p className="text-sm text-[#4E6354] leading-relaxed">
-              Our unique gentle processing retains the delicate galacturonic acid molecules that mimic cosmetic silicones naturally. It coats strands with weightless slip, enhances combability, and seals down rough cuticle scales to reflect pristine ambient light.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* 4. APPLICATION EXPERIENCE / IN-SHOWER LATHER */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-3xl p-6 sm:p-12 border border-[#E8E4DA] shadow-sm grid grid-cols-1 md:grid-cols-12 gap-10 items-center">
-          <div className="md:col-span-7 space-y-6">
-            <span className="text-xs font-bold uppercase tracking-widest text-[#5B7E52] block">
-              The Daily Ritual
-            </span>
-            <h3 className="font-serif text-3xl font-bold text-[#153323]">
-              {isShampoo ? "How It Transforms Your Wash Day" : "The Cleanse Ritual in Action"}
-            </h3>
-            <p className="text-sm text-gray-600 leading-relaxed">
-              Experience a rich, creamy lather that feels velvety and luxurious in your hands. Unlike commercial detergents that strip natural lipids, our okra formula leaves hair and skin feeling supple, soft, and balanced immediately after rinsing.
-            </p>
-
-            <div className="space-y-3 pt-2">
-              <div className="flex items-start gap-3">
-                <CheckCircle2 size={18} className="text-[#5B7E52] shrink-0 mt-0.5" />
-                <span className="text-xs sm:text-sm text-gray-700">
-                  <strong>Zero Silicone Build-up:</strong> Leaves hair airy with natural bounce and zero residue.
-                </span>
-              </div>
-              <div className="flex items-start gap-3">
-                <CheckCircle2 size={18} className="text-[#5B7E52] shrink-0 mt-0.5" />
-                <span className="text-xs sm:text-sm text-gray-700">
-                  <strong>Scalp Barrier Soothing:</strong> Calms irritation, balances natural oils, and prevents dryness.
-                </span>
-              </div>
-              <div className="flex items-start gap-3">
-                <CheckCircle2 size={18} className="text-[#5B7E52] shrink-0 mt-0.5" />
-                <span className="text-xs sm:text-sm text-gray-700">
-                  <strong>Instant Comb Slip:</strong> Wet fingers or combs glide effortlessly through tangles.
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <div className="md:col-span-5 flex justify-center">
-            <div className="aspect-[4/3] rounded-2xl overflow-hidden shadow-lg border-2 border-[#E8E4DA] w-full max-w-md bg-[#FAF8F5]">
-              <img
-                src={actionImage}
-                onError={(e) => { e.currentTarget.src = 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=600&q=80'; }}
-                alt="Product in Action"
-                className="w-full h-full object-cover"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 5. SCALP TRANSFORMATION & HOW TO USE */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-3xl p-6 sm:p-12 border border-[#E8E4DA] shadow-sm grid grid-cols-1 md:grid-cols-12 gap-10 items-center">
-          <div className="md:col-span-5">
-            <div className="aspect-[4/3] rounded-2xl overflow-hidden shadow-md border border-[#E8E4DA] bg-[#FAF8F5]">
-              <img
-                src={beforeAfterImage}
-                onError={(e) => { e.currentTarget.src = 'https://images.unsplash.com/photo-1512290900672-1f4142f10b75?auto=format&fit=crop&w=600&q=80'; }}
-                alt="Before & After Transformation"
-                className="w-full h-full object-cover"
-              />
-            </div>
-          </div>
-
-          <div className="md:col-span-7 space-y-6">
-            <span className="text-xs font-bold uppercase tracking-widest text-[#5B7E52] block">
-              Step-by-Step Instructions
-            </span>
-            <h3 className="font-serif text-3xl font-bold text-[#153323]">
-              How to Use
-            </h3>
-
-            <div className="space-y-4 text-xs sm:text-sm text-gray-700">
-              <div className="flex gap-4 items-start p-3 bg-[#FAF8F5] rounded-2xl border border-[#E8E4DA]">
-                <span className="w-7 h-7 rounded-full bg-[#153323] text-white flex items-center justify-center font-bold text-xs shrink-0">
-                  1
-                </span>
                 <div>
-                  <h5 className="font-bold text-[#153323]">Wet Thoroughly</h5>
-                  <p className="text-xs text-gray-500">Soak hair or skin completely with warm water to open cuticles and pores.</p>
-                </div>
-              </div>
-
-              <div className="flex gap-4 items-start p-3 bg-[#FAF8F5] rounded-2xl border border-[#E8E4DA]">
-                <span className="w-7 h-7 rounded-full bg-[#153323] text-white flex items-center justify-center font-bold text-xs shrink-0">
-                  2
-                </span>
-                <div>
-                  <h5 className="font-bold text-[#153323]">Massage & Emulsify</h5>
-                  <p className="text-xs text-gray-500">Work formula gently into a dense lather using your fingertips for 60 seconds.</p>
-                </div>
-              </div>
-
-              <div className="flex gap-4 items-start p-3 bg-[#FAF8F5] rounded-2xl border border-[#E8E4DA]">
-                <span className="w-7 h-7 rounded-full bg-[#153323] text-white flex items-center justify-center font-bold text-xs shrink-0">
-                  3
-                </span>
-                <div>
-                  <h5 className="font-bold text-[#153323]">Rinse Clean</h5>
-                  <p className="text-xs text-gray-500">Rinse with cool water to seal the botanical mucilage barrier and lock in mirror shine.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 6. KEY INGREDIENTS WITH TEST TUBES VISUAL matching Figma */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-[#EFF5ED] rounded-3xl p-6 sm:p-12 border border-[#D7E6D3] grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-          <div className="lg:col-span-7 space-y-6">
-            <span className="text-xs font-bold uppercase tracking-widest text-[#5B7E52] block">
-              Formulation Purity
-            </span>
-            <h3 className="font-serif text-3xl font-bold text-[#153323]">
-              Key Ingredients
-            </h3>
-
-            <div className="space-y-4 text-xs sm:text-sm">
-              <div className="p-3 bg-white rounded-2xl border border-[#D7E6D3]">
-                <strong className="text-[#153323] block text-sm font-serif">Pure Cold-Pressed Okra Extract (Abelmoschus Esculentus)</strong>
-                <p className="text-xs text-gray-600 mt-1">Rich in natural pectins and polysaccharides that coat strands with weightless moisture and detangling slip.</p>
-              </div>
-
-              <div className="p-3 bg-white rounded-2xl border border-[#D7E6D3]">
-                <strong className="text-[#153323] block text-sm font-serif">Hydrolyzed Pea Protein</strong>
-                <p className="text-xs text-gray-600 mt-1">Penetrates cortex to rebuild broken keratin bonds, restoring hair tensile strength and elasticity.</p>
-              </div>
-
-              <div className="p-3 bg-white rounded-2xl border border-[#D7E6D3]">
-                <strong className="text-[#153323] block text-sm font-serif">Hibiscus Sabdariffa Flower Water</strong>
-                <p className="text-xs text-gray-600 mt-1">Stimulates microcirculation at the roots, imparts a natural floral fragrance, and enhances natural gloss.</p>
-              </div>
-
-              <div className="p-3 bg-white rounded-2xl border border-[#D7E6D3]">
-                <strong className="text-[#153323] block text-sm font-serif">Organic Moroccan Argan Oil</strong>
-                <p className="text-xs text-gray-600 mt-1">Seals outer cuticle layers against humidity-induced frizz and UV environmental oxidative damage.</p>
-              </div>
-            </div>
-
-            <Link
-              to="/ingredients"
-              className="inline-flex items-center gap-2 text-xs font-bold text-[#153323] hover:text-[#5B7E52] underline"
-            >
-              Explore Full Ingredients Encyclopedia →
-            </Link>
-          </div>
-
-          <div className="lg:col-span-5 flex justify-center">
-            <div className="max-w-sm rounded-2xl overflow-hidden shadow-md bg-white p-4 border border-[#D7E6D3]">
-              <img
-                src="/figma/test_tubes.png"
-                onError={(e) => { e.currentTarget.src = heroSerum.image; }}
-                alt="Laboratory Test Tubes Extraction"
-                className="w-full h-auto object-contain"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 7. FREQUENTLY ASKED QUESTIONS (FAQ Accordion matching Figma) */}
-      <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-        <div className="text-center space-y-2">
-          <span className="text-xs font-bold uppercase tracking-widest text-[#5B7E52]">
-            Questions & Answers
-          </span>
-          <h3 className="font-serif text-3xl font-bold text-[#153323]">
-            Frequently Asked Questions
-          </h3>
-        </div>
-
-        <div className="space-y-3">
-          {faqs.map((faq, i) => (
-            <div
-              key={i}
-              className="bg-white rounded-2xl border border-[#E8E4DA] overflow-hidden transition-all shadow-sm"
-            >
-              <button
-                onClick={() => setActiveFaq(activeFaq === i ? -1 : i)}
-                className="w-full text-left p-5 flex items-center justify-between gap-4 font-serif text-sm sm:text-base font-bold text-[#153323] hover:text-[#5B7E52]"
-              >
-                <span>{faq.q}</span>
-                <span className="text-gray-400 shrink-0">
-                  {activeFaq === i ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
-                </span>
-              </button>
-              {activeFaq === i && (
-                <div className="px-5 pb-5 text-xs sm:text-sm text-gray-600 leading-relaxed border-t border-gray-100 pt-3">
-                  {faq.a}
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* 8. CUSTOMER REVIEWS & RATING DISTRIBUTION CHART matching Figma */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-        <div className="text-center space-y-2">
-          <span className="text-xs font-bold uppercase tracking-widest text-[#5B7E52]">
-            Verified Customer Reviews
-          </span>
-          <h3 className="font-serif text-3xl font-bold text-[#153323]">
-            Customer Feedback
-          </h3>
-        </div>
-
-        {/* Rating Chart Bar Container matching Figma */}
-        <div className="bg-white rounded-3xl p-6 sm:p-10 border border-[#E8E4DA] shadow-sm grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
-          <div className="md:col-span-4 text-center md:text-left space-y-2">
-            <span className="font-serif text-5xl font-bold text-[#153323]">4.9</span>
-            <div className="flex justify-center md:justify-start text-[#E5A93C]">
-              {[...Array(5)].map((_, i) => (
-                <Star key={i} size={20} className="fill-[#E5A93C] text-[#E5A93C]" />
-              ))}
-            </div>
-            <span className="text-xs text-gray-500 block">Based on 240+ verified ratings</span>
-          </div>
-
-          <div className="md:col-span-8 space-y-2.5 text-xs">
-            <div className="flex items-center gap-3">
-              <span className="w-14 text-gray-500 font-medium">5 Star</span>
-              <div className="flex-1 bg-gray-100 h-2.5 rounded-full overflow-hidden">
-                <div className="bg-[#5B7E52] h-full rounded-full" style={{ width: '85%' }} />
-              </div>
-              <span className="w-10 text-right font-bold text-[#153323]">85%</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="w-14 text-gray-500 font-medium">4 Star</span>
-              <div className="flex-1 bg-gray-100 h-2.5 rounded-full overflow-hidden">
-                <div className="bg-[#5B7E52] h-full rounded-full" style={{ width: '12%' }} />
-              </div>
-              <span className="w-10 text-right font-bold text-[#153323]">12%</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="w-14 text-gray-500 font-medium">3 Star</span>
-              <div className="flex-1 bg-gray-100 h-2.5 rounded-full overflow-hidden">
-                <div className="bg-[#5B7E52] h-full rounded-full" style={{ width: '2%' }} />
-              </div>
-              <span className="w-10 text-right font-bold text-[#153323]">2%</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="w-14 text-gray-500 font-medium">2 Star</span>
-              <div className="flex-1 bg-gray-100 h-2.5 rounded-full overflow-hidden">
-                <div className="bg-[#5B7E52] h-full rounded-full" style={{ width: '1%' }} />
-              </div>
-              <span className="w-10 text-right font-bold text-[#153323]">1%</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Review Submission Form */}
-        <div className="bg-white p-6 sm:p-8 rounded-3xl border border-[#E8E4DA] space-y-4">
-          <h4 className="font-serif text-lg font-bold text-[#153323]">
-            Write a Review for {product.name}
-          </h4>
-
-          {reviewSubmitted ? (
-            <div className="p-4 bg-[#EBF2E9] text-[#153323] rounded-2xl text-xs font-semibold">
-              Thank you! Your verified review has been posted.
-            </div>
-          ) : (
-            <form onSubmit={handleAddReview} className="space-y-4 text-xs">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-gray-700 font-semibold mb-1">Your Name</label>
-                  <input
-                    type="text"
-                    required
-                    value={newReviewAuthor}
-                    onChange={(e) => setNewReviewAuthor(e.target.value)}
-                    placeholder="e.g. Maya S."
-                    className="w-full bg-[#FAF8F5] border border-gray-200 p-3 rounded-xl outline-none"
-                  />
+                  <span className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#84A338] block tracking-tight">
+                    72%
+                  </span>
+                  <span className="text-[11px] sm:text-xs text-gray-600 font-medium block mt-1.5 leading-tight">
+                    Increase in Natural Shine
+                  </span>
                 </div>
                 <div>
-                  <label className="block text-gray-700 font-semibold mb-1">Rating</label>
-                  <select
-                    value={newReviewRating}
-                    onChange={(e) => setNewReviewRating(Number(e.target.value))}
-                    className="w-full bg-[#FAF8F5] border border-gray-200 p-3 rounded-xl outline-none font-semibold text-gray-700"
-                  >
-                    <option value="5">★★★★★ (5 Stars - Exceptional)</option>
-                    <option value="4">★★★★☆ (4 Stars - Great)</option>
-                    <option value="3">★★★☆☆ (3 Stars - Average)</option>
-                  </select>
+                  <span className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#84A338] block tracking-tight">
+                    24H
+                  </span>
+                  <span className="text-[11px] sm:text-xs text-gray-600 font-medium block mt-1.5 leading-tight">
+                    Moisture Lock Shield
+                  </span>
                 </div>
               </div>
-              <div>
-                <label className="block text-gray-700 font-semibold mb-1">Your Review</label>
-                <textarea
-                  required
-                  rows="3"
-                  value={newReviewComment}
-                  onChange={(e) => setNewReviewComment(e.target.value)}
-                  placeholder="Share your experience with this okra formulation..."
-                  className="w-full bg-[#FAF8F5] border border-gray-200 p-3 rounded-xl outline-none"
+            </div>
+
+            {/* Right Column: Model Photo Holding Shampoo */}
+            <div className="lg:col-span-5 flex justify-center lg:justify-end">
+              <div className="w-full max-w-[460px] flex items-center justify-center">
+                <img
+                  src="/figma_landing/shampoo_model_hero_exact.png"
+                  alt="Model holding Nourish & Shine Okra Shampoo"
+                  className="w-full h-auto object-contain drop-shadow-md"
                 />
               </div>
-              <button
-                type="submit"
-                className="bg-[#153323] text-white font-semibold px-6 py-3 rounded-full hover:bg-[#204b34] transition"
-              >
-                Submit Review
-              </button>
-            </form>
-          )}
+            </div>
+          </div>
         </div>
+      </section>
 
-        {/* Existing Reviews */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {(reviewsList.length > 0 ? reviewsList : [
-            { id: '1', author: 'Aanya S.', date: '2 days ago', rating: 5, comment: 'The detangling slip on this shampoo is unlike anything I have ever used. My curls were defined with zero frizz.' },
-            { id: '2', author: 'Rhea D.', date: '1 week ago', rating: 5, comment: 'No plastic buildup or sticky feeling! Scalp feels so fresh and calm.' }
-          ]).map((rev) => (
-            <div key={rev.id} className="p-5 bg-white rounded-3xl border border-[#E8E4DA] space-y-2 shadow-sm">
-              <div className="flex items-center justify-between">
-                <span className="font-bold text-[#153323] text-sm">{rev.author}</span>
-                <span className="text-[11px] text-gray-400">{rev.date}</span>
+      {/* ========================================================= */}
+      {/* SECTION 3: PRODUCT DESCRIPTION (#F4F7EE)                  */}
+      {/* ========================================================= */}
+      <section className="w-full bg-[#F4F7EE] py-16 sm:py-24">
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+            {/* Left: 3 Circular Outline Badges */}
+            <div className="lg:col-span-5 flex justify-center">
+              <img
+                src="/figma_landing/shampoo_3_badges_exact.png"
+                alt="Nourishing, Sulfate-Free, Soft-Hair Badges"
+                className="w-full max-w-[480px] h-auto object-contain"
+              />
+            </div>
+
+            {/* Right: Rich Editorial Description */}
+            <div className="lg:col-span-7 space-y-4">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#1C201D] tracking-tight">
+                Product Description
+              </h2>
+
+              <h3 className="text-xs sm:text-sm font-semibold text-[#B59059]">
+                Nourish your hair. Restore its natural shine.
+              </h3>
+
+              <p className="text-xs sm:text-[13px] text-gray-600 leading-relaxed font-normal">
+                Adron Nourish & Shine Hair Shampoo is a nature-inspired hair care formula designed
+                to gently cleanse and nourish your hair while helping it feel softer, smoother, and
+                healthier. Enriched with Okra, Hibiscus, and Shikakai, the shampoo combines
+                traditional botanical ingredients with everyday hair-care needs.
+              </p>
+
+              <p className="text-xs sm:text-[13px] text-gray-600 leading-relaxed font-normal">
+                Its nourishing formula helps support stronger-looking hair, improved softness, and
+                a natural-looking shine, making it suitable for regular use across different hair
+                types.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================================= */}
+      {/* SECTION 4: PRODUCT BENEFITS (White)                       */}
+      {/* ========================================================= */}
+      <section className="w-full bg-white py-16 sm:py-24">
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+            {/* Left: Benefits Bullets & 3 Circular Icons */}
+            <div className="lg:col-span-7 space-y-6">
+              <div>
+                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#1C201D] tracking-tight mb-2">
+                  Product Benefits
+                </h2>
+                <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider block">
+                  Key Benefits
+                </span>
               </div>
-              <div className="flex text-[#E5A93C]">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} size={14} className={i < rev.rating ? "fill-[#E5A93C] text-[#E5A93C]" : "text-gray-300"} />
+
+              <ul className="space-y-2 text-xs sm:text-[13px] text-gray-600 leading-relaxed font-normal">
+                <li className="flex items-start gap-2">
+                  <span className="text-[#84A338] font-bold">•</span>
+                  <span><strong>Helps control hair fall</strong> – Supports healthier-looking, stronger hair.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#84A338] font-bold">•</span>
+                  <span><strong>Nourishes hair</strong> – Helps provide essential care to dry and stressed hair.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#84A338] font-bold">•</span>
+                  <span><strong>Adds shine</strong> – Leaves hair looking naturally glossy and vibrant.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#84A338] font-bold">•</span>
+                  <span><strong>Improves softness</strong> – Helps make hair feel smoother and more manageable.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#84A338] font-bold">•</span>
+                  <span><strong>Gentle cleansing</strong> – Cleanses away dirt, excess oil, and buildup without leaving hair feeling overly dry.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#84A338] font-bold">•</span>
+                  <span><strong>For all hair types</strong> – Suitable for different hair textures and everyday hair-care routines.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#84A338] font-bold">•</span>
+                  <span><strong>Sulfate-free & paraben-free</strong> – Formulated without sulfates and parabens.</span>
+                </li>
+              </ul>
+
+              {/* 3 Circular Benefit Icons */}
+              <div className="pt-4">
+                <img
+                  src="/figma_landing/shampoo_benefit_icons_exact.png"
+                  alt="Anti-frizz, Illuminate Hair, Smooth Hair"
+                  className="w-full max-w-[480px] h-auto object-contain"
+                />
+              </div>
+            </div>
+
+            {/* Right: Shower Lather Model with Play Button */}
+            <div className="lg:col-span-5 flex justify-center">
+              <div className="w-full max-w-[480px] rounded-2xl overflow-hidden shadow-sm relative group cursor-pointer">
+                <img
+                  src="/figma_landing/shampoo_shower_lather_exact.png"
+                  alt="Shower Lather Application"
+                  className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================================= */}
+      {/* SECTION 5: HOW TO USE & SCALP COMPARISON (White)          */}
+      {/* ========================================================= */}
+      <section className="w-full bg-white py-16 sm:py-24 border-t border-gray-100">
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+            {/* Left: Scalp Before / After Interactive Slider */}
+            <div className="lg:col-span-6 flex justify-center">
+              <div
+                ref={sliderContainerRef}
+                onMouseDown={onMouseDownSlider}
+                onTouchStart={onMouseDownSlider}
+                className="relative w-full max-w-[520px] aspect-[620/390] rounded-2xl overflow-hidden select-none cursor-ew-resize shadow-md border border-gray-100"
+              >
+                {/* AFTER image (Background layer) */}
+                <img
+                  src="/figma_landing/shampoo_scalp_after_exact.png"
+                  alt="After Scalp Treatment"
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+
+                {/* BEFORE image (Clipped foreground layer) */}
+                <div
+                  className="absolute inset-0 overflow-hidden"
+                  style={{ width: `${sliderPos}%` }}
+                >
+                  <img
+                    src="/figma_landing/shampoo_scalp_before_exact.png"
+                    alt="Before Scalp Treatment"
+                    className="absolute top-0 left-0 h-full w-[520px] max-w-none object-cover"
+                  />
+                </div>
+
+                {/* Badges */}
+                <span className="absolute bottom-3 left-3 bg-[#2A4B23] text-white text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded shadow z-10 pointer-events-none">
+                  BEFORE
+                </span>
+                <span className="absolute bottom-3 right-3 bg-[#2A4B23] text-white text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded shadow z-10 pointer-events-none">
+                  AFTER
+                </span>
+
+                {/* Vertical Divider line & Circular Draggable Handle */}
+                <div
+                  className="absolute top-0 bottom-0 w-[2px] bg-white shadow-[0_0_8px_rgba(0,0,0,0.4)] z-20 pointer-events-none"
+                  style={{ left: `${sliderPos}%` }}
+                >
+                  <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-white shadow-lg flex items-center justify-center text-[10px] font-bold text-gray-700 border border-gray-200">
+                    ◀▶
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right: Step-by-Step Instructions */}
+            <div className="lg:col-span-6 space-y-6">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#1C201D] uppercase tracking-wide">
+                HOW TO USE
+              </h2>
+
+              <div className="space-y-4 text-xs sm:text-[13px] text-gray-700 leading-relaxed">
+                <p>
+                  <strong className="text-[#1C201D]">Step 1:</strong> Wet your hair thoroughly with water.
+                </p>
+                <p>
+                  <strong className="text-[#1C201D]">Step 2:</strong> Apply an adequate amount of shampoo to your scalp and hair.
+                </p>
+                <p>
+                  <strong className="text-[#1C201D]">Step 3:</strong> Gently massage into the scalp and hair to create a rich lather.
+                </p>
+                <p>
+                  <strong className="text-[#1C201D]">Step 4:</strong> Rinse thoroughly with clean water.
+                </p>
+                <p>
+                  <strong className="text-[#1C201D]">Step 5:</strong> Repeat if needed and follow with your preferred conditioner.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================================= */}
+      {/* SECTION 6: KEY INGREDIENTS & TEST TUBES (White)           */}
+      {/* ========================================================= */}
+      <section className="w-full bg-white py-16 sm:py-24 border-t border-gray-100">
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+            {/* Left: Ingredients Details & Full List */}
+            <div className="lg:col-span-6 space-y-6">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#1C201D] tracking-tight">
+                Key Ingredients
+              </h2>
+
+              <div className="space-y-4 text-xs sm:text-[13px] text-gray-600 leading-relaxed">
+                <div>
+                  <h4 className="font-bold text-[#1C201D] text-sm mb-1">Okra</h4>
+                  <p>
+                    A nutrient-rich botanical known for its conditioning properties, helping to
+                    nourish hair and leave it feeling softer, smoother, and more manageable.
+                  </p>
+                </div>
+
+                <div>
+                  <h4 className="font-bold text-[#1C201D] text-sm mb-1">Hibiscus</h4>
+                  <p>
+                    A flower traditionally used in hair care, known for helping support
+                    healthy-looking hair while enhancing softness and natural shine.
+                  </p>
+                </div>
+
+                <div>
+                  <h4 className="font-bold text-[#1C201D] text-sm mb-1">Shikakai</h4>
+                  <p>
+                    A traditional Ayurvedic ingredient that gently cleanses the scalp and hair while
+                    helping maintain smoothness and manageability.
+                  </p>
+                </div>
+
+                <div className="pt-4 border-t border-gray-100">
+                  <h4 className="font-bold text-[#1C201D] text-sm mb-1">Full Ingredient List</h4>
+                  <p className="text-gray-500 font-medium">
+                    Okra • Hibiscus • Shikakai • Aqua / Water • Cleansing Agents • Conditioning
+                    Agents • Fragrance / Parfum
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Right: 3 Botanical Laboratory Test Tubes Graphic */}
+            <div className="lg:col-span-6 flex justify-center">
+              <div className="w-full max-w-[500px]">
+                <img
+                  src="/figma_landing/shampoo_test_tubes_exact.png"
+                  alt="Hyaluronic Acid, Okra Extract, Okra Seed Oil in Test Tubes"
+                  className="w-full h-auto object-contain"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================================= */}
+      {/* SECTION 7: FREQUENTLY ASKED QUESTIONS (White)             */}
+      {/* ========================================================= */}
+      <section className="w-full bg-white py-16 sm:py-24 border-t border-gray-100">
+        <div className="max-w-[880px] mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#1C201D] text-center mb-10 tracking-tight">
+            Frequency Asked Questions
+          </h2>
+
+          <div className="space-y-3">
+            {faqs.map((faq, i) => (
+              <div
+                key={i}
+                className="border border-gray-200 rounded-xl overflow-hidden transition-all bg-white"
+              >
+                <button
+                  onClick={() => setOpenFaq(openFaq === i ? -1 : i)}
+                  className="w-full px-6 py-4 text-left flex items-center justify-between gap-4 font-bold text-xs sm:text-sm text-[#1C201D] hover:text-[#84A338] transition-colors"
+                >
+                  <span>{faq.q}</span>
+                  <span className="text-gray-400 font-normal text-lg shrink-0">
+                    {openFaq === i ? '−' : '+'}
+                  </span>
+                </button>
+                {openFaq === i && (
+                  <div className="px-6 pb-5 pt-1 text-xs text-gray-600 leading-relaxed border-t border-gray-50">
+                    {faq.a}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================================= */}
+      {/* SECTION 8: CUSTOMER REVIEWS (White)                       */}
+      {/* ========================================================= */}
+      <section id="reviews" className="w-full bg-white py-16 sm:py-24 border-t border-gray-100">
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#1C201D] text-center mb-12 tracking-tight">
+            Customer Reviews
+          </h2>
+
+          {/* 3-Column Review Overview matching Figma */}
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center pb-12 border-b border-gray-200">
+            {/* Left: Star Breakdown Bars */}
+            <div className="md:col-span-4 space-y-2.5 text-xs">
+              {[
+                { star: '5 Star', count: '568', pct: '85%' },
+                { star: '4 Star', count: '423', pct: '65%' },
+                { star: '3 Star', count: '102', pct: '25%' },
+                { star: '2 Star', count: '86', pct: '15%' },
+                { star: '1 Star', count: '75', pct: '10%' }
+              ].map((item, idx) => (
+                <div key={idx} className="flex items-center gap-3">
+                  <span className="w-12 text-gray-700 font-medium">{item.star}</span>
+                  <span className="text-[#B59059] text-xs">☆</span>
+                  <div className="flex-1 h-2 bg-[#F4F6EB] rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-[#84A338] rounded-full transition-all duration-500"
+                      style={{ width: item.pct }}
+                    />
+                  </div>
+                  <span className="w-8 text-right text-gray-500 font-medium">
+                    {item.count}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            {/* Center: Customer Find this product best for */}
+            <div className="md:col-span-4 text-center px-4 md:border-l md:border-r border-gray-200">
+              <span className="text-xs font-semibold text-gray-700 block mb-3">
+                Customer Find this product best for
+              </span>
+              <div className="flex flex-wrap justify-center gap-2">
+                {[
+                  'Straight Hair',
+                  'Color Treated Hair',
+                  'Natural Textured Hair',
+                  'Dry Hair',
+                  'Damaged Hair'
+                ].map((tag, idx) => (
+                  <span
+                    key={idx}
+                    className="bg-[#F4F7EE] text-gray-700 text-[11px] font-medium px-3.5 py-1.5 rounded-full"
+                  >
+                    {tag}
+                  </span>
                 ))}
               </div>
-              <p className="text-xs text-gray-700 leading-relaxed">{rev.comment}</p>
             </div>
-          ))}
+
+            {/* Right: (4.9) Out Of 5 and Write a review button */}
+            <div className="md:col-span-4 text-center space-y-3">
+              <div className="flex justify-center text-[#B59059] text-xl tracking-widest">
+                <span>☆</span>
+                <span>☆</span>
+                <span>☆</span>
+                <span>☆</span>
+                <span>☆</span>
+              </div>
+              <div className="text-3xl font-bold text-[#1C201D]">
+                (4.9) <span className="text-base font-normal text-gray-500">Out Of 5</span>
+              </div>
+              <p className="text-[11px] text-gray-400">
+                Average rating includes incentivized reviews.
+              </p>
+              <div>
+                <button
+                  onClick={() => setShowReviewForm(!showReviewForm)}
+                  className="inline-flex items-center gap-2 border border-[#1C201D] text-[#1C201D] hover:bg-[#1C201D] hover:text-white px-6 py-2.5 rounded text-xs font-semibold uppercase tracking-wider transition-all"
+                >
+                  <span>Write a review</span>
+                  <ArrowRight size={13} />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Optional Inline Review Form */}
+          {showReviewForm && (
+            <div className="max-w-xl mx-auto my-8 p-6 bg-[#F4F7EE] rounded-2xl border border-gray-200 transition-all">
+              <div className="flex justify-between items-center mb-4">
+                <h4 className="font-bold text-sm text-[#1C201D]">Write Your Review</h4>
+                <button
+                  onClick={() => setShowReviewForm(false)}
+                  className="text-gray-400 hover:text-black"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+
+              {reviewSubmitted ? (
+                <div className="p-4 bg-white text-[#84A338] text-center rounded-xl text-xs font-bold">
+                  ✓ Thank you! Your review has been added.
+                </div>
+              ) : (
+                <form onSubmit={handleReviewSubmit} className="space-y-3 text-xs">
+                  <div>
+                    <label className="block text-gray-700 font-semibold mb-1">Your Name</label>
+                    <input
+                      type="text"
+                      required
+                      value={reviewName}
+                      onChange={(e) => setReviewName(e.target.value)}
+                      placeholder="e.g. Radhika P."
+                      className="w-full bg-white border border-gray-200 rounded-lg p-2.5 outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-gray-700 font-semibold mb-1">Rating</label>
+                    <select
+                      value={reviewRating}
+                      onChange={(e) => setReviewRating(Number(e.target.value))}
+                      className="w-full bg-white border border-gray-200 rounded-lg p-2.5 outline-none"
+                    >
+                      <option value="5">★★★★★ (5 Stars - Outstanding)</option>
+                      <option value="4">★★★★☆ (4 Stars - Very Good)</option>
+                      <option value="3">★★★☆☆ (3 Stars - Average)</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-gray-700 font-semibold mb-1">Your Review</label>
+                    <textarea
+                      required
+                      rows="3"
+                      value={reviewComment}
+                      onChange={(e) => setReviewComment(e.target.value)}
+                      placeholder="Share your experience with Okra Shampoo..."
+                      className="w-full bg-white border border-gray-200 rounded-lg p-2.5 outline-none"
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    className="bg-[#1C201D] text-white px-6 py-2.5 rounded text-xs font-bold uppercase tracking-wider hover:bg-black transition"
+                  >
+                    Submit Review
+                  </button>
+                </form>
+              )}
+            </div>
+          )}
+
+          {/* Existing Verified Reviews List */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-10">
+            {reviewsList.map((rev) => (
+              <div
+                key={rev.id}
+                className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm space-y-2.5"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-xs text-[#1C201D]">{rev.author}</span>
+                  <span className="text-[10px] text-gray-400">{rev.date}</span>
+                </div>
+                <div className="flex text-[#B59059] text-xs">
+                  {[...Array(5)].map((_, i) => (
+                    <span key={i}>{i < rev.rating ? '★' : '☆'}</span>
+                  ))}
+                </div>
+                <h5 className="font-semibold text-xs text-[#1C201D]">{rev.title}</h5>
+                <p className="text-[11px] text-gray-600 leading-relaxed font-normal">
+                  {rev.comment}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* 9. EXPLORE RELATED RITUALS (3 Product Cards matching Figma) */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-        <div className="text-center space-y-1">
-          <span className="text-xs font-bold uppercase tracking-widest text-[#5B7E52]">
-            Complete The Ritual
-          </span>
-          <h3 className="font-serif text-3xl font-bold text-[#153323]">
-            You May Also Like
-          </h3>
+      {/* ========================================================= */}
+      {/* SECTION 9: EXPLORE RELATED ARTICLES (#FAF7F2)             */}
+      {/* ========================================================= */}
+      <section className="relative w-full bg-[#FAF7F2] py-20 lg:py-28 overflow-hidden">
+        {/* Floating Okra Pod on Bottom Left */}
+        <div className="hidden xl:block absolute left-0 bottom-4 pointer-events-none select-none z-0">
+          <img
+            src="/figma_landing/shampoo_sec9_okra.png"
+            alt=""
+            className="w-48 lg:w-56 h-auto object-contain opacity-90"
+          />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {relatedProducts.map(p => (
-            <ProductCard key={p.id} product={p} />
-          ))}
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#1C201D] text-center mb-12 tracking-tight">
+            <span className="text-[#84A338]">Explore</span> Related Articles
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+            {[
+              {
+                img: '/figma_landing/shampoo_art_1.png',
+                title: "Rose Water in Your Skincare Routine: 7 Ways You're Probably Not Using It",
+                desc: "You've probably got a bottle of rose water sitting on your shelf, dutifully used as a toner after cleansing. But here..."
+              },
+              {
+                img: '/figma_landing/shampoo_art_2.png',
+                title: "Rose Water in Your Skincare Routine: 7 Ways You're Probably Not Using It",
+                desc: "You've probably got a bottle of rose water sitting on your shelf, dutifully used as a toner after cleansing. But here..."
+              },
+              {
+                img: '/figma_landing/shampoo_art_3.png',
+                title: "Rose Water in Your Skincare Routine: 7 Ways You're Probably Not Using It",
+                desc: "You've probably got a bottle of rose water sitting on your shelf, dutifully used as a toner after cleansing. But here..."
+              }
+            ].map((art, idx) => (
+              <div
+                key={idx}
+                className="bg-transparent flex flex-col group cursor-pointer space-y-3"
+              >
+                <div className="w-full aspect-[406/332] rounded-2xl overflow-hidden bg-gray-100 shadow-sm">
+                  <img
+                    src={art.img}
+                    alt={art.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+                <h3 className="font-bold text-xs sm:text-sm text-[#1C201D] leading-snug group-hover:text-[#84A338] transition-colors">
+                  {art.title}
+                </h3>
+                <p className="text-[11px] text-gray-500 leading-relaxed font-normal">
+                  {art.desc}
+                </p>
+                <div className="pt-1">
+                  <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#84A338] hover:underline">
+                    <span>Read More</span>
+                    <ArrowRight size={13} />
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Slider Navigation Dots / Arrows */}
+          <div className="flex items-center justify-center gap-3 mt-10">
+            <button
+              className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-gray-700 hover:bg-gray-50 transition border border-gray-100"
+              aria-label="Previous article"
+            >
+              <ChevronLeft size={18} />
+            </button>
+            <button
+              className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-gray-700 hover:bg-gray-50 transition border border-gray-100"
+              aria-label="Next article"
+            >
+              <ChevronRight size={18} />
+            </button>
+          </div>
         </div>
       </section>
 
-      {/* 10. INSTAGRAM GRID matching Figma */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
-        <div className="text-center space-y-1">
-          <span className="text-xs font-bold uppercase tracking-widest text-[#5B7E52]">
-            #AdronBeauty
-          </span>
-          <h4 className="font-serif text-xl font-bold text-[#153323]">
-            Follow Our Clean Rituals on Instagram
-          </h4>
-        </div>
+      {/* ========================================================= */}
+      {/* SECTION 10: ADRONGLOW INSTAGRAM GRID (White)              */}
+      {/* ========================================================= */}
+      <section className="w-full bg-white py-16 sm:py-24">
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#1C201D] text-center mb-10 tracking-tight">
+            Adron<span className="text-[#84A338]">Glow</span>
+          </h2>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
-          {[
-            'https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?auto=format&fit=crop&w=400&q=80',
-            'https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=400&q=80',
-            'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=400&q=80',
-            'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=400&q=80',
-            'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=400&q=80',
-            'https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?auto=format&fit=crop&w=400&q=80'
-          ].map((url, i) => (
-            <div key={i} className="aspect-square rounded-2xl overflow-hidden shadow-sm bg-[#FAF8F5]">
-              <img src={url} alt="Instagram" className="w-full h-full object-cover hover:scale-105 transition-transform" />
-            </div>
-          ))}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 mb-10">
+            {[
+              '/figma_landing/shampoo_ig_1.png',
+              '/figma_landing/shampoo_ig_2.png',
+              '/figma_landing/shampoo_ig_3.png',
+              '/figma_landing/shampoo_ig_4.png',
+              '/figma_landing/shampoo_ig_5.png',
+              '/figma_landing/shampoo_ig_6.png'
+            ].map((img, idx) => (
+              <a
+                key={idx}
+                href="https://instagram.com"
+                target="_blank"
+                rel="noreferrer"
+                className="w-full aspect-square rounded-2xl overflow-hidden bg-gray-50 block group shadow-sm"
+              >
+                <img
+                  src={img}
+                  alt={`Instagram Post ${idx + 1}`}
+                  className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-500"
+                />
+              </a>
+            ))}
+          </div>
+
+          <div className="text-center">
+            <a
+              href="https://instagram.com"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 border border-[#1C201D] text-[#1C201D] hover:bg-[#1C201D] hover:text-white px-8 py-3 rounded text-xs font-bold uppercase tracking-wider transition-all"
+            >
+              <span>FOLLOW @ADRON_SKINCARE</span>
+              <ArrowRight size={13} />
+            </a>
+          </div>
         </div>
       </section>
     </div>

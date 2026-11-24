@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Search, Heart, ShoppingBag, User, Menu, X, ArrowRight } from 'lucide-react';
 import { useShop } from '../context/ShopContext';
 import AdronLogo from './AdronLogo';
@@ -10,6 +10,7 @@ export default function Navbar() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -52,22 +53,52 @@ export default function Navbar() {
 
         {/* Desktop Navigation Links - Exact Match to Figma */}
         <div className="hidden lg:flex items-center space-x-7 xl:space-x-8 text-[13px] font-medium text-[#2D3748]">
-          <Link to="/shop" className="hover:text-[#8DAF3E] transition-colors">
+          <Link
+            to="/shop"
+            className={`transition-colors ${
+              location.pathname === '/shop' ? 'text-[#8DAF3E] font-semibold' : 'hover:text-[#8DAF3E]'
+            }`}
+          >
             Shop
           </Link>
-          <Link to="/product/okra-shampoo" className="hover:text-[#8DAF3E] transition-colors">
+          <Link
+            to="/product/okra-shampoo"
+            className={`transition-colors ${
+              location.pathname === '/product/okra-shampoo' ? 'text-[#8DAF3E] font-semibold' : 'hover:text-[#8DAF3E]'
+            }`}
+          >
             Okra Shampoo
           </Link>
-          <Link to="/product/okra-facewash" className="hover:text-[#8DAF3E] transition-colors">
+          <Link
+            to="/product/okra-facewash"
+            className={`transition-colors ${
+              location.pathname === '/product/okra-facewash' ? 'text-[#8DAF3E] font-semibold' : 'hover:text-[#8DAF3E]'
+            }`}
+          >
             Okra Facewash
           </Link>
-          <Link to="/product/okra-serum" className="hover:text-[#8DAF3E] transition-colors">
+          <Link
+            to="/product/okra-serum"
+            className={`transition-colors ${
+              location.pathname === '/product/okra-serum' ? 'text-[#8DAF3E] font-semibold' : 'hover:text-[#8DAF3E]'
+            }`}
+          >
             Okra Serum
           </Link>
-          <Link to="/shop?bestseller=true" className="hover:text-[#8DAF3E] transition-colors">
+          <Link
+            to="/shop?bestseller=true"
+            className={`transition-colors ${
+              location.search.includes('bestseller') ? 'text-[#8DAF3E] font-semibold' : 'hover:text-[#8DAF3E]'
+            }`}
+          >
             Best Sellers
           </Link>
-          <Link to="/ingredients" className="hover:text-[#8DAF3E] transition-colors">
+          <Link
+            to="/ingredients"
+            className={`transition-colors ${
+              location.pathname === '/ingredients' ? 'text-[#8DAF3E] font-semibold' : 'hover:text-[#8DAF3E]'
+            }`}
+          >
             Ingredients
           </Link>
         </div>
