@@ -155,14 +155,11 @@ export default function BestSellers() {
                 className="flex flex-col justify-between group space-y-4"
               >
                 {/* Product Image Container (#F4F7EE) */}
-                <div className="relative w-full aspect-[408/360] rounded-2xl overflow-hidden bg-[#F4F7EE] p-4 flex items-center justify-center transition-all group-hover:shadow-md">
-                  <span className="absolute top-3.5 left-3.5 bg-white text-gray-700 text-[10px] font-semibold px-3 py-1 rounded-full shadow-xs z-10">
-                    Best Seller
-                  </span>
+                <div className="relative w-full aspect-[408/360] rounded-2xl overflow-hidden bg-[#F4F7EE] flex items-center justify-center transition-all group-hover:shadow-md">
                   <img
                     src={prod.image}
                     alt={prod.name}
-                    className="w-full h-full object-contain group-hover:scale-104 transition-transform duration-500"
+                    className="w-full h-full object-cover group-hover:scale-104 transition-transform duration-500"
                   />
                 </div>
 
