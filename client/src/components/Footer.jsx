@@ -55,10 +55,10 @@ export default function Footer() {
             <ul className="space-y-2 text-xs text-[#9DBA95]">
               <li><Link to="/" className="hover:text-white transition">Home</Link></li>
               <li><Link to="/shop" className="hover:text-white transition">Shop All</Link></li>
-              <li><Link to="/shop" className="hover:text-white transition">Best Sellers</Link></li>
+              <li><Link to="/bestsellers" className="hover:text-white transition">Best Sellers</Link></li>
               <li><Link to="/ingredients" className="hover:text-white transition">Ingredients</Link></li>
               <li><Link to="/about" className="hover:text-white transition">About Us</Link></li>
-              <li><Link to="/about" className="hover:text-white transition">Contact</Link></li>
+              <li><Link to="/contact" className="hover:text-white transition">Contact Us</Link></li>
             </ul>
           </div>
 
@@ -68,11 +68,11 @@ export default function Footer() {
               Customer Care
             </h5>
             <ul className="space-y-2 text-xs text-[#9DBA95]">
-              <li><Link to="/cart" className="hover:text-white transition">Track Order</Link></li>
-              <li><Link to="/checkout" className="hover:text-white transition">Shipping Policy</Link></li>
-              <li><Link to="/checkout" className="hover:text-white transition">Returns & Exchange</Link></li>
-              <li><Link to="/product/okra-shampoo" className="hover:text-white transition">FAQ</Link></li>
-              <li><Link to="/about" className="hover:text-white transition">Privacy Policy</Link></li>
+              <li><Link to="/track-order" className="hover:text-white transition">Track Order</Link></li>
+              <li><Link to="/shipping-policy" className="hover:text-white transition">Shipping Policy</Link></li>
+              <li><Link to="/returns-exchange" className="hover:text-white transition">Returns & Exchange</Link></li>
+              <li><Link to="/faqs" className="hover:text-white transition">FAQs</Link></li>
+              <li><Link to="/privacy-policy" className="hover:text-white transition">Privacy Policy</Link></li>
               <li><Link to="/admin" className="hover:text-white transition text-[#A3C79B] font-semibold">Merchant Admin Portal</Link></li>
             </ul>
           </div>

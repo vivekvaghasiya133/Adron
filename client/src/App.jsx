@@ -17,6 +17,12 @@ import Search from './pages/Search';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import About from './pages/About';
+import Contact from './pages/Contact';
+import TrackOrder from './pages/TrackOrder';
+import ShippingPolicy from './pages/ShippingPolicy';
+import ReturnsPolicy from './pages/ReturnsPolicy';
+import FaqPage from './pages/FaqPage';
+import PrivacyPolicy from './pages/PrivacyPolicy';
 import Admin from './pages/Admin';
 
 // Scroll to top on page navigation
@@ -54,6 +60,16 @@ function MainLayout() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/contact-us" element={<Contact />} />
+          <Route path="/track-order" element={<TrackOrder />} />
+          <Route path="/shipping-policy" element={<ShippingPolicy />} />
+          <Route path="/returns-policy" element={<ReturnsPolicy />} />
+          <Route path="/returns-exchange" element={<ReturnsPolicy />} />
+          <Route path="/faqs" element={<FaqPage />} />
+          <Route path="/faq" element={<FaqPage />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/terms" element={<PrivacyPolicy />} />
           <Route path="/admin" element={<Admin />} />
         </Routes>
       </main>

@@ -234,8 +234,8 @@ export default function Navbar() {
           <Link to="/ingredients" onClick={() => setMobileMenuOpen(false)} className="block text-[#153323] hover:text-[#5B7E52]">
             Ingredients
           </Link>
-          <Link to="/ingredients" onClick={() => setMobileMenuOpen(false)} className="block text-[#153323] hover:text-[#5B7E52]">
-            Ingredients Science
+          <Link to="/contact" onClick={() => setMobileMenuOpen(false)} className="block text-[#153323] hover:text-[#5B7E52]">
+            Contact Us
           </Link>
           <Link to="/favorites" onClick={() => setMobileMenuOpen(false)} className="block text-[#153323] hover:text-[#5B7E52]">
             My Favorites ({wishlist.length})
