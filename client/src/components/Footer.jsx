@@ -73,7 +73,6 @@ export default function Footer() {
               <li><Link to="/returns-exchange" className="hover:text-white transition">Returns & Exchange</Link></li>
               <li><Link to="/faqs" className="hover:text-white transition">FAQs</Link></li>
               <li><Link to="/privacy-policy" className="hover:text-white transition">Privacy Policy</Link></li>
-              <li><Link to="/admin" className="hover:text-white transition text-[#A3C79B] font-semibold">Merchant Admin Portal</Link></li>
             </ul>
           </div>
 
