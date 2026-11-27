@@ -432,29 +432,29 @@ export default function Home() {
       {/* ============================================================== */}
       {/* 4. WHY OKRA BELONGS IN YOUR BEAUTY RITUAL                      */}
       {/* ============================================================== */}
-      <section className="w-full bg-white py-12 sm:py-16">
+      <section className="w-full bg-white pt-14 sm:pt-20 pb-8 sm:pb-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 sm:space-y-12">
           {/* Centered Heading */}
           <div className="text-center">
-            <h2 className="font-sans text-2xl sm:text-[34px] font-bold text-[#1F2937] tracking-tight">
+            <h2 className="font-sans text-2xl sm:text-[36px] font-bold text-[#1F2937] tracking-tight">
               <span className="text-[#84A338]">Why Okra</span> Belongs in Your Beauty Ritual
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-            {/* Left Visual: exact high-res composite asset with 5+ Years badge and checklists */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center">
+            {/* Left Visual: 100% complete 4K visual with full 5+ Years badge, all 5 checklist items, and intact pedestal */}
             <div className="lg:col-span-7 flex justify-center lg:justify-start">
-              <div className="w-full max-w-[640px] select-none">
+              <div className="w-full max-w-[720px] select-none drop-shadow-sm">
                 <img
                   src="/figma_landing/why_okra_visual_exact.png"
                   alt="Why Okra Belongs in Your Beauty Ritual"
-                  className="w-full h-auto object-contain select-none"
+                  className="w-full h-auto object-contain select-none rounded-2xl"
                 />
               </div>
             </div>
 
             {/* Right Column: Circular Adron Since 2020 seal stamp + exact description + DISCOVER MORE button */}
-            <div className="lg:col-span-5 flex flex-col items-center lg:items-start text-center lg:text-left space-y-5">
+            <div className="lg:col-span-5 flex flex-col items-center lg:items-start text-center lg:text-left space-y-6">
               {/* Official Circular Stamp from Figma */}
               <div className="w-28 sm:w-36 select-none">
                 <img
@@ -465,15 +465,15 @@ export default function Home() {
               </div>
 
               {/* Exact Description text from Figma Image 1 */}
-              <p className="text-[13px] sm:text-[14px] text-[#4A5568] leading-relaxed font-sans max-w-md pt-1">
+              <p className="text-[14px] sm:text-[15px] text-[#4A5568] leading-relaxed font-sans max-w-md">
                 Discover the natural power of okra—a nutrient-rich botanical that helps hydrate, nourish, and care for your skin and hair. Thoughtfully blended with modern beauty science, it brings gentle, effective care to your everyday ritual.
               </p>
 
               {/* Exact DISCOVER MORE button from Figma Image 1 */}
-              <div className="pt-2">
+              <div className="pt-1">
                 <Link
                   to="/ingredients"
-                  className="bg-[#151515] hover:bg-[#2C3E33] text-white text-xs font-bold uppercase tracking-wider px-7 py-3.5 shadow-sm transition-all inline-flex items-center gap-2 group active:scale-95"
+                  className="bg-[#151515] hover:bg-[#2C3E33] text-white text-xs font-bold uppercase tracking-wider px-8 py-3.5 shadow-sm transition-all inline-flex items-center gap-2.5 group active:scale-95"
                 >
                   DISCOVER MORE <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
@@ -484,29 +484,51 @@ export default function Home() {
       </section>
 
       {/* ============================================================== */}
-      {/* 5. EDITORIAL FULL-WIDTH BANNER / MARQUEE                       */}
+      {/* 5. EDITORIAL FULL-WIDTH BANNER / MARQUEE - 1:1 Pixel Match      */}
       {/* ============================================================== */}
-      <section className="w-full bg-white py-6 sm:py-8 overflow-hidden select-none border-y border-[#F0EFEB]">
-        <div className="flex items-center justify-center gap-4 text-center px-4 whitespace-nowrap overflow-x-auto no-scrollbar">
-          <span className="font-sans text-xl sm:text-2xl lg:text-3xl font-medium text-[#9CA3AF]">
-            Powered by
-          </span>
-          <img
-            src="/figma_landing/marquee_leaf_icon.png"
-            alt=""
-            className="w-8 sm:w-10 h-auto inline-block -mt-1 select-none"
-          />
-          <span className="font-sans text-xl sm:text-2xl lg:text-3xl font-bold text-[#1F2937]">
-            Naturally Nourishing
-          </span>
-          <span className="text-[#9CA3AF] text-xl sm:text-2xl font-light mx-2">•</span>
-          <span className="font-sans text-xl sm:text-2xl lg:text-3xl font-medium text-[#84A338]">
-            Deeply Hydrating
-          </span>
-          <span className="text-[#9CA3AF] text-xl sm:text-2xl font-light mx-2">•</span>
-          <span className="font-sans text-xl sm:text-2xl lg:text-3xl font-medium text-[#4A5568]">
-            Visibly Transforming
-          </span>
+      <section className="w-full bg-white py-6 sm:py-10 overflow-hidden select-none">
+        <div className="relative w-full overflow-hidden">
+          <div className="animate-ticker-marquee">
+            {[0, 1].map((copyIndex) => (
+              <div key={copyIndex} className="flex items-center gap-8 sm:gap-14 shrink-0 px-4 sm:px-8">
+                {/* Powered */}
+                <span className="font-sans text-3xl sm:text-5xl lg:text-[62px] font-light text-[#D1D5DB] tracking-tight">
+                  Powered
+                </span>
+
+                {/* 3D Botanical Leaf hanging across the dot */}
+                <div className="relative inline-flex items-center justify-center">
+                  <span className="text-[#9CA3AF] text-2xl sm:text-4xl lg:text-5xl font-light leading-none">•</span>
+                  <img
+                    src="/figma_landing/marquee_leaf_3d_exact.png"
+                    alt=""
+                    className="absolute -top-3 sm:-top-6 -left-3 sm:-left-6 w-14 sm:w-20 lg:w-24 h-auto pointer-events-none select-none drop-shadow-md z-10"
+                  />
+                </div>
+
+                {/* Naturally Nourishing */}
+                <span className="font-sans text-3xl sm:text-5xl lg:text-[62px] font-extrabold text-[#1F2937] tracking-tight">
+                  Naturally Nourishing
+                </span>
+
+                <span className="text-[#D1D5DB] text-2xl sm:text-4xl lg:text-5xl font-light leading-none">•</span>
+
+                {/* Deeply Hydrating */}
+                <span className="font-sans text-3xl sm:text-5xl lg:text-[62px] font-semibold text-[#8CA73A] tracking-tight">
+                  Deeply Hydrating
+                </span>
+
+                <span className="text-[#D1D5DB] text-2xl sm:text-4xl lg:text-5xl font-light leading-none">•</span>
+
+                {/* Visibly Transforming */}
+                <span className="font-sans text-3xl sm:text-5xl lg:text-[62px] font-medium text-[#9CA3AF] tracking-tight">
+                  Visibly Transforming
+                </span>
+
+                <span className="text-[#D1D5DB] text-2xl sm:text-4xl lg:text-5xl font-light leading-none">•</span>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
