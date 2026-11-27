@@ -15,11 +15,12 @@ export const fallbackProducts = [
     isNew: false,
     badge: "Best Seller",
     sizes: ["250ml", "500ml"],
-    image: "https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?auto=format&fit=crop&w=800&q=80",
+    image: "/figma_landing/shampoo_showcase_exact.png",
     gallery: [
-      "https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1601049541289-9b1b7bbbfe19?auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=80"
+      "/figma_landing/shampoo_showcase_exact.png",
+      "/figma_landing/shampoo_thumb_2.png",
+      "/figma_landing/shampoo_thumb_3.png",
+      "/figma_landing/shampoo_thumb_4.png"
     ],
     description: "An intensively nourishing botanical shampoo infused with pure Okra fruit mucilage extract. Packed with natural amino acids, vitamins A and C, and essential minerals to smooth cuticles and lock in shine.",
     benefits: [
@@ -43,10 +44,12 @@ export const fallbackProducts = [
     isNew: false,
     badge: "Popular",
     sizes: ["150ml", "300ml"],
-    image: "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=800&q=80",
+    image: "/figma_landing/facewash_showcase_exact.png",
     gallery: [
-      "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=800&q=80"
+      "/figma_landing/facewash_showcase_exact.png",
+      "/figma_landing/facewash_thumb_2.png",
+      "/figma_landing/facewash_thumb_3.png",
+      "/figma_landing/facewash_thumb_4.png"
     ],
     description: "A cloud-soft daily foaming facial cleanser powered by antioxidant-rich Okra extract and Green Tea. Dissolves impurities while preserving the skin barrier.",
     benefits: [
@@ -97,9 +100,9 @@ export const fallbackProducts = [
     isNew: false,
     badge: "Intense Care",
     sizes: ["200ml", "400ml"],
-    image: "https://images.unsplash.com/photo-1526947425960-945c6e72858f?auto=format&fit=crop&w=800&q=80",
+    image: "/figma_landing/prod_mask.png",
     gallery: [
-      "https://images.unsplash.com/photo-1526947425960-945c6e72858f?auto=format&fit=crop&w=800&q=80"
+      "/figma_landing/prod_mask.png"
     ],
     description: "A buttery botanical treatment mask designed for dry or heat-damaged strands. High-viscosity okra extract wraps each follicle in restorative hydration.",
     benefits: [

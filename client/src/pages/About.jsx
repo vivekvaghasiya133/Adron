@@ -41,7 +41,7 @@ export default function About() {
         <div className="lg:col-span-6">
           <div className="aspect-[4/3] rounded-3xl overflow-hidden shadow-xl border border-[#E8E4DA]">
             <img
-              src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=80"
+              src="/figma_landing/why_okra_visual_exact.png"
               alt="Botanical Extraction Laboratory"
               className="w-full h-full object-cover"
             />
