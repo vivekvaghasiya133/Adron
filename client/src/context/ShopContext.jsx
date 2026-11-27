@@ -18,7 +18,7 @@ export const fallbackProducts = [
     image: "https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?auto=format&fit=crop&w=800&q=80",
     gallery: [
       "https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1608248597359-0091874dc486?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1601049541289-9b1b7bbbfe19?auto=format&fit=crop&w=800&q=80",
       "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=80"
     ],
     description: "An intensively nourishing botanical shampoo infused with pure Okra fruit mucilage extract. Packed with natural amino acids, vitamins A and C, and essential minerals to smooth cuticles and lock in shine.",
@@ -145,9 +145,9 @@ export const fallbackProducts = [
     isNew: true,
     badge: "Scalp Therapy",
     sizes: ["60ml"],
-    image: "https://images.unsplash.com/photo-1608248597359-0091874dc486?auto=format&fit=crop&w=800&q=80",
+    image: "https://images.unsplash.com/photo-1601049541289-9b1b7bbbfe19?auto=format&fit=crop&w=800&q=80",
     gallery: [
-      "https://images.unsplash.com/photo-1608248597359-0091874dc486?auto=format&fit=crop&w=800&q=80"
+      "https://images.unsplash.com/photo-1601049541289-9b1b7bbbfe19?auto=format&fit=crop&w=800&q=80"
     ],
     description: "Potent scalp oil formulation combining cold-pressed Okra seed oil with antioxidant Rosemary leaf oil to stimulate healthy follicle growth.",
     benefits: [
