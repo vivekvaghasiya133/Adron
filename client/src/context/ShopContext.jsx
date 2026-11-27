@@ -59,29 +59,31 @@ export const fallbackProducts = [
   },
   {
     id: "okra-serum",
-    name: "Okra Glow Serum (Niacinamide + Vit C)",
-    category: "Serums",
-    price: 36.00,
-    originalPrice: 44.00,
+    name: "Okra Boost Glow Serum",
+    category: "Skin Care",
+    price: 1299,
+    originalPrice: 1599,
     rating: 4.9,
     reviewsCount: 310,
     isBestseller: true,
     isNew: true,
-    badge: "Award Winner",
+    badge: "Best Seller",
     sizes: ["30ml", "50ml"],
-    image: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=800&q=80",
+    image: "/figma_landing/serum_showcase_exact.png",
     gallery: [
-      "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1601049541289-9b1b7bbbfe19?auto=format&fit=crop&w=800&q=80"
+      "/figma_landing/serum_showcase_exact.png",
+      "/figma_landing/serum_thumb_2.png",
+      "/figma_landing/serum_thumb_3.png",
+      "/figma_landing/serum_thumb_4.png"
     ],
-    description: "An ultra-concentrated elixir combining cold-extracted Okra mucilage with 5% Niacinamide and Vitamin C. Brightens dark spots and imparts a glass-skin glow.",
+    description: "A featherlight, nutrient-dense face serum powered by organic cold-pressed Okra mucilage extract. Enriched with natural hyaluronic acid, cucumber water, and licorice root to plump, brighten, and restore a luminous glass-skin glow.",
     benefits: [
-      "Noticeably illuminates dull skin in 14 days",
-      "Okra peptides boost natural elasticity",
-      "Zero tacky residue, fast-absorbing texture"
+      "Locks in deep cellular hydration for up to 72 hours without greasy heaviness",
+      "Visibly refines pore texture and balances natural oil production",
+      "Fades dark spots and promotes a brighter, more uniform skin complexion"
     ],
-    ingredients: "Okra Fruit Extract (72%), Niacinamide (5%), Ethyl Ascorbic Acid (3%), Sodium Hyaluronate, Polyglutamic Acid, Ferulic Acid.",
-    howToUse: "Dispense 3-4 drops morning and night on clean skin. Follow with moisturizer and daytime SPF."
+    ingredients: "Aqua, Abelmoschus Esculentus (Okra) Fruit Extract, Cucumis Sativus (Cucumber) Water, Glycyrrhiza Glabra (Licorice) Root Extract, Sodium Hyaluronate, Niacinamide, Glycerin, Panthenol, Allantoin.",
+    howToUse: "Dispense 3-4 drops morning and night on clean skin. Gently press into face and follow with moisturizer."
   },
   {
     id: "okra-hair-mask",

@@ -17,8 +17,9 @@ export default function ProductDetail() {
   const navigate = useNavigate();
   const { products, addToCart } = useShop();
 
+  const isSerum = id === 'okra-serum' || id === 'serum' || id === 'okra-boost-glow-serum';
   const isFacewash = id === 'okra-facewash' || id === 'facewash';
-  const isShampoo = id === 'okra-shampoo' || (!isFacewash && id !== 'okra-serum');
+  const isShampoo = !isSerum && !isFacewash;
 
   const [product, setProduct] = useState(() => {
     return (
@@ -43,10 +44,21 @@ export default function ProductDetail() {
     '/figma_landing/fw_thumb_4.png'
   ];
 
-  const currentGallery = isFacewash ? facewashGallery : shampooGallery;
+  const serumGallery = [
+    '/figma_landing/serum_showcase_exact.png',
+    '/figma_landing/serum_thumb_2.png',
+    '/figma_landing/serum_thumb_3.png',
+    '/figma_landing/serum_thumb_4.png'
+  ];
+
+  const currentGallery = isSerum
+    ? serumGallery
+    : isFacewash
+    ? facewashGallery
+    : shampooGallery;
 
   const [activeThumb, setActiveThumb] = useState(0);
-  const [selectedSize, setSelectedSize] = useState('250 ml');
+  const [selectedSize, setSelectedSize] = useState(isSerum ? '30 ml' : '250 ml');
   const [quantity, setQuantity] = useState(1);
 
   // Scalp / Face Before/After comparison slider state
@@ -62,31 +74,49 @@ export default function ProductDetail() {
   const [reviewsList, setReviewsList] = useState([
     {
       id: 'rev-1',
-      author: isFacewash ? 'Riya Patel' : 'Ananya S.',
+      author: isSerum ? 'Priya Sharma' : isFacewash ? 'Riya Patel' : 'Ananya S.',
       rating: 5,
       date: '2 days ago',
-      title: isFacewash ? 'Gentle and so hydrating!' : 'Miraculous slip and softness!',
-      comment: isFacewash
+      title: isSerum
+        ? 'Unreal glass skin glow!'
+        : isFacewash
+        ? 'Gentle and so hydrating!'
+        : 'Miraculous slip and softness!',
+      comment: isSerum
+        ? 'This serum completely transformed my dull skin. The okra mucilage gives intense plumping hydration without feeling heavy or sticky. Redness around my nose vanished in 10 days.'
+        : isFacewash
         ? 'Leaves my skin thoroughly clean without that dry, tight squeaky feeling. The creamy texture melts away dirt and leaves a radiant dewy bounce.'
         : 'The natural okra mucilage gives unbelievable slip. I was skeptical about no silicone, but my hair detangles in seconds and stays lightweight with zero greasy residue.'
     },
     {
       id: 'rev-2',
-      author: isFacewash ? 'Meera S.' : 'Pooja V.',
+      author: isSerum ? 'Ananya Joshi' : isFacewash ? 'Meera S.' : 'Pooja V.',
       rating: 5,
       date: '1 week ago',
-      title: isFacewash ? 'Redness calmed in days' : 'Scalp irritation completely calmed',
-      comment: isFacewash
+      title: isSerum
+        ? 'My holy grail hydration serum'
+        : isFacewash
+        ? 'Redness calmed in days'
+        : 'Scalp irritation completely calmed',
+      comment: isSerum
+        ? 'Pairs beautifully under makeup with zero pilling. Leaves a dewy, luminous finish that lasts all day. The licorice root also faded my acne scars noticeably.'
+        : isFacewash
         ? 'Aloe vera, cucumber and hibiscus combination is so calming for sensitive acne-prone skin. It balances natural oils effortlessly.'
         : 'Finally a botanical shampoo that actually lathers richly without stripping my scalp. The itchiness and flaking went away in 3 washes.'
     },
     {
       id: 'rev-3',
-      author: isFacewash ? 'Divya K.' : 'Kavita M.',
+      author: isSerum ? 'Sneha Kapoor' : isFacewash ? 'Divya K.' : 'Kavita M.',
       rating: 5,
       date: '2 weeks ago',
-      title: isFacewash ? 'Fresh everyday glow' : 'Best Ayurvedic + Botanical hair care',
-      comment: isFacewash
+      title: isSerum
+        ? 'Non-greasy pure botanical magic'
+        : isFacewash
+        ? 'Fresh everyday glow'
+        : 'Best Ayurvedic + Botanical hair care',
+      comment: isSerum
+        ? 'I have sensitive combination skin that breaks out easily. This serum calms everything down instantly. Lightweight, soothing, and so hydrating!'
+        : isFacewash
         ? 'A luxurious creamy cleanser that feels like a spa facial. Skin feels soft, refreshed, and hydrated after every morning wash.'
         : 'Hibiscus and Shikakai paired with Okra is a genius formulation. Hair looks glossy and vibrant like salon treatments.'
     }
@@ -105,9 +135,9 @@ export default function ProductDetail() {
     }
     setActiveThumb(0);
     setQuantity(1);
-    setSelectedSize('250 ml');
+    setSelectedSize(isSerum ? '30 ml' : '250 ml');
     setSliderPos(50);
-  }, [id, products]);
+  }, [id, products, isSerum]);
 
   // Scalp / Face slider mouse/touch drag handlers
   const handleSliderMove = (clientX) => {
@@ -177,9 +207,11 @@ export default function ProductDetail() {
   };
 
   // Pricing logic matching Figma
-  const basePrice = isFacewash ? 999 : 1299;
-  const originalPrice = isFacewash ? 1299 : 1599;
-  const priceDisplay = isFacewash
+  const priceDisplay = isSerum
+    ? selectedSize.includes('50')
+      ? '1,899'
+      : '1,299'
+    : isFacewash
     ? selectedSize.includes('500')
       ? '1,699.0'
       : '999.0'
@@ -187,7 +219,11 @@ export default function ProductDetail() {
     ? '2,199'
     : '1,299';
 
-  const origPriceDisplay = isFacewash
+  const origPriceDisplay = isSerum
+    ? selectedSize.includes('50')
+      ? '2,399'
+      : '1,599'
+    : isFacewash
     ? selectedSize.includes('500')
       ? '2,199'
       : '1,299'
@@ -195,7 +231,11 @@ export default function ProductDetail() {
     ? '2,799'
     : '1,599';
 
-  const unitNumericPrice = isFacewash
+  const unitNumericPrice = isSerum
+    ? selectedSize.includes('50')
+      ? 1899
+      : 1299
+    : isFacewash
     ? selectedSize.includes('500')
       ? 1699
       : 999
@@ -204,7 +244,42 @@ export default function ProductDetail() {
     : 1299;
 
   // 8 FAQs exact text from Figma
-  const faqs = isFacewash
+  const faqs = isSerum
+    ? [
+        {
+          q: '1. What is Okra Boost Glow Serum?',
+          a: 'Adron Okra Boost Glow Serum is a highly concentrated botanical facial serum powered by pure cold-extracted Okra fruit mucilage, cucumber distillate, and licorice root to deliver weightless deep cellular hydration and natural glass-skin radiance.'
+        },
+        {
+          q: '2. What are the key benefits of Okra Serum?',
+          a: 'It locks in deep cellular hydration for up to 72 hours, visibly refines pore texture, evens skin tone, calms redness, and boosts natural collagen elasticity without heavy silicones or sticky residue.'
+        },
+        {
+          q: '3. When in my routine should I apply the Okra Boost Glow Serum?',
+          a: 'Apply morning and night onto freshly cleansed skin after toning, but before applying heavier moisturizers or facial oils. Follow with sunscreen in the morning.'
+        },
+        {
+          q: '4. Is this serum suitable for oily and acne-prone skin?',
+          a: 'Yes! The formula is 100% non-comedogenic, oil-free, and water-based. The natural silica from cucumber and antimicrobial flavonoids in licorice help balance sebum and soothe active blemishes.'
+        },
+        {
+          q: '5. Can I use this serum with Vitamin C, Niacinamide, or Retinol?',
+          a: 'Absolutely. Okra mucilage and hyaluronic acid are gentle botanical humectants that pair safely and synergistically with AHA/BHA exfoliants, Retinoids, and Vitamin C treatments.'
+        },
+        {
+          q: '6. Does the serum leave a sticky or tacky feeling?',
+          a: 'Not at all. The serum absorbs completely within 30 seconds into the skin, leaving a soft, velvety petal-finish that preps skin effortlessly for makeup.'
+        },
+        {
+          q: '7. How quickly will I see visible results?',
+          a: 'Instant dewy hydration and skin plumping are noticeable within 10 minutes of first application; improved skin clarity, smaller-looking pores, and radiant glow appear within 14 to 21 days of daily use.'
+        },
+        {
+          q: '8. How should I store the serum?',
+          a: 'Store in a cool, dry place away from direct sunlight. Tightly seal the dropper cap after each use to preserve the fresh botanical potency.'
+        }
+      ]
+    : isFacewash
     ? [
         {
           q: '1. What is Okra Facewash?',
@@ -274,6 +349,24 @@ export default function ProductDetail() {
         }
       ];
 
+  const productName = isSerum
+    ? 'Okra Boost Glow Serum'
+    : isFacewash
+    ? 'Hydra Glow Creamy Face Wash'
+    : 'Nourish & Shine Okra Shampoo';
+
+  const productEyebrow = isSerum
+    ? 'PURE BOTANICAL HYDRATION & RADIANCE'
+    : isFacewash
+    ? 'BOTANICAL HYDRATION & REPAIR'
+    : 'BOTANICAL HYDRATION & REPAIR';
+
+  const breadcrumbName = isSerum
+    ? 'Okra Boost Glow Serum'
+    : isFacewash
+    ? 'Okra Facewash'
+    : 'Okra Shampoo';
+
   return (
     <div className="w-full bg-white text-[#1C201D] font-sans antialiased selection:bg-[#84A338]/20">
       {/* ========================================================= */}
@@ -283,7 +376,11 @@ export default function ProductDetail() {
         {/* Floating Okra Pod on Far Right */}
         <div className="hidden xl:block absolute right-0 top-20 pointer-events-none select-none z-0">
           <img
-            src="/figma_landing/shampoo_hero_floating_okra.png"
+            src={
+              isSerum
+                ? '/figma_landing/serum_hero_floating_okra.png'
+                : '/figma_landing/shampoo_hero_floating_okra.png'
+            }
             alt=""
             className="w-48 lg:w-64 h-auto object-contain opacity-90"
           />
@@ -296,9 +393,7 @@ export default function ProductDetail() {
               Home
             </Link>
             <span className="text-gray-400">/</span>
-            <span className="text-[#1C201D] font-medium">
-              {isFacewash ? 'Okra Facewash' : 'Okra Shampoo'}
-            </span>
+            <span className="text-[#1C201D] font-medium">{breadcrumbName}</span>
           </nav>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-start">
@@ -308,7 +403,7 @@ export default function ProductDetail() {
               <div className="w-full max-w-[540px] aspect-square bg-white rounded-[28px] sm:rounded-[32px] p-6 sm:p-8 flex items-center justify-center shadow-[0_4px_24px_rgba(0,0,0,0.03)] border border-[#E9ECE0] transition-all">
                 <img
                   src={currentGallery[activeThumb]}
-                  alt={isFacewash ? 'Hydra Glow Creamy Face Wash' : 'Nourish & Shine Okra Shampoo'}
+                  alt={productName}
                   className="w-full h-full object-contain drop-shadow-sm transition-all duration-300"
                 />
               </div>
@@ -357,12 +452,12 @@ export default function ProductDetail() {
             <div className="lg:col-span-6 space-y-5 sm:space-y-6 pt-2">
               {/* Eyebrow */}
               <span className="text-[11px] sm:text-xs font-bold tracking-[0.16em] uppercase text-[#B59059] block">
-                BOTANICAL HYDRATION & REPAIR
+                {productEyebrow}
               </span>
 
               {/* Title */}
               <h1 className="text-3xl sm:text-4xl lg:text-[44px] font-bold text-[#1C201D] leading-[1.15] tracking-tight">
-                {isFacewash ? 'Hydra Glow Creamy Face Wash' : 'Nourish & Shine Okra Shampoo'}
+                {productName}
               </h1>
 
               {/* Ratings */}
@@ -386,7 +481,9 @@ export default function ProductDetail() {
 
               {/* Editorial Description */}
               <p className="text-xs sm:text-[13px] text-gray-600 leading-relaxed max-w-xl font-normal">
-                {isFacewash
+                {isSerum
+                  ? 'A featherlight, nutrient-dense face serum powered by organic cold-pressed Okra mucilage extract. Enriched with natural hyaluronic acid, cucumber water, and licorice root to plump, brighten, and restore a luminous glass-skin glow.'
+                  : isFacewash
                   ? 'Revitalize dull, thirsty skin with the ultimate power of Okra-infused hydration. Rich in vitamins A, C, and natural mucilage, our scientifically refined creamy formula cleanses away impurities while sealing in maximum moisture.'
                   : 'Revitalize dull, thirsty hair with the ultimate power of Okra-infused hydration. Rich in vitamins A, C, and natural mucilage, our scientifically refined formula coats your strands to seal in maximum moisture, preventing split ends while calming sensitive scalps.'}
               </p>
@@ -399,56 +496,49 @@ export default function ProductDetail() {
                 <span className="text-base sm:text-lg text-gray-400 line-through">
                   ₹{origPriceDisplay}
                 </span>
-                <span className="bg-[#EBF2D8] text-[#55781E] text-[11px] font-bold px-2.5 py-0.5 rounded tracking-wide">
-                  SAVE 18%
+                <span className="text-xs font-bold text-[#84A338] bg-[#84A338]/10 px-2.5 py-1 rounded-full">
+                  SAVE 20%
                 </span>
               </div>
 
               {/* Size Selector */}
-              <div className="pt-2 space-y-2.5">
-                <span className="text-[11px] font-bold tracking-[0.14em] uppercase text-[#1C201D] block">
-                  SELECT SIZE
+              <div className="space-y-2 pt-2">
+                <span className="text-xs font-semibold text-gray-700 block">
+                  Select Size:
                 </span>
-                <div className="flex gap-3">
-                  <button
-                    onClick={() => setSelectedSize('250 ml')}
-                    className={`px-5 py-2.5 rounded-lg text-xs font-semibold border transition-all ${
-                      selectedSize === '250 ml'
-                        ? 'border-[#1C201D] text-[#1C201D] bg-white shadow-sm'
-                        : 'border-gray-300 text-gray-600 bg-white/60 hover:border-gray-400'
-                    }`}
-                  >
-                    250 ml
-                  </button>
-                  <button
-                    onClick={() => setSelectedSize('500 ml (Value Pack)')}
-                    className={`px-5 py-2.5 rounded-lg text-xs font-semibold border transition-all ${
-                      selectedSize === '500 ml (Value Pack)'
-                        ? 'border-[#1C201D] text-[#1C201D] bg-white shadow-sm'
-                        : 'border-gray-300 text-gray-600 bg-white/60 hover:border-gray-400'
-                    }`}
-                  >
-                    500 ml (Value Pack)
-                  </button>
+                <div className="flex items-center gap-3">
+                  {(isSerum ? ['30 ml', '50 ml'] : ['250 ml', '500 ml']).map((size) => (
+                    <button
+                      key={size}
+                      onClick={() => setSelectedSize(size)}
+                      className={`px-5 py-2.5 rounded-full text-xs font-bold transition-all ${
+                        selectedSize === size
+                          ? 'bg-[#1C201D] text-white shadow-sm'
+                          : 'bg-white text-gray-700 border border-gray-200 hover:border-gray-400'
+                      }`}
+                    >
+                      {size}
+                    </button>
+                  ))}
                 </div>
               </div>
 
-              {/* Quantity & Add to Cart Row */}
-              <div className="flex items-center gap-3 pt-3">
-                <div className="flex items-center justify-between border border-gray-300 rounded-lg bg-white px-3 py-2.5 w-28 sm:w-32 shadow-sm">
+              {/* Quantity & Add to Cart Button Row */}
+              <div className="flex items-center gap-4 pt-3">
+                <div className="flex items-center border border-gray-300 rounded-full bg-white px-3 py-2">
                   <button
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="p-1 text-gray-500 hover:text-black transition"
+                    onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                    className="text-gray-500 hover:text-black p-1 transition"
                     aria-label="Decrease quantity"
                   >
                     <Minus size={14} />
                   </button>
-                  <span className="text-xs sm:text-sm font-bold text-[#1C201D]">
+                  <span className="w-10 text-center font-bold text-sm text-[#1C201D]">
                     {quantity}
                   </span>
                   <button
-                    onClick={() => setQuantity(quantity + 1)}
-                    className="p-1 text-gray-500 hover:text-black transition"
+                    onClick={() => setQuantity((q) => q + 1)}
+                    className="text-gray-500 hover:text-black p-1 transition"
                     aria-label="Increase quantity"
                   >
                     <Plus size={14} />
@@ -459,37 +549,36 @@ export default function ProductDetail() {
                   onClick={() =>
                     addToCart(
                       {
-                        ...product,
-                        name: isFacewash ? 'Hydra Glow Creamy Face Wash' : 'Nourish & Shine Okra Shampoo',
-                        price: unitNumericPrice
+                        id: isSerum ? 'okra-serum' : isFacewash ? 'okra-facewash' : 'okra-shampoo',
+                        name: productName,
+                        price: unitNumericPrice,
+                        image: currentGallery[0],
+                        category: isSerum ? 'Skin Care' : isFacewash ? 'Skin Care' : 'Hair Care'
                       },
                       selectedSize,
                       quantity
                     )
                   }
-                  className="flex-1 bg-[#1C201D] hover:bg-[#2C332E] text-white py-3.5 px-6 rounded-lg text-xs font-bold tracking-wider uppercase flex items-center justify-center gap-2 shadow-md transition-all active:scale-[0.99]"
+                  className="flex-1 bg-[#1C201D] hover:bg-black text-white font-bold text-xs uppercase tracking-wider py-4 rounded-full transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2"
                 >
-                  <span>
-                    ADD TO CART — ₹
-                    {(unitNumericPrice * quantity).toLocaleString()}
-                  </span>
+                  <span>ADD TO CART</span>
                   <ArrowRight size={15} />
                 </button>
               </div>
 
-              {/* 3 Guarantees / Trust Badges */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-4 border-t border-gray-200/80 text-[11px] sm:text-xs text-gray-600 font-medium">
+              {/* Promo Perks list */}
+              <div className="pt-4 border-t border-gray-200/60 space-y-2 text-xs text-gray-600">
                 <div className="flex items-center gap-2">
-                  <Check size={15} className="text-[#84A338] shrink-0" />
-                  <span>100% Organic Extracts</span>
+                  <Check size={14} className="text-[#84A338]" />
+                  <span>Free shipping on all orders above ₹999</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Check size={15} className="text-[#84A338] shrink-0" />
-                  <span>Dermatologist Tested</span>
+                  <Check size={14} className="text-[#84A338]" />
+                  <span>Use coupon code <strong>GLOW20</strong> for extra 20% off</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Check size={15} className="text-[#84A338] shrink-0" />
-                  <span>Free Express Delivery</span>
+                  <Check size={14} className="text-[#84A338]" />
+                  <span>100% Vegan, Leaping Bunny Certified & Dermatologically Tested</span>
                 </div>
               </div>
             </div>
@@ -503,9 +592,51 @@ export default function ProductDetail() {
       <section className="w-full bg-white py-20 lg:py-28 overflow-hidden">
         <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-            {/* Left Column: Heading, Paragraphs & Stats */}
+            {/* Left Column: Heading, Paragraphs & Badges */}
             <div className="lg:col-span-7 space-y-6 sm:space-y-8">
-              {isFacewash ? (
+              {isSerum ? (
+                <>
+                  <span className="text-[11px] sm:text-xs font-bold tracking-[0.16em] uppercase text-[#B59059] block">
+                    YOUR DAILY GLOW ELIXIR
+                  </span>
+                  <h2 className="text-3xl sm:text-4xl lg:text-[42px] font-bold text-[#1C201D] leading-[1.2] tracking-tight">
+                    Why <span className="text-[#84A338]">Okra</span> Belongs in Your Ultimate Beauty Ritual
+                  </h2>
+                  <p className="text-xs sm:text-[13px] text-gray-600 leading-relaxed font-normal">
+                    Okra is nature's most potent source of botanical mucilage—a nutrient-rich polysaccharide complex that mirrors the cellular hydration of hyaluronic acid without synthetic weight.
+                  </p>
+                  <p className="text-xs sm:text-[13px] text-gray-600 leading-relaxed font-normal">
+                    Our cold-extracted Okra serum penetrates deeply into the dermis, delivering vitamins A, C, and K alongside potent antioxidant flavonoids to fortify your skin barrier and unlock lasting luminosity.
+                  </p>
+                  {/* 3 Callouts */}
+                  <div className="grid grid-cols-3 gap-6 pt-4 border-t border-gray-100">
+                    <div>
+                      <span className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#84A338] block tracking-tight">
+                        Okra
+                      </span>
+                      <span className="text-[11px] sm:text-xs text-gray-600 font-medium block mt-1.5 leading-tight">
+                        Deep Hydration
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#84A338] block tracking-tight">
+                        Cucumber
+                      </span>
+                      <span className="text-[11px] sm:text-xs text-gray-600 font-medium block mt-1.5 leading-tight">
+                        Pore Care & Balance
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#84A338] block tracking-tight">
+                        Licorice
+                      </span>
+                      <span className="text-[11px] sm:text-xs text-gray-600 font-medium block mt-1.5 leading-tight">
+                        Radiant Glow & Defense
+                      </span>
+                    </div>
+                  </div>
+                </>
+              ) : isFacewash ? (
                 <>
                   <span className="text-[11px] sm:text-xs font-bold tracking-[0.16em] uppercase text-[#B59059] block">
                     YOUR DAILY FRESH START
@@ -594,11 +725,19 @@ export default function ProductDetail() {
               <div className="w-full max-w-[460px] flex items-center justify-center">
                 <img
                   src={
-                    isFacewash
+                    isSerum
+                      ? '/figma_landing/serum_model_hero_exact.png'
+                      : isFacewash
                       ? '/figma_landing/fw_model_hero_exact.png'
                       : '/figma_landing/shampoo_model_hero_exact.png'
                   }
-                  alt={isFacewash ? 'Model holding Hydra Glow Face Wash' : 'Model holding Okra Shampoo'}
+                  alt={
+                    isSerum
+                      ? 'Model holding Okra Boost Glow Serum'
+                      : isFacewash
+                      ? 'Model holding Hydra Glow Face Wash'
+                      : 'Model holding Okra Shampoo'
+                  }
                   className="w-full h-auto object-contain drop-shadow-md"
                 />
               </div>
@@ -613,11 +752,13 @@ export default function ProductDetail() {
       <section className="w-full bg-[#F4F7EE] py-16 sm:py-24">
         <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
-            {/* Left: 3 Circular Outline Badges */}
+            {/* Left: 3 Feature Icons Graphic */}
             <div className="lg:col-span-5 flex justify-center">
               <img
                 src={
-                  isFacewash
+                  isSerum
+                    ? '/figma_landing/serum_desc_icons_exact.png'
+                    : isFacewash
                     ? '/figma_landing/fw_3_badges_exact.png'
                     : '/figma_landing/shampoo_3_badges_exact.png'
                 }
@@ -632,7 +773,19 @@ export default function ProductDetail() {
                 Product Description
               </h2>
 
-              {isFacewash ? (
+              {isSerum ? (
+                <>
+                  <h3 className="text-xs sm:text-sm font-semibold text-[#B59059]">
+                    Pure skin hydration infused with active cold-pressed botanicals.
+                  </h3>
+                  <p className="text-xs sm:text-[13px] text-gray-600 leading-relaxed font-normal">
+                    Adron Okra Boost Glow Serum is an ultra-nourishing elixir formulated for all skin types seeking deep hydration and natural radiance. High concentrations of cold-pressed okra mucilage provide superior humectant moisture retention, plumping fine dry lines while imparting a healthy, lit-from-within sheen.
+                  </p>
+                  <p className="text-xs sm:text-[13px] text-gray-600 leading-relaxed font-normal">
+                    Infused with cooling cucumber distillate and licorice root bio-actives, this fast-absorbing serum calms redness, balances sebum production, and evens skin tone without leaving any tacky or greasy residue.
+                  </p>
+                </>
+              ) : isFacewash ? (
                 <>
                   <p className="text-xs sm:text-[13px] text-gray-600 leading-relaxed font-normal">
                     Experience fresh, clean, and glowing-looking skin with Adron Hydra Glow Creamy Face Wash. Enriched with the goodness of aloe vera, cucumber, and hibiscus extracts, this creamy face wash helps cleanse your skin by removing everyday dirt and impurities while leaving it feeling soft, refreshed, and hydrated.
@@ -676,7 +829,34 @@ export default function ProductDetail() {
                 </span>
               </div>
 
-              {isFacewash ? (
+              {isSerum ? (
+                <ul className="space-y-2 text-xs sm:text-[13px] text-gray-600 leading-relaxed font-normal">
+                  <li className="flex items-start gap-2">
+                    <span className="text-[#84A338] font-bold">•</span>
+                    <span><strong>Deep Cellular Hydration:</strong> Locks in moisture for up to 72 hours without greasy heaviness.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-[#84A338] font-bold">•</span>
+                    <span><strong>Pore Refinement:</strong> Visibly refines pore texture and balances natural oil production.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-[#84A338] font-bold">•</span>
+                    <span><strong>Radiant Glass Glow:</strong> Fades dark spots and promotes a brighter, lit-from-within complexion.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-[#84A338] font-bold">•</span>
+                    <span><strong>Skin Barrier Defense:</strong> Strengthens the stratum corneum against urban environmental pollutants.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-[#84A338] font-bold">•</span>
+                    <span><strong>Botanical Active Trio:</strong> Infused with cold-pressed Okra mucilage, Cucumber water, and Licorice.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-[#84A338] font-bold">•</span>
+                    <span><strong>Non-Comedogenic:</strong> Featherlight, fast-absorbing texture suitable for daily morning & night use.</span>
+                  </li>
+                </ul>
+              ) : isFacewash ? (
                 <ul className="space-y-2 text-xs sm:text-[13px] text-gray-600 leading-relaxed font-normal">
                   <li className="flex items-start gap-2">
                     <span className="text-[#84A338] font-bold">•</span>
@@ -740,7 +920,9 @@ export default function ProductDetail() {
               <div className="pt-4">
                 <img
                   src={
-                    isFacewash
+                    isSerum
+                      ? '/figma_landing/serum_benefit_icons_exact.png'
+                      : isFacewash
                       ? '/figma_landing/fw_benefit_icons_exact.png'
                       : '/figma_landing/shampoo_benefit_icons_exact.png'
                   }
@@ -750,16 +932,24 @@ export default function ProductDetail() {
               </div>
             </div>
 
-            {/* Right: Shower / Splashing Water Model with Play Button */}
+            {/* Right: Model with Dropper / Water Splash / Shower Graphic */}
             <div className="lg:col-span-5 flex justify-center">
               <div className="w-full max-w-[480px] rounded-2xl overflow-hidden shadow-sm relative group cursor-pointer">
                 <img
                   src={
-                    isFacewash
+                    isSerum
+                      ? '/figma_landing/serum_model_dropper_exact.png'
+                      : isFacewash
                       ? '/figma_landing/fw_splashing_exact.png'
                       : '/figma_landing/shampoo_shower_lather_exact.png'
                   }
-                  alt={isFacewash ? 'Water Splashing Application' : 'Shower Lather Application'}
+                  alt={
+                    isSerum
+                      ? 'Model applying Okra Boost Glow Serum'
+                      : isFacewash
+                      ? 'Water Splashing Application'
+                      : 'Shower Lather Application'
+                  }
                   className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500"
                 />
               </div>
@@ -785,7 +975,9 @@ export default function ProductDetail() {
                 {/* AFTER image (Background layer) */}
                 <img
                   src={
-                    isFacewash
+                    isSerum
+                      ? '/figma_landing/serum_face_after_exact.png'
+                      : isFacewash
                       ? '/figma_landing/fw_face_after_exact.png'
                       : '/figma_landing/shampoo_scalp_after_exact.png'
                   }
@@ -800,7 +992,9 @@ export default function ProductDetail() {
                 >
                   <img
                     src={
-                      isFacewash
+                      isSerum
+                        ? '/figma_landing/serum_face_before_exact.png'
+                        : isFacewash
                         ? '/figma_landing/fw_face_before_exact.png'
                         : '/figma_landing/shampoo_scalp_before_exact.png'
                     }
@@ -835,7 +1029,22 @@ export default function ProductDetail() {
                 HOW TO USE
               </h2>
 
-              {isFacewash ? (
+              {isSerum ? (
+                <div className="space-y-4 text-xs sm:text-[13px] text-gray-700 leading-relaxed">
+                  <p>
+                    <strong className="text-[#1C201D]">Step 1: Prep :</strong> Cleanse face thoroughly with Adron Creamy Face Wash and pat dry.
+                  </p>
+                  <p>
+                    <strong className="text-[#1C201D]">Step 2: Dispense :</strong> Take 3 to 4 drops of Okra Boost Glow Serum on your fingertips or directly onto cheeks.
+                  </p>
+                  <p>
+                    <strong className="text-[#1C201D]">Step 3: Press & Massage :</strong> Gently press and smooth into face and neck in upward circular motions.
+                  </p>
+                  <p>
+                    <strong className="text-[#1C201D]">Step 4: Seal :</strong> Allow 30 seconds for full absorption, then follow with your daily moisturizer or SPF.
+                  </p>
+                </div>
+              ) : isFacewash ? (
                 <div className="space-y-4 text-xs sm:text-[13px] text-gray-700 leading-relaxed">
                   <p>
                     <strong className="text-[#1C201D]">Step 1: Wet :</strong> Start with clean hands and wet your face with lukewarm water.
@@ -886,7 +1095,31 @@ export default function ProductDetail() {
                 Key Ingredients
               </h2>
 
-              {isFacewash ? (
+              {isSerum ? (
+                <div className="space-y-4 text-xs sm:text-[13px] text-gray-600 leading-relaxed">
+                  <div>
+                    <h4 className="font-bold text-[#1C201D] text-sm mb-1">Okra Mucilage</h4>
+                    <p>Nature's botanical hyaluronic acid, rich in galacturonic polysaccharides to lock in deep cellular moisture.</p>
+                  </div>
+
+                  <div>
+                    <h4 className="font-bold text-[#1C201D] text-sm mb-1">Cucumber Distillate</h4>
+                    <p>Naturally cooling botanical water rich in silica and caffeic acid that calms skin puffiness and refines enlarged pores.</p>
+                  </div>
+
+                  <div>
+                    <h4 className="font-bold text-[#1C201D] text-sm mb-1">Licorice Root Extract</h4>
+                    <p>Potent natural bio-active containing glabridin that targets hyperpigmentation, balances sebum, and restores radiant glow.</p>
+                  </div>
+
+                  <div className="pt-4 border-t border-gray-100">
+                    <h4 className="font-bold text-[#1C201D] text-sm mb-1">Full Ingredient List</h4>
+                    <p className="text-gray-500 font-medium">
+                      Aqua, Abelmoschus Esculentus (Okra) Fruit Extract, Cucumis Sativus (Cucumber) Water, Glycyrrhiza Glabra (Licorice) Root Extract, Sodium Hyaluronate, Niacinamide, Glycerin, Panthenol, Allantoin.
+                    </p>
+                  </div>
+                </div>
+              ) : isFacewash ? (
                 <div className="space-y-4 text-xs sm:text-[13px] text-gray-600 leading-relaxed">
                   <div>
                     <h4 className="font-bold text-[#1C201D] text-sm mb-1">Hibiscus</h4>
@@ -952,12 +1185,16 @@ export default function ProductDetail() {
               )}
             </div>
 
-            {/* Right: 3 Botanical Laboratory Test Tubes Graphic */}
+            {/* Right: Botanical Laboratory Test Tubes Graphic */}
             <div className="lg:col-span-6 flex justify-center">
               <div className="w-full max-w-[500px]">
                 <img
-                  src="/figma_landing/shampoo_test_tubes_exact.png"
-                  alt="Hyaluronic Acid, Okra Extract, Okra Seed Oil in Test Tubes"
+                  src={
+                    isSerum
+                      ? '/figma_landing/serum_test_tubes_exact.png'
+                      : '/figma_landing/shampoo_test_tubes_exact.png'
+                  }
+                  alt="Botanical Active Extracts in Laboratory Test Tubes"
                   className="w-full h-auto object-contain"
                 />
               </div>
@@ -972,7 +1209,7 @@ export default function ProductDetail() {
       <section className="w-full bg-white py-16 sm:py-24 border-t border-gray-100">
         <div className="max-w-[880px] mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#1C201D] text-center mb-10 tracking-tight">
-            Frequency Asked Questions
+            Frequently Asked Questions
           </h2>
 
           <div className="space-y-3">
@@ -1043,13 +1280,12 @@ export default function ProductDetail() {
                 Customer Find this product best for
               </span>
               <div className="flex flex-wrap justify-center gap-2">
-                {[
-                  'Straight Hair',
-                  'Color Treated Hair',
-                  'Natural Textured Hair',
-                  'Dry Hair',
-                  'Damaged Hair'
-                ].map((tag, idx) => (
+                {(isSerum
+                  ? ['Glass Skin Glow', 'Deep Hydration', 'Pore Tightening', 'Anti-Redness', 'Even Skin Tone']
+                  : isFacewash
+                  ? ['Gentle Cleansing', 'Hydrated Skin', 'Redness Calming', 'Daily Freshness', 'Sensitive Skin']
+                  : ['Straight Hair', 'Color Treated Hair', 'Natural Textured Hair', 'Dry Hair', 'Damaged Hair']
+                ).map((tag, idx) => (
                   <span
                     key={idx}
                     className="bg-[#F4F7EE] text-gray-700 text-[11px] font-medium px-3.5 py-1.5 rounded-full"
@@ -1136,7 +1372,7 @@ export default function ProductDetail() {
                       rows="3"
                       value={reviewComment}
                       onChange={(e) => setReviewComment(e.target.value)}
-                      placeholder={isFacewash ? "Share your experience with Okra Facewash..." : "Share your experience with Okra Shampoo..."}
+                      placeholder={`Share your experience with ${productName}...`}
                       className="w-full bg-white border border-gray-200 rounded-lg p-2.5 outline-none"
                     />
                   </div>
@@ -1196,23 +1432,42 @@ export default function ProductDetail() {
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-            {[
-              {
-                img: '/figma_landing/shampoo_art_1.png',
-                title: "Rose Water in Your Skincare Routine: 7 Ways You're Probably Not Using It",
-                desc: "You've probably got a bottle of rose water sitting on your shelf, dutifully used as a toner after cleansing. But here..."
-              },
-              {
-                img: '/figma_landing/shampoo_art_2.png',
-                title: "Rose Water in Your Skincare Routine: 7 Ways You're Probably Not Using It",
-                desc: "You've probably got a bottle of rose water sitting on your shelf, dutifully used as a toner after cleansing. But here..."
-              },
-              {
-                img: '/figma_landing/shampoo_art_3.png',
-                title: "Rose Water in Your Skincare Routine: 7 Ways You're Probably Not Using It",
-                desc: "You've probably got a bottle of rose water sitting on your shelf, dutifully used as a toner after cleansing. But here..."
-              }
-            ].map((art, idx) => (
+            {(isSerum
+              ? [
+                  {
+                    img: '/figma_landing/serum_article_1.png',
+                    title: 'Powerful Botanical Oils for Plump, Glowing Skin',
+                    desc: 'Discover how cold-pressed plant oils and botanical extracts work in synergy to repair your skin lipid barrier and enhance radiance...'
+                  },
+                  {
+                    img: '/figma_landing/serum_article_2.png',
+                    title: 'Why Niacinamide + Okra Is the Ultimate Hydration Duo',
+                    desc: 'Combine the brightening power of Niacinamide with the soothing moisture-locking mucilage of Okra for an unbeatable glass-skin glow...'
+                  },
+                  {
+                    img: '/figma_landing/serum_article_3.png',
+                    title: 'Botanical Care 101: Clean Skincare Routine Guide',
+                    desc: 'Step-by-step ritual guide on layering botanical cleansers, hydrating serums, and protective moisturizers for all skin types...'
+                  }
+                ]
+              : [
+                  {
+                    img: '/figma_landing/shampoo_art_1.png',
+                    title: "Rose Water in Your Skincare Routine: 7 Ways You're Probably Not Using It",
+                    desc: "You've probably got a bottle of rose water sitting on your shelf, dutifully used as a toner after cleansing. But here..."
+                  },
+                  {
+                    img: '/figma_landing/shampoo_art_2.png',
+                    title: "Rose Water in Your Skincare Routine: 7 Ways You're Probably Not Using It",
+                    desc: "You've probably got a bottle of rose water sitting on your shelf, dutifully used as a toner after cleansing. But here..."
+                  },
+                  {
+                    img: '/figma_landing/shampoo_art_3.png',
+                    title: "Rose Water in Your Skincare Routine: 7 Ways You're Probably Not Using It",
+                    desc: "You've probably got a bottle of rose water sitting on your shelf, dutifully used as a toner after cleansing. But here..."
+                  }
+                ]
+            ).map((art, idx) => (
               <div
                 key={idx}
                 className="bg-transparent flex flex-col group cursor-pointer space-y-3"
@@ -1268,14 +1523,24 @@ export default function ProductDetail() {
           </h2>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 mb-10">
-            {[
-              '/figma_landing/shampoo_ig_1.png',
-              '/figma_landing/shampoo_ig_2.png',
-              '/figma_landing/shampoo_ig_3.png',
-              '/figma_landing/shampoo_ig_4.png',
-              '/figma_landing/shampoo_ig_5.png',
-              '/figma_landing/shampoo_ig_6.png'
-            ].map((img, idx) => (
+            {(isSerum
+              ? [
+                  '/figma_landing/serum_ig_1.png',
+                  '/figma_landing/serum_ig_2.png',
+                  '/figma_landing/serum_ig_3.png',
+                  '/figma_landing/serum_ig_4.png',
+                  '/figma_landing/serum_ig_5.png',
+                  '/figma_landing/serum_ig_6.png'
+                ]
+              : [
+                  '/figma_landing/shampoo_ig_1.png',
+                  '/figma_landing/shampoo_ig_2.png',
+                  '/figma_landing/shampoo_ig_3.png',
+                  '/figma_landing/shampoo_ig_4.png',
+                  '/figma_landing/shampoo_ig_5.png',
+                  '/figma_landing/shampoo_ig_6.png'
+                ]
+            ).map((img, idx) => (
               <a
                 key={idx}
                 href="https://instagram.com"
