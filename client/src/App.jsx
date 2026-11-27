@@ -9,6 +9,7 @@ import Home from './pages/Home';
 import Shop from './pages/Shop';
 import ProductDetail from './pages/ProductDetail';
 import Ingredients from './pages/Ingredients';
+import BestSellers from './pages/BestSellers';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import Favorites from './pages/Favorites';
@@ -42,6 +43,8 @@ function MainLayout() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/shop" element={<Shop />} />
+          <Route path="/bestsellers" element={<BestSellers />} />
+          <Route path="/best-sellers" element={<BestSellers />} />
           <Route path="/product/:id" element={<ProductDetail />} />
           <Route path="/ingredients" element={<Ingredients />} />
           <Route path="/cart" element={<Cart />} />

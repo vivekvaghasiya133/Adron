@@ -86,9 +86,9 @@ export default function Navbar() {
             Okra Serum
           </Link>
           <Link
-            to="/shop?bestseller=true"
+            to="/bestsellers"
             className={`transition-colors ${
-              location.search.includes('bestseller') ? 'text-[#8DAF3E] font-semibold' : 'hover:text-[#8DAF3E]'
+              location.pathname === '/bestsellers' || location.pathname === '/best-sellers' || location.search.includes('bestseller') ? 'text-[#8DAF3E] font-semibold' : 'hover:text-[#8DAF3E]'
             }`}
           >
             Best Sellers
@@ -217,16 +217,22 @@ export default function Navbar() {
             Home
           </Link>
           <Link to="/shop" onClick={() => setMobileMenuOpen(false)} className="block text-[#153323] hover:text-[#5B7E52]">
-            Shop All
+            Shop
           </Link>
           <Link to="/product/okra-shampoo" onClick={() => setMobileMenuOpen(false)} className="block text-[#153323] hover:text-[#5B7E52]">
-            Hair Care
+            Okra Shampoo
           </Link>
           <Link to="/product/okra-facewash" onClick={() => setMobileMenuOpen(false)} className="block text-[#153323] hover:text-[#5B7E52]">
-            Skin Care
+            Okra Facewash
           </Link>
           <Link to="/product/okra-serum" onClick={() => setMobileMenuOpen(false)} className="block text-[#153323] hover:text-[#5B7E52]">
-            Serums
+            Okra Serum
+          </Link>
+          <Link to="/bestsellers" onClick={() => setMobileMenuOpen(false)} className="block text-[#153323] hover:text-[#5B7E52]">
+            Best Sellers
+          </Link>
+          <Link to="/ingredients" onClick={() => setMobileMenuOpen(false)} className="block text-[#153323] hover:text-[#5B7E52]">
+            Ingredients
           </Link>
           <Link to="/ingredients" onClick={() => setMobileMenuOpen(false)} className="block text-[#153323] hover:text-[#5B7E52]">
             Ingredients Science
